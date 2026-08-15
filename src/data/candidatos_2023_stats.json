@@ -1,0 +1,1553 @@
+{
+  "nacional": {
+    "total": 31696,
+    "prefectura": 186,
+    "alcaldia": 1544,
+    "concejales": 8919,
+    "juntas_parroquiales": 21047
+  },
+  "provincias": {
+    "AZUAY": {
+      "total": 2091,
+      "prefectura": 10,
+      "alcaldia": 83,
+      "concejales": 438,
+      "juntas_parroquiales": 1560,
+      "cantones": {
+        "CAMILO PONCE ENRIQUEZ": {
+          "total": 26,
+          "alcaldia": 2,
+          "concejales": 14,
+          "juntas_parroquiales": 10
+        },
+        "CHORDELEG": {
+          "total": 114,
+          "alcaldia": 4,
+          "concejales": 25,
+          "juntas_parroquiales": 85
+        },
+        "CUENCA": {
+          "total": 824,
+          "alcaldia": 9,
+          "concejales": 135,
+          "juntas_parroquiales": 680
+        },
+        "EL PAN": {
+          "total": 39,
+          "alcaldia": 4,
+          "concejales": 15,
+          "juntas_parroquiales": 20
+        },
+        "GIRON": {
+          "total": 54,
+          "alcaldia": 4,
+          "concejales": 15,
+          "juntas_parroquiales": 35
+        },
+        "GUACHAPALA": {
+          "total": 30,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 0
+        },
+        "GUALACEO": {
+          "total": 225,
+          "alcaldia": 5,
+          "concejales": 30,
+          "juntas_parroquiales": 190
+        },
+        "NABON": {
+          "total": 32,
+          "alcaldia": 5,
+          "concejales": 7,
+          "juntas_parroquiales": 20
+        },
+        "ONA": {
+          "total": 57,
+          "alcaldia": 7,
+          "concejales": 25,
+          "juntas_parroquiales": 25
+        },
+        "PAUTE": {
+          "total": 246,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 210
+        },
+        "PUCARA": {
+          "total": 39,
+          "alcaldia": 5,
+          "concejales": 19,
+          "juntas_parroquiales": 15
+        },
+        "SAN FERNANDO": {
+          "total": 41,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 15
+        },
+        "SANTA ISABEL": {
+          "total": 92,
+          "alcaldia": 7,
+          "concejales": 25,
+          "juntas_parroquiales": 60
+        },
+        "SEVILLA DE ORO": {
+          "total": 111,
+          "alcaldia": 8,
+          "concejales": 33,
+          "juntas_parroquiales": 70
+        },
+        "SIGSIG": {
+          "total": 151,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 125
+        }
+      }
+    },
+    "BOLIVAR": {
+      "total": 840,
+      "prefectura": 8,
+      "alcaldia": 50,
+      "concejales": 267,
+      "juntas_parroquiales": 515,
+      "cantones": {
+        "CALUMA": {
+          "total": 42,
+          "alcaldia": 7,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "CHILLANES": {
+          "total": 87,
+          "alcaldia": 8,
+          "concejales": 44,
+          "juntas_parroquiales": 35
+        },
+        "CHIMBO": {
+          "total": 196,
+          "alcaldia": 9,
+          "concejales": 42,
+          "juntas_parroquiales": 145
+        },
+        "ECHEANDIA": {
+          "total": 52,
+          "alcaldia": 7,
+          "concejales": 45,
+          "juntas_parroquiales": 0
+        },
+        "GUARANDA": {
+          "total": 264,
+          "alcaldia": 8,
+          "concejales": 56,
+          "juntas_parroquiales": 200
+        },
+        "LAS NAVES": {
+          "total": 19,
+          "alcaldia": 4,
+          "concejales": 15,
+          "juntas_parroquiales": 0
+        },
+        "SAN MIGUEL": {
+          "total": 172,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 135
+        }
+      }
+    },
+    "CANAR": {
+      "total": 794,
+      "prefectura": 6,
+      "alcaldia": 36,
+      "concejales": 212,
+      "juntas_parroquiales": 540,
+      "cantones": {
+        "AZOGUES": {
+          "total": 276,
+          "alcaldia": 7,
+          "concejales": 49,
+          "juntas_parroquiales": 220
+        },
+        "BIBLIAN": {
+          "total": 78,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 60
+        },
+        "CANAR": {
+          "total": 225,
+          "alcaldia": 5,
+          "concejales": 35,
+          "juntas_parroquiales": 185
+        },
+        "DELEG": {
+          "total": 43,
+          "alcaldia": 4,
+          "concejales": 19,
+          "juntas_parroquiales": 20
+        },
+        "EL TAMBO": {
+          "total": 24,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 0
+        },
+        "LA TRONCAL": {
+          "total": 117,
+          "alcaldia": 8,
+          "concejales": 54,
+          "juntas_parroquiales": 55
+        },
+        "SUSCAL": {
+          "total": 25,
+          "alcaldia": 5,
+          "concejales": 20,
+          "juntas_parroquiales": 0
+        }
+      }
+    },
+    "CARCHI": {
+      "total": 991,
+      "prefectura": 4,
+      "alcaldia": 38,
+      "concejales": 209,
+      "juntas_parroquiales": 740,
+      "cantones": {
+        "BOLIVAR": {
+          "total": 156,
+          "alcaldia": 6,
+          "concejales": 25,
+          "juntas_parroquiales": 125
+        },
+        "ESPEJO": {
+          "total": 134,
+          "alcaldia": 6,
+          "concejales": 33,
+          "juntas_parroquiales": 95
+        },
+        "MIRA": {
+          "total": 152,
+          "alcaldia": 8,
+          "concejales": 39,
+          "juntas_parroquiales": 105
+        },
+        "MONTUFAR": {
+          "total": 163,
+          "alcaldia": 6,
+          "concejales": 32,
+          "juntas_parroquiales": 125
+        },
+        "SAN PEDRO DE HUACA": {
+          "total": 62,
+          "alcaldia": 6,
+          "concejales": 31,
+          "juntas_parroquiales": 25
+        },
+        "TULCAN": {
+          "total": 320,
+          "alcaldia": 6,
+          "concejales": 49,
+          "juntas_parroquiales": 265
+        }
+      }
+    },
+    "CHIMBORAZO": {
+      "total": 1606,
+      "prefectura": 9,
+      "alcaldia": 86,
+      "concejales": 411,
+      "juntas_parroquiales": 1100,
+      "cantones": {
+        "ALAUSI": {
+          "total": 255,
+          "alcaldia": 6,
+          "concejales": 34,
+          "juntas_parroquiales": 215
+        },
+        "CHAMBO": {
+          "total": 43,
+          "alcaldia": 8,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "CHUNCHI": {
+          "total": 93,
+          "alcaldia": 8,
+          "concejales": 20,
+          "juntas_parroquiales": 65
+        },
+        "COLTA": {
+          "total": 122,
+          "alcaldia": 7,
+          "concejales": 25,
+          "juntas_parroquiales": 90
+        },
+        "CUMANDA": {
+          "total": 49,
+          "alcaldia": 9,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "GUAMOTE": {
+          "total": 95,
+          "alcaldia": 8,
+          "concejales": 37,
+          "juntas_parroquiales": 50
+        },
+        "GUANO": {
+          "total": 333,
+          "alcaldia": 11,
+          "concejales": 42,
+          "juntas_parroquiales": 280
+        },
+        "PALLATANGA": {
+          "total": 60,
+          "alcaldia": 10,
+          "concejales": 50,
+          "juntas_parroquiales": 0
+        },
+        "PENIPE": {
+          "total": 158,
+          "alcaldia": 8,
+          "concejales": 25,
+          "juntas_parroquiales": 125
+        },
+        "RIOBAMBA": {
+          "total": 389,
+          "alcaldia": 11,
+          "concejales": 103,
+          "juntas_parroquiales": 275
+        }
+      }
+    },
+    "COTOPAXI": {
+      "total": 1155,
+      "prefectura": 8,
+      "alcaldia": 43,
+      "concejales": 254,
+      "juntas_parroquiales": 850,
+      "cantones": {
+        "LA MANA": {
+          "total": 77,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 40
+        },
+        "LATACUNGA": {
+          "total": 380,
+          "alcaldia": 7,
+          "concejales": 68,
+          "juntas_parroquiales": 305
+        },
+        "PANGUA": {
+          "total": 117,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 80
+        },
+        "PUJILI": {
+          "total": 181,
+          "alcaldia": 4,
+          "concejales": 32,
+          "juntas_parroquiales": 145
+        },
+        "SALCEDO": {
+          "total": 211,
+          "alcaldia": 8,
+          "concejales": 53,
+          "juntas_parroquiales": 150
+        },
+        "SAQUISILI": {
+          "total": 86,
+          "alcaldia": 5,
+          "concejales": 21,
+          "juntas_parroquiales": 60
+        },
+        "SIGCHOS": {
+          "total": 95,
+          "alcaldia": 5,
+          "concejales": 20,
+          "juntas_parroquiales": 70
+        }
+      }
+    },
+    "EL ORO": {
+      "total": 1911,
+      "prefectura": 10,
+      "alcaldia": 108,
+      "concejales": 578,
+      "juntas_parroquiales": 1215,
+      "cantones": {
+        "ARENILLAS": {
+          "total": 110,
+          "alcaldia": 7,
+          "concejales": 28,
+          "juntas_parroquiales": 75
+        },
+        "ATAHUALPA": {
+          "total": 98,
+          "alcaldia": 5,
+          "concejales": 23,
+          "juntas_parroquiales": 70
+        },
+        "BALSAS": {
+          "total": 28,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 10
+        },
+        "CHILLA": {
+          "total": 24,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 0
+        },
+        "EL GUABO": {
+          "total": 170,
+          "alcaldia": 10,
+          "concejales": 50,
+          "juntas_parroquiales": 110
+        },
+        "HUAQUILLAS": {
+          "total": 61,
+          "alcaldia": 11,
+          "concejales": 50,
+          "juntas_parroquiales": 0
+        },
+        "LAS LAJAS": {
+          "total": 71,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 45
+        },
+        "MACHALA": {
+          "total": 175,
+          "alcaldia": 14,
+          "concejales": 131,
+          "juntas_parroquiales": 30
+        },
+        "MARCABELI": {
+          "total": 46,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 20
+        },
+        "PASAJE": {
+          "total": 329,
+          "alcaldia": 11,
+          "concejales": 68,
+          "juntas_parroquiales": 250
+        },
+        "PINAS": {
+          "total": 230,
+          "alcaldia": 9,
+          "concejales": 36,
+          "juntas_parroquiales": 185
+        },
+        "PORTOVELO": {
+          "total": 90,
+          "alcaldia": 6,
+          "concejales": 24,
+          "juntas_parroquiales": 60
+        },
+        "SANTA ROSA": {
+          "total": 233,
+          "alcaldia": 10,
+          "concejales": 63,
+          "juntas_parroquiales": 160
+        },
+        "ZARUMA": {
+          "total": 236,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 200
+        }
+      }
+    },
+    "ESMERALDAS": {
+      "total": 1789,
+      "prefectura": 7,
+      "alcaldia": 48,
+      "concejales": 244,
+      "juntas_parroquiales": 1490,
+      "cantones": {
+        "ATACAMES": {
+          "total": 130,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 100
+        },
+        "ELOY ALFARO": {
+          "total": 366,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 330
+        },
+        "ESMERALDAS": {
+          "total": 360,
+          "alcaldia": 11,
+          "concejales": 64,
+          "juntas_parroquiales": 285
+        },
+        "MUISNE": {
+          "total": 266,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 230
+        },
+        "QUININDE": {
+          "total": 186,
+          "alcaldia": 6,
+          "concejales": 50,
+          "juntas_parroquiales": 130
+        },
+        "RIO VERDE": {
+          "total": 163,
+          "alcaldia": 8,
+          "concejales": 25,
+          "juntas_parroquiales": 130
+        },
+        "SAN LORENZO": {
+          "total": 311,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 285
+        }
+      }
+    },
+    "GALAPAGOS": {
+      "total": 189,
+      "prefectura": 0,
+      "alcaldia": 15,
+      "concejales": 79,
+      "juntas_parroquiales": 95,
+      "cantones": {
+        "ISABELA": {
+          "total": 55,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 25
+        },
+        "SAN CRISTOBAL": {
+          "total": 44,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 20
+        },
+        "SANTA CRUZ": {
+          "total": 90,
+          "alcaldia": 6,
+          "concejales": 34,
+          "juntas_parroquiales": 50
+        }
+      }
+    },
+    "GUAYAS": {
+      "total": 2303,
+      "prefectura": 13,
+      "alcaldia": 214,
+      "concejales": 1286,
+      "juntas_parroquiales": 790,
+      "cantones": {
+        "A.BAQUERIZO MORENO": {
+          "total": 49,
+          "alcaldia": 9,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "BALAO": {
+          "total": 55,
+          "alcaldia": 10,
+          "concejales": 45,
+          "juntas_parroquiales": 0
+        },
+        "BALZAR": {
+          "total": 72,
+          "alcaldia": 9,
+          "concejales": 63,
+          "juntas_parroquiales": 0
+        },
+        "COLIMES": {
+          "total": 89,
+          "alcaldia": 10,
+          "concejales": 49,
+          "juntas_parroquiales": 30
+        },
+        "CRNL MARCELINO MARIDUENAS": {
+          "total": 26,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 0
+        },
+        "DAULE": {
+          "total": 183,
+          "alcaldia": 10,
+          "concejales": 68,
+          "juntas_parroquiales": 105
+        },
+        "DURAN": {
+          "total": 122,
+          "alcaldia": 12,
+          "concejales": 110,
+          "juntas_parroquiales": 0
+        },
+        "EL EMPALME": {
+          "total": 110,
+          "alcaldia": 10,
+          "concejales": 50,
+          "juntas_parroquiales": 50
+        },
+        "EL TRIUNFO": {
+          "total": 44,
+          "alcaldia": 9,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "GRAL. A. ELIZALDE": {
+          "total": 46,
+          "alcaldia": 6,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "GUAYAQUIL": {
+          "total": 305,
+          "alcaldia": 11,
+          "concejales": 174,
+          "juntas_parroquiales": 120
+        },
+        "ISIDRO AYORA": {
+          "total": 48,
+          "alcaldia": 8,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "LOMAS DE SARGENTILLO": {
+          "total": 43,
+          "alcaldia": 8,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "MILAGRO": {
+          "total": 167,
+          "alcaldia": 10,
+          "concejales": 72,
+          "juntas_parroquiales": 85
+        },
+        "NARANJAL": {
+          "total": 141,
+          "alcaldia": 6,
+          "concejales": 35,
+          "juntas_parroquiales": 100
+        },
+        "NARANJITO": {
+          "total": 65,
+          "alcaldia": 10,
+          "concejales": 55,
+          "juntas_parroquiales": 0
+        },
+        "NOBOL / PIEDRAHITA": {
+          "total": 30,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 0
+        },
+        "PALESTINA": {
+          "total": 60,
+          "alcaldia": 10,
+          "concejales": 50,
+          "juntas_parroquiales": 0
+        },
+        "PEDRO CARBO": {
+          "total": 91,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 55
+        },
+        "PLAYAS": {
+          "total": 67,
+          "alcaldia": 12,
+          "concejales": 55,
+          "juntas_parroquiales": 0
+        },
+        "SALITRE": {
+          "total": 160,
+          "alcaldia": 10,
+          "concejales": 45,
+          "juntas_parroquiales": 105
+        },
+        "SAMBORONDON": {
+          "total": 52,
+          "alcaldia": 4,
+          "concejales": 28,
+          "juntas_parroquiales": 20
+        },
+        "SANTA LUCIA": {
+          "total": 47,
+          "alcaldia": 7,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "SIMON BOLIVAR": {
+          "total": 79,
+          "alcaldia": 9,
+          "concejales": 40,
+          "juntas_parroquiales": 30
+        },
+        "YAGUACHI": {
+          "total": 139,
+          "alcaldia": 7,
+          "concejales": 42,
+          "juntas_parroquiales": 90
+        }
+      }
+    },
+    "IMBABURA": {
+      "total": 1351,
+      "prefectura": 10,
+      "alcaldia": 44,
+      "concejales": 322,
+      "juntas_parroquiales": 975,
+      "cantones": {
+        "ANTONIO ANTE": {
+          "total": 147,
+          "alcaldia": 7,
+          "concejales": 25,
+          "juntas_parroquiales": 115
+        },
+        "COTACACHI": {
+          "total": 225,
+          "alcaldia": 5,
+          "concejales": 30,
+          "juntas_parroquiales": 190
+        },
+        "IBARRA": {
+          "total": 321,
+          "alcaldia": 10,
+          "concejales": 111,
+          "juntas_parroquiales": 200
+        },
+        "OTAVALO": {
+          "total": 384,
+          "alcaldia": 10,
+          "concejales": 99,
+          "juntas_parroquiales": 275
+        },
+        "PIMAMPIRO": {
+          "total": 91,
+          "alcaldia": 4,
+          "concejales": 22,
+          "juntas_parroquiales": 65
+        },
+        "URCUQUI": {
+          "total": 173,
+          "alcaldia": 8,
+          "concejales": 35,
+          "juntas_parroquiales": 130
+        }
+      }
+    },
+    "LOJA": {
+      "total": 2444,
+      "prefectura": 12,
+      "alcaldia": 114,
+      "concejales": 523,
+      "juntas_parroquiales": 1795,
+      "cantones": {
+        "CALVAS": {
+          "total": 81,
+          "alcaldia": 6,
+          "concejales": 20,
+          "juntas_parroquiales": 55
+        },
+        "CATAMAYO": {
+          "total": 132,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 95
+        },
+        "CELICA": {
+          "total": 132,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 95
+        },
+        "CHAGUARPAMBA": {
+          "total": 126,
+          "alcaldia": 8,
+          "concejales": 28,
+          "juntas_parroquiales": 90
+        },
+        "ESPINDOLA": {
+          "total": 186,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 150
+        },
+        "GONZANAMA": {
+          "total": 126,
+          "alcaldia": 9,
+          "concejales": 27,
+          "juntas_parroquiales": 90
+        },
+        "LOJA": {
+          "total": 513,
+          "alcaldia": 15,
+          "concejales": 128,
+          "juntas_parroquiales": 370
+        },
+        "MACARA": {
+          "total": 133,
+          "alcaldia": 8,
+          "concejales": 40,
+          "juntas_parroquiales": 85
+        },
+        "OLMEDO": {
+          "total": 39,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 15
+        },
+        "PALTAS": {
+          "total": 257,
+          "alcaldia": 10,
+          "concejales": 42,
+          "juntas_parroquiales": 205
+        },
+        "PINDAL": {
+          "total": 72,
+          "alcaldia": 5,
+          "concejales": 17,
+          "juntas_parroquiales": 50
+        },
+        "PUYANGO": {
+          "total": 128,
+          "alcaldia": 6,
+          "concejales": 22,
+          "juntas_parroquiales": 100
+        },
+        "QUILANGA": {
+          "total": 47,
+          "alcaldia": 5,
+          "concejales": 17,
+          "juntas_parroquiales": 25
+        },
+        "SARAGURO": {
+          "total": 212,
+          "alcaldia": 5,
+          "concejales": 22,
+          "juntas_parroquiales": 185
+        },
+        "SOZORANGA": {
+          "total": 75,
+          "alcaldia": 7,
+          "concejales": 23,
+          "juntas_parroquiales": 45
+        },
+        "ZAPOTILLO": {
+          "total": 173,
+          "alcaldia": 6,
+          "concejales": 27,
+          "juntas_parroquiales": 140
+        }
+      }
+    },
+    "LOS RIOS": {
+      "total": 943,
+      "prefectura": 5,
+      "alcaldia": 80,
+      "concejales": 448,
+      "juntas_parroquiales": 410,
+      "cantones": {
+        "BABA": {
+          "total": 66,
+          "alcaldia": 4,
+          "concejales": 22,
+          "juntas_parroquiales": 40
+        },
+        "BABAHOYO": {
+          "total": 185,
+          "alcaldia": 7,
+          "concejales": 63,
+          "juntas_parroquiales": 115
+        },
+        "BUENA FE": {
+          "total": 73,
+          "alcaldia": 7,
+          "concejales": 41,
+          "juntas_parroquiales": 25
+        },
+        "MOCACHE": {
+          "total": 37,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 0
+        },
+        "MONTALVO": {
+          "total": 82,
+          "alcaldia": 7,
+          "concejales": 40,
+          "juntas_parroquiales": 35
+        },
+        "PALENQUE": {
+          "total": 44,
+          "alcaldia": 9,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "PUEBLO VIEJO": {
+          "total": 70,
+          "alcaldia": 6,
+          "concejales": 24,
+          "juntas_parroquiales": 40
+        },
+        "QUEVEDO": {
+          "total": 129,
+          "alcaldia": 7,
+          "concejales": 67,
+          "juntas_parroquiales": 55
+        },
+        "QUINSALOMA": {
+          "total": 37,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 0
+        },
+        "URDANETA": {
+          "total": 53,
+          "alcaldia": 6,
+          "concejales": 22,
+          "juntas_parroquiales": 25
+        },
+        "VALENCIA": {
+          "total": 30,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 0
+        },
+        "VENTANAS": {
+          "total": 93,
+          "alcaldia": 5,
+          "concejales": 28,
+          "juntas_parroquiales": 60
+        },
+        "VINCES": {
+          "total": 39,
+          "alcaldia": 3,
+          "concejales": 21,
+          "juntas_parroquiales": 15
+        }
+      }
+    },
+    "MANABI": {
+      "total": 3094,
+      "prefectura": 10,
+      "alcaldia": 188,
+      "concejales": 1156,
+      "juntas_parroquiales": 1740,
+      "cantones": {
+        "24 DE MAYO": {
+          "total": 180,
+          "alcaldia": 10,
+          "concejales": 50,
+          "juntas_parroquiales": 120
+        },
+        "BOLIVAR": {
+          "total": 71,
+          "alcaldia": 6,
+          "concejales": 25,
+          "juntas_parroquiales": 40
+        },
+        "CHONE": {
+          "total": 250,
+          "alcaldia": 7,
+          "concejales": 68,
+          "juntas_parroquiales": 175
+        },
+        "EL CARMEN": {
+          "total": 187,
+          "alcaldia": 7,
+          "concejales": 60,
+          "juntas_parroquiales": 120
+        },
+        "FLAVIO ALFARO": {
+          "total": 65,
+          "alcaldia": 6,
+          "concejales": 24,
+          "juntas_parroquiales": 35
+        },
+        "JAMA": {
+          "total": 58,
+          "alcaldia": 8,
+          "concejales": 50,
+          "juntas_parroquiales": 0
+        },
+        "JARAMIJO": {
+          "total": 53,
+          "alcaldia": 8,
+          "concejales": 45,
+          "juntas_parroquiales": 0
+        },
+        "JIPIJAPA": {
+          "total": 354,
+          "alcaldia": 12,
+          "concejales": 97,
+          "juntas_parroquiales": 245
+        },
+        "JUNIN": {
+          "total": 30,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 0
+        },
+        "MANTA": {
+          "total": 103,
+          "alcaldia": 9,
+          "concejales": 64,
+          "juntas_parroquiales": 30
+        },
+        "MONTECRISTI": {
+          "total": 142,
+          "alcaldia": 14,
+          "concejales": 83,
+          "juntas_parroquiales": 45
+        },
+        "OLMEDO": {
+          "total": 45,
+          "alcaldia": 5,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "PAJAN": {
+          "total": 193,
+          "alcaldia": 11,
+          "concejales": 47,
+          "juntas_parroquiales": 135
+        },
+        "PEDERNALES": {
+          "total": 127,
+          "alcaldia": 8,
+          "concejales": 49,
+          "juntas_parroquiales": 70
+        },
+        "PICHINCHA": {
+          "total": 80,
+          "alcaldia": 8,
+          "concejales": 27,
+          "juntas_parroquiales": 45
+        },
+        "PORTOVIEJO": {
+          "total": 497,
+          "alcaldia": 14,
+          "concejales": 163,
+          "juntas_parroquiales": 320
+        },
+        "PUERTO LOPEZ": {
+          "total": 95,
+          "alcaldia": 7,
+          "concejales": 33,
+          "juntas_parroquiales": 55
+        },
+        "ROCAFUERTE": {
+          "total": 47,
+          "alcaldia": 7,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "SAN VICENTE": {
+          "total": 92,
+          "alcaldia": 9,
+          "concejales": 43,
+          "juntas_parroquiales": 40
+        },
+        "SANTA ANA": {
+          "total": 219,
+          "alcaldia": 11,
+          "concejales": 48,
+          "juntas_parroquiales": 160
+        },
+        "SUCRE": {
+          "total": 94,
+          "alcaldia": 8,
+          "concejales": 41,
+          "juntas_parroquiales": 45
+        },
+        "TOSAGUA": {
+          "total": 102,
+          "alcaldia": 8,
+          "concejales": 34,
+          "juntas_parroquiales": 60
+        }
+      }
+    },
+    "MORONA SANTIAGO": {
+      "total": 940,
+      "prefectura": 5,
+      "alcaldia": 48,
+      "concejales": 187,
+      "juntas_parroquiales": 700,
+      "cantones": {
+        "GUALAQUIZA": {
+          "total": 136,
+          "alcaldia": 3,
+          "concejales": 13,
+          "juntas_parroquiales": 120
+        },
+        "HUAMBOYA": {
+          "total": 45,
+          "alcaldia": 5,
+          "concejales": 20,
+          "juntas_parroquiales": 20
+        },
+        "LIMON INDANZA": {
+          "total": 129,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 105
+        },
+        "LOGRONO": {
+          "total": 47,
+          "alcaldia": 5,
+          "concejales": 17,
+          "juntas_parroquiales": 25
+        },
+        "MORONA": {
+          "total": 175,
+          "alcaldia": 5,
+          "concejales": 20,
+          "juntas_parroquiales": 150
+        },
+        "PABLO SEXTO": {
+          "total": 12,
+          "alcaldia": 2,
+          "concejales": 10,
+          "juntas_parroquiales": 0
+        },
+        "PALORA": {
+          "total": 68,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 50
+        },
+        "SAN JUAN BOSCO": {
+          "total": 63,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 45
+        },
+        "SANTIAGO": {
+          "total": 69,
+          "alcaldia": 4,
+          "concejales": 5,
+          "juntas_parroquiales": 60
+        },
+        "SUCUA": {
+          "total": 98,
+          "alcaldia": 6,
+          "concejales": 22,
+          "juntas_parroquiales": 70
+        },
+        "TAISHA": {
+          "total": 58,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 40
+        },
+        "TIWINTZA": {
+          "total": 35,
+          "alcaldia": 5,
+          "concejales": 15,
+          "juntas_parroquiales": 15
+        }
+      }
+    },
+    "NAPO": {
+      "total": 686,
+      "prefectura": 6,
+      "alcaldia": 31,
+      "concejales": 154,
+      "juntas_parroquiales": 495,
+      "cantones": {
+        "ARCHIDONA": {
+          "total": 116,
+          "alcaldia": 6,
+          "concejales": 25,
+          "juntas_parroquiales": 85
+        },
+        "C. J. AROSEMENA TOLA": {
+          "total": 33,
+          "alcaldia": 8,
+          "concejales": 25,
+          "juntas_parroquiales": 0
+        },
+        "EL CHACO": {
+          "total": 115,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 85
+        },
+        "QUIJOS": {
+          "total": 88,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 70
+        },
+        "TENA": {
+          "total": 328,
+          "alcaldia": 9,
+          "concejales": 64,
+          "juntas_parroquiales": 255
+        }
+      }
+    },
+    "ORELLANA": {
+      "total": 852,
+      "prefectura": 6,
+      "alcaldia": 24,
+      "concejales": 132,
+      "juntas_parroquiales": 690,
+      "cantones": {
+        "AGUARICO": {
+          "total": 83,
+          "alcaldia": 5,
+          "concejales": 18,
+          "juntas_parroquiales": 60
+        },
+        "FCO.DE ORELLANA": {
+          "total": 311,
+          "alcaldia": 7,
+          "concejales": 49,
+          "juntas_parroquiales": 255
+        },
+        "JOYA DE LOS SACHAS": {
+          "total": 255,
+          "alcaldia": 5,
+          "concejales": 30,
+          "juntas_parroquiales": 220
+        },
+        "LORETO": {
+          "total": 197,
+          "alcaldia": 7,
+          "concejales": 35,
+          "juntas_parroquiales": 155
+        }
+      }
+    },
+    "PASTAZA": {
+      "total": 562,
+      "prefectura": 7,
+      "alcaldia": 24,
+      "concejales": 131,
+      "juntas_parroquiales": 400,
+      "cantones": {
+        "ARAJUNO": {
+          "total": 53,
+          "alcaldia": 5,
+          "concejales": 28,
+          "juntas_parroquiales": 20
+        },
+        "MERA": {
+          "total": 115,
+          "alcaldia": 7,
+          "concejales": 38,
+          "juntas_parroquiales": 70
+        },
+        "PASTAZA": {
+          "total": 333,
+          "alcaldia": 6,
+          "concejales": 42,
+          "juntas_parroquiales": 285
+        },
+        "SANTA CLARA": {
+          "total": 54,
+          "alcaldia": 6,
+          "concejales": 23,
+          "juntas_parroquiales": 25
+        }
+      }
+    },
+    "PICHINCHA": {
+      "total": 2329,
+      "prefectura": 12,
+      "alcaldia": 71,
+      "concejales": 574,
+      "juntas_parroquiales": 1672,
+      "cantones": {
+        "CAYAMBE": {
+          "total": 184,
+          "alcaldia": 8,
+          "concejales": 46,
+          "juntas_parroquiales": 130
+        },
+        "MEJIA": {
+          "total": 347,
+          "alcaldia": 10,
+          "concejales": 72,
+          "juntas_parroquiales": 265
+        },
+        "PEDRO MONCAYO": {
+          "total": 126,
+          "alcaldia": 6,
+          "concejales": 25,
+          "juntas_parroquiales": 95
+        },
+        "PEDRO VICENTE MALDONADO": {
+          "total": 43,
+          "alcaldia": 8,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "PUERTO QUITO": {
+          "total": 42,
+          "alcaldia": 7,
+          "concejales": 35,
+          "juntas_parroquiales": 0
+        },
+        "QUITO": {
+          "total": 1361,
+          "alcaldia": 12,
+          "concejales": 247,
+          "juntas_parroquiales": 1102
+        },
+        "RUMINAHUI": {
+          "total": 141,
+          "alcaldia": 12,
+          "concejales": 79,
+          "juntas_parroquiales": 50
+        },
+        "SAN MIGUEL DE LOS BANCOS": {
+          "total": 73,
+          "alcaldia": 8,
+          "concejales": 35,
+          "juntas_parroquiales": 30
+        }
+      }
+    },
+    "SANTA ELENA": {
+      "total": 662,
+      "prefectura": 6,
+      "alcaldia": 29,
+      "concejales": 307,
+      "juntas_parroquiales": 320,
+      "cantones": {
+        "LA LIBERTAD": {
+          "total": 146,
+          "alcaldia": 13,
+          "concejales": 133,
+          "juntas_parroquiales": 0
+        },
+        "SALINAS": {
+          "total": 176,
+          "alcaldia": 8,
+          "concejales": 78,
+          "juntas_parroquiales": 90
+        },
+        "SANTA ELENA": {
+          "total": 334,
+          "alcaldia": 8,
+          "concejales": 96,
+          "juntas_parroquiales": 230
+        }
+      }
+    },
+    "STO DGO TSACHILAS": {
+      "total": 440,
+      "prefectura": 10,
+      "alcaldia": 15,
+      "concejales": 165,
+      "juntas_parroquiales": 250,
+      "cantones": {
+        "LA CONCORDIA": {
+          "total": 90,
+          "alcaldia": 5,
+          "concejales": 30,
+          "juntas_parroquiales": 55
+        },
+        "SANTO DOMINGO": {
+          "total": 340,
+          "alcaldia": 10,
+          "concejales": 135,
+          "juntas_parroquiales": 195
+        }
+      }
+    },
+    "SUCUMBIOS": {
+      "total": 890,
+      "prefectura": 7,
+      "alcaldia": 36,
+      "concejales": 192,
+      "juntas_parroquiales": 655,
+      "cantones": {
+        "CASCALES": {
+          "total": 96,
+          "alcaldia": 6,
+          "concejales": 25,
+          "juntas_parroquiales": 65
+        },
+        "CUYABENO": {
+          "total": 70,
+          "alcaldia": 5,
+          "concejales": 25,
+          "juntas_parroquiales": 40
+        },
+        "GONZALO PIZARRO": {
+          "total": 126,
+          "alcaldia": 6,
+          "concejales": 30,
+          "juntas_parroquiales": 90
+        },
+        "LAGO AGRIO": {
+          "total": 299,
+          "alcaldia": 8,
+          "concejales": 56,
+          "juntas_parroquiales": 235
+        },
+        "PUTUMAYO": {
+          "total": 109,
+          "alcaldia": 4,
+          "concejales": 25,
+          "juntas_parroquiales": 80
+        },
+        "SHUSHUFINDI": {
+          "total": 114,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 90
+        },
+        "SUCUMBIOS": {
+          "total": 69,
+          "alcaldia": 3,
+          "concejales": 11,
+          "juntas_parroquiales": 55
+        }
+      }
+    },
+    "TUNGURAHUA": {
+      "total": 1982,
+      "prefectura": 11,
+      "alcaldia": 79,
+      "concejales": 457,
+      "juntas_parroquiales": 1435,
+      "cantones": {
+        "AMBATO": {
+          "total": 769,
+          "alcaldia": 9,
+          "concejales": 130,
+          "juntas_parroquiales": 630
+        },
+        "BANOS": {
+          "total": 151,
+          "alcaldia": 10,
+          "concejales": 41,
+          "juntas_parroquiales": 100
+        },
+        "CEVALLOS": {
+          "total": 48,
+          "alcaldia": 8,
+          "concejales": 40,
+          "juntas_parroquiales": 0
+        },
+        "MOCHA": {
+          "total": 56,
+          "alcaldia": 7,
+          "concejales": 29,
+          "juntas_parroquiales": 20
+        },
+        "PATATE": {
+          "total": 129,
+          "alcaldia": 9,
+          "concejales": 30,
+          "juntas_parroquiales": 90
+        },
+        "PELILEO": {
+          "total": 309,
+          "alcaldia": 9,
+          "concejales": 60,
+          "juntas_parroquiales": 240
+        },
+        "PILLARO": {
+          "total": 339,
+          "alcaldia": 12,
+          "concejales": 57,
+          "juntas_parroquiales": 270
+        },
+        "QUERO": {
+          "total": 108,
+          "alcaldia": 8,
+          "concejales": 40,
+          "juntas_parroquiales": 60
+        },
+        "TISALEO": {
+          "total": 62,
+          "alcaldia": 7,
+          "concejales": 30,
+          "juntas_parroquiales": 25
+        }
+      }
+    },
+    "ZAMORA CHINCHIPE": {
+      "total": 852,
+      "prefectura": 4,
+      "alcaldia": 40,
+      "concejales": 193,
+      "juntas_parroquiales": 615,
+      "cantones": {
+        "CENTINELA DEL CONDOR": {
+          "total": 64,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 40
+        },
+        "CHINCHIPE": {
+          "total": 108,
+          "alcaldia": 3,
+          "concejales": 15,
+          "juntas_parroquiales": 90
+        },
+        "EL PANGUI": {
+          "total": 84,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 60
+        },
+        "NANGARITZA": {
+          "total": 85,
+          "alcaldia": 5,
+          "concejales": 20,
+          "juntas_parroquiales": 60
+        },
+        "PALANDA": {
+          "total": 99,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 75
+        },
+        "PAQUISHA": {
+          "total": 64,
+          "alcaldia": 4,
+          "concejales": 20,
+          "juntas_parroquiales": 40
+        },
+        "YACUAMBI": {
+          "total": 44,
+          "alcaldia": 4,
+          "concejales": 15,
+          "juntas_parroquiales": 25
+        },
+        "YANZATZA": {
+          "total": 107,
+          "alcaldia": 7,
+          "concejales": 35,
+          "juntas_parroquiales": 65
+        },
+        "ZAMORA": {
+          "total": 193,
+          "alcaldia": 5,
+          "concejales": 28,
+          "juntas_parroquiales": 160
+        }
+      }
+    }
+  }
+}

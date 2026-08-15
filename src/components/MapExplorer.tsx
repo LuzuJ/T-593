@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { ZoomIn, Loader, MapPin } from 'lucide-react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
+import candidatos2023StatsRaw from '../data/candidatos_2023_stats.json';
+import organizaciones2023Raw from '../data/organizaciones_politicas_2023.json';
 
 // Colores por región natural del Ecuador
 const REGION_STYLES: Record<string, { fill: string; label: string }> = {
@@ -26,6 +28,70 @@ function getProvRegion(name: string): 'costa' | 'sierra' | 'oriente' | 'insular'
   return 'insular';
 }
 
+export interface CandidatosStatsData {
+  total: number;
+  prefectura?: number;
+  alcaldia?: number;
+  concejales?: number;
+  juntas_parroquiales?: number;
+}
+
+export interface PartidoPoliticoInfo {
+  lista: string;
+  nombre: string;
+  tipo?: string;
+  siglas?: string;
+  canton?: string;
+}
+
+function lookupProvStats(provName: string): any {
+  const norm = normStr(provName).toUpperCase();
+  const mapping: Record<string, string> = {
+    'SANTO DOMINGO': 'STO DGO TSACHILAS',
+    'SANTO DOMINGO DE LOS TSACHILAS': 'STO DGO TSACHILAS',
+    'CANAR': 'CANAR',
+    'GALAPAGOS': 'GALAPAGOS',
+  };
+  const key = mapping[norm] || norm;
+  return (candidatos2023StatsRaw.provincias as any)[key];
+}
+
+function lookupProvPartidos(provName: string): PartidoPoliticoInfo[] {
+  const norm = normStr(provName).toUpperCase();
+  const mapping: Record<string, string> = {
+    'SANTO DOMINGO': 'STO DGO TSACHILAS',
+    'SANTO DOMINGO DE LOS TSACHILAS': 'STO DGO TSACHILAS',
+    'CANAR': 'CANAR',
+    'GALAPAGOS': 'GALAPAGOS',
+  };
+  const key = mapping[norm] || norm;
+  const provData = (organizaciones2023Raw.provincias as any)[key];
+  if (!provData || !provData.organizaciones) return [];
+  return provData.organizaciones;
+}
+
+function lookupCantonStats(provName: string, cantonName: string): any {
+  const pStats = lookupProvStats(provName);
+  if (!pStats || !pStats.cantones) return null;
+  const normC = normStr(cantonName).toUpperCase();
+  return pStats.cantones[normC];
+}
+
+function lookupCantonPartidos(provName: string, cantonName: string): PartidoPoliticoInfo[] {
+  const normP = normStr(provName).toUpperCase();
+  const mapping: Record<string, string> = {
+    'SANTO DOMINGO': 'STO DGO TSACHILAS',
+    'SANTO DOMINGO DE LOS TSACHILAS': 'STO DGO TSACHILAS',
+    'CANAR': 'CANAR',
+    'GALAPAGOS': 'GALAPAGOS',
+  };
+  const key = mapping[normP] || normP;
+  const provData = (organizaciones2023Raw.provincias as any)[key];
+  if (!provData || !provData.cantones) return [];
+  const normC = normStr(cantonName).toUpperCase();
+  return provData.cantones[normC] || [];
+}
+
 interface BoundingBox {
   minX: number;
   maxX: number;
@@ -39,9 +105,11 @@ interface MapExplorerProps {
   canton: string;
   loadingMap: boolean;
   activeProvGeo: any;
-  activeCantonGeo: any;
-  svgViewBox: string;
-  svgCantonViewBox: string;
+  activeCantonGeo?: any;
+  svgEcuadorViewBox?: string;
+  svgProvViewBox?: string;
+  svgCantonViewBox?: string;
+  svgViewBox?: string;
   COLOR_PALETTE: string[];
   onGoToProvincia: (prov: string) => void;
   onGoToCanton: (cant: string) => void;
@@ -50,7 +118,10 @@ interface MapExplorerProps {
   onMouseMove: (
     e: React.MouseEvent,
     title: string,
-    metrics: { label: string; value: string | number }[]
+    metrics: { label: string; value: string | number }[],
+    candidatosStats?: CandidatosStatsData,
+    subtitle?: string,
+    partidos?: PartidoPoliticoInfo[]
   ) => void;
   onMouseLeave: () => void;
 }
@@ -305,15 +376,30 @@ export default function MapExplorer({
             {PROVINCIAS_DATA.map((prov) => {
               const region = getProvRegion(prov.name);
               const fillColor = REGION_STYLES[region].fill;
+              const pStats = lookupProvStats(prov.name);
+              const pPartidos = lookupProvPartidos(prov.name);
               return (
                 <g
                   key={prov.id}
                   className="cursor-pointer group"
                   onClick={() => onGoToProvincia(prov.name)}
-                  onMouseMove={(e) => onMouseMove(e, prov.displayName, [
-                    ...prov.metrics,
-                    { label: 'Región', value: REGION_STYLES[region].label },
-                  ])}
+                  onMouseMove={(e) => onMouseMove(
+                    e,
+                    prov.displayName,
+                    [
+                      ...prov.metrics,
+                      { label: 'Región', value: REGION_STYLES[region].label },
+                    ],
+                    pStats ? {
+                      total: pStats.total,
+                      prefectura: pStats.prefectura,
+                      alcaldia: pStats.alcaldia,
+                      concejales: pStats.concejales,
+                      juntas_parroquiales: pStats.juntas_parroquiales,
+                    } : undefined,
+                    'CNE Elecciones 2023',
+                    pPartidos
+                  )}
                   onMouseLeave={onMouseLeave}
                 >
                   <title>{prov.displayName} — Clic para explorar</title>
@@ -383,16 +469,29 @@ export default function MapExplorer({
                 {/* Polígonos de parroquias coloreadas por cantón */}
                 {activeProvGeo.parishes.map((parish: any, idx: number) => {
                   const color = getCantonColor(parish.canton);
+                  const cStats = lookupCantonStats(provincia, parish.canton);
+                  const cPartidos = lookupCantonPartidos(provincia, parish.canton);
                   return (
                     <g
                       key={parish.id || idx}
                       className="cursor-pointer group"
                       onClick={() => onGoToCanton(parish.canton)}
-                      onMouseMove={(e) => onMouseMove(e, `Cantón ${parish.canton}`, [
-                        { label: 'Cantón', value: parish.canton },
-                        { label: 'Provincia', value: provincia },
-                        { label: 'Parroquia', value: parish.displayName },
-                      ])}
+                      onMouseMove={(e) => onMouseMove(
+                        e,
+                        `Cantón ${parish.canton}`,
+                        [
+                          { label: 'Provincia', value: provincia },
+                          { label: 'Parroquia', value: parish.displayName },
+                        ],
+                        cStats ? {
+                          total: cStats.total,
+                          alcaldia: cStats.alcaldia,
+                          concejales: cStats.concejales,
+                          juntas_parroquiales: cStats.juntas_parroquiales,
+                        } : undefined,
+                        'Candidatos Cantón 2023',
+                        cPartidos
+                      )}
                       onMouseLeave={onMouseLeave}
                     >
                       <title>Cantón {parish.canton} — Parroquia {parish.displayName} (Clic para explorar)</title>

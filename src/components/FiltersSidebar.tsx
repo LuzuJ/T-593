@@ -53,8 +53,9 @@ export default function FiltersSidebar({
 
       {/* Dignidad */}
       <div>
-        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-          Dignidad de Elección
+        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <span>Dignidad de Elección</span>
+          <span className="text-[10px] text-slate-400 font-normal">Jerarquía Institucional</span>
         </label>
         <select
           value={dignidad}
@@ -62,9 +63,66 @@ export default function FiltersSidebar({
           className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all uppercase shadow-sm"
         >
           <option value="TODAS">TODAS LAS DIGNIDADES</option>
-          <option value="Alcalde">ALCALDESA / ALCALDE</option>
-          <option value="Prefecto">PREFECTA / PREFECTO</option>
+          <option value="Prefecto">🟢 1. PREFECTURA (PROVINCIAL)</option>
+          <option value="Alcalde">🟣 2. ALCALDÍA (CANTONAL)</option>
+          <option value="Concejal">🔵 3. CONCEJALÍA (URBANA / RURAL)</option>
+          <option value="Vocal Junta Parroquial">🟠 4. JUNTA PARROQUIAL (RURAL)</option>
         </select>
+
+        {/* Botones de Selección Rápida con Código de Color */}
+        <div className="grid grid-cols-2 gap-1.5 mt-2.5">
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Prefecto' ? 'TODAS' : 'Prefecto')}
+            className={`text-xs font-bold py-2 px-2.5 rounded-lg border transition-all text-left flex items-center gap-1.5 ${
+              dignidad === 'Prefecto'
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100'
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full shrink-0 ${dignidad === 'Prefecto' ? 'bg-white' : 'bg-emerald-600'}`}></span>
+            Prefectura
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Alcalde' ? 'TODAS' : 'Alcalde')}
+            className={`text-xs font-bold py-2 px-2.5 rounded-lg border transition-all text-left flex items-center gap-1.5 ${
+              dignidad === 'Alcalde'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                : 'bg-indigo-50 text-indigo-900 border-indigo-200 hover:bg-indigo-100'
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full shrink-0 ${dignidad === 'Alcalde' ? 'bg-white' : 'bg-indigo-600'}`}></span>
+            Alcaldía
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Concejal' ? 'TODAS' : 'Concejal')}
+            className={`text-xs font-bold py-2 px-2.5 rounded-lg border transition-all text-left flex items-center gap-1.5 ${
+              dignidad === 'Concejal'
+                ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                : 'bg-sky-50 text-sky-900 border-sky-200 hover:bg-sky-100'
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full shrink-0 ${dignidad === 'Concejal' ? 'bg-white' : 'bg-sky-600'}`}></span>
+            Concejalía
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Vocal Junta Parroquial' ? 'TODAS' : 'Vocal Junta Parroquial')}
+            className={`text-xs font-bold py-2 px-2.5 rounded-lg border transition-all text-left flex items-center gap-1.5 ${
+              dignidad === 'Vocal Junta Parroquial'
+                ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
+                : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100'
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full shrink-0 ${dignidad === 'Vocal Junta Parroquial' ? 'bg-white' : 'bg-amber-600'}`}></span>
+            Junta Parroq.
+          </button>
+        </div>
       </div>
 
       {/* Provincia */}

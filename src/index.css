@@ -4,6 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Paleta Institucional */
+  --color-brand-navy: #0b1329;
+  --color-brand-primary: #1d4ed8;
+  --color-brand-accent: #0284c7;
+
+  /* Semáforo Jurídico COOTAD */
+  --viabilidad-exclusiva: #059669;
+  --viabilidad-parcial: #d97706;
+  --viabilidad-fuera: #e11d48;
+
+  /* Dignidades Electorales */
+  --dignidad-alcalde: #6366f1;
+  --dignidad-prefecto: #10b981;
+  --dignidad-concejal: #0284c7;
+  --dignidad-vocal: #f59e0b;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: #94a3b8 transparent;
@@ -42,7 +60,7 @@ svg path {
   transition: fill 0.15s ease, stroke 0.15s ease;
 }
 
-/* Modal backdrop */
+/* Modal animations */
 .modal-backdrop {
   animation: fadeIn 0.2s ease-out;
 }

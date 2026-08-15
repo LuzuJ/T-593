@@ -1,7 +1,7 @@
 export interface Jurisdiccion {
   provincia: string;
   canton: string;
-  dignidad: "Alcalde" | "Prefecto";
+  dignidad: "Alcalde" | "Prefecto" | "Concejal" | "Vocal Junta Parroquial" | "No determinado";
 }
 
 export interface PromesaClasificada {
@@ -16,6 +16,7 @@ export interface AnalisisPlan {
   palabras_clave: string[]; // max 10
   clasificacion_competencia:
     | "Competencia exclusiva municipal"
+    | "Parcialmente viable"
     | "Competencia concurrente"
     | "Fuera de competencia";
   justificacion_competencia: string;
@@ -44,6 +45,8 @@ export interface Candidato {
   partido_politico: string;
   lista: string;
   foto_url?: string;
+  archivo_pdf?: string;
+  pdf_url?: string;
   fecha_inscripcion?: string;
   jurisdiccion: Jurisdiccion;
   analisis: AnalisisPlan;

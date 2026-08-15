@@ -8,13 +8,30 @@ import MapExplorer from './MapExplorer';
 import PlansView from './PlansView';
 import CandidateDetailModal from './CandidateDetailModal';
 import SimilarityDetailModal from './SimilarityDetailModal';
+import DisclaimerModal from './DisclaimerModal';
 
 const candidatosData = mockCandidatosRaw as Candidato[];
+
+const DIGNIDAD_ORDER: Record<string, number> = {
+  'Prefecto': 1,
+  'Alcalde': 2,
+  'Concejal': 3,
+  'Vocal Junta Parroquial': 4,
+};
 
 const COLOR_PALETTE = [
   '#38bdf8', '#34d399', '#a78bfa', '#fb923c', '#4ade80',
   '#f472b6', '#22d3ee', '#818cf8', '#2dd4bf', '#fbbf24',
 ];
+
+function toTitleCase(str: string): string {
+  return str
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 function provToFile(name: string): string {
   return name
@@ -37,17 +54,32 @@ export default function Dashboard() {
   const [activeCantonGeo, setActiveCantonGeo] = useState<any>(null);
   const [loadingMap, setLoadingMap] = useState<boolean>(false);
 
-  // Tooltip
+  // Tooltip con desglose por dignidad CNE 2023 y organizaciones políticas
   const [hoveredEntity, setHoveredEntity] = useState<{
     title: string;
+    subtitle?: string;
     metrics: { label: string; value: string | number }[];
+    candidatosStats?: {
+      total: number;
+      prefectura?: number;
+      alcaldia?: number;
+      concejales?: number;
+      juntas_parroquiales?: number;
+    };
+    partidos?: {
+      lista: string;
+      nombre: string;
+      tipo?: string;
+      siglas?: string;
+      canton?: string;
+    }[];
   } | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   // Pestañas y filtros de planes
   const [activeTab, setActiveTab] = useState<'directorio' | 'comparador'>('directorio');
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
-  const [sortPlanesBy, setSortPlanesBy] = useState<'fecha_desc' | 'viabilidad_desc' | 'paginas_asc' | 'paginas_desc'>('fecha_desc');
+  const [sortPlanesBy, setSortPlanesBy] = useState<'dignidad_hierarchy' | 'fecha_desc' | 'viabilidad_desc' | 'paginas_asc' | 'paginas_desc'>('dignidad_hierarchy');
   const [anchorCandidate, setAnchorCandidate] = useState<Candidato | null>(null);
 
   // Modales
@@ -238,36 +270,76 @@ export default function Dashboard() {
     window.history.pushState({ navLevel: 'planes', provincia: filtros.provincia, canton: filtros.canton }, '', '#planes');
   };
 
-  // Top Keywords
+  // Top Keywords con normalización de mayúsculas/minúsculas y desduplicación
   const topKeywords = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, { formatted: string; count: number }>();
     candidatosFiltrados.forEach((c) => {
       c.analisis.palabras_clave.forEach((kw) => {
-        map.set(kw, (map.get(kw) || 0) + 1);
+        const clean = kw.trim();
+        if (!clean) return;
+        const lower = clean.toLowerCase();
+        const formatted = toTitleCase(clean);
+        const existing = map.get(lower);
+        if (existing) {
+          existing.count += 1;
+        } else {
+          map.set(lower, { formatted, count: 1 });
+        }
       });
     });
-    return Array.from(map.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map((entry) => entry[0]);
+    return Array.from(map.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 12)
+      .map((entry) => entry.formatted);
   }, [candidatosFiltrados]);
 
   const toggleKeyword = (kw: string) => {
+    const target = kw.toLowerCase().trim();
     setSelectedKeywords((prev) =>
-      prev.includes(kw) ? prev.filter((k) => k !== kw) : [...prev, kw]
+      prev.some((k) => k.toLowerCase().trim() === target)
+        ? prev.filter((k) => k.toLowerCase().trim() !== target)
+        : [...prev, kw]
     );
   };
 
-  // Candidatos filtrados por keywords y ordenados
+  // Candidatos filtrados por parroquia, keywords y ordenados
   const displayCandidatos = useMemo(() => {
     let result = [...candidatosFiltrados];
-    if (selectedKeywords.length > 0) {
-      result = result.filter((c) =>
-        selectedKeywords.every((kw) => c.analisis.palabras_clave.includes(kw))
-      );
+
+    // Filtro territorial por Parroquia específica
+    if (selectedParroquia !== 'TODAS') {
+      const normParroquia = (selectedParroquia || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+
+      result = result.filter((c) => {
+        const nom = (c.nombre || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const res = (c.analisis.resumen_abstract || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const pdf = (c.archivo_pdf || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return nom.includes(normParroquia) || res.includes(normParroquia) || pdf.includes(normParroquia);
+      });
     }
 
-    if (sortPlanesBy === 'fecha_desc') {
+    if (selectedKeywords.length > 0) {
+      result = result.filter((c) => {
+        const candKeywords = c.analisis.palabras_clave.map((k) => k.toLowerCase().trim());
+        return selectedKeywords.every((kw) =>
+          candKeywords.includes(kw.toLowerCase().trim())
+        );
+      });
+    }
+
+    const getDignityRank = (cand: Candidato) => DIGNIDAD_ORDER[cand.jurisdiccion.dignidad] || 99;
+
+    if (sortPlanesBy === 'dignidad_hierarchy') {
+      result.sort((a, b) => {
+        const diffRank = getDignityRank(a) - getDignityRank(b);
+        if (diffRank !== 0) return diffRank;
+        return (b.fecha_inscripcion || '').localeCompare(a.fecha_inscripcion || '');
+      });
+    } else if (sortPlanesBy === 'fecha_desc') {
       result.sort((a, b) => (b.fecha_inscripcion || '').localeCompare(a.fecha_inscripcion || ''));
     } else if (sortPlanesBy === 'viabilidad_desc') {
       const getViabScore = (cand: Candidato) => {
@@ -283,7 +355,7 @@ export default function Dashboard() {
     }
 
     return result;
-  }, [candidatosFiltrados, selectedKeywords, sortPlanesBy]);
+  }, [candidatosFiltrados, selectedParroquia, selectedKeywords, sortPlanesBy]);
 
   // Candidatos ordenados por ancla
   const sortedAnchorCandidates = useMemo(() => {
@@ -320,6 +392,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-100/80 text-slate-800 font-sans antialiased pb-16">
+      {/* Modal de Descargo de Responsabilidad y Aviso Legal */}
+      <DisclaimerModal onAccept={() => {}} />
+
       {/* Header Institucional */}
       <Header
         navLevel={navLevel}
@@ -348,7 +423,7 @@ export default function Dashboard() {
               cantonesList={cantonesList}
               parroquiasList={parroquiasList}
               recentSearches={recentSearches}
-              totalPlanes={estadisticas.total}
+              totalPlanes={candidatosFiltrados.length}
               onSelectProvincia={(p) => {
                 if (p === 'TODAS') goToEcuador();
                 else goToProvincia(p);
@@ -375,15 +450,17 @@ export default function Dashboard() {
               onGoToCanton={goToCanton}
               onGoToEcuador={goToEcuador}
               onGoToPlanes={goToPlanes}
-              onMouseMove={(e, title, metrics) => {
+              onMouseMove={(e, title, metrics, candidatosStats, subtitle, partidos) => {
                 setTooltipPos({ x: e.clientX + 15, y: e.clientY - 20 });
-                setHoveredEntity({ title, metrics });
+                setHoveredEntity({ title, subtitle, metrics, candidatosStats, partidos });
               }}
               onMouseLeave={() => setHoveredEntity(null)}
             />
           </div>
         ) : (
           <PlansView
+            dignidad={filtros.dignidad}
+            setDignidad={filtros.setDignidad}
             provincia={filtros.provincia}
             canton={filtros.canton}
             selectedParroquia={selectedParroquia}
@@ -407,28 +484,90 @@ export default function Dashboard() {
         )}
       </main>
 
-      {/* Tooltip Flotante Institucional */}
+      {/* Tooltip Flotante Institucional: Formato de Lista Limpia y Equilibrada */}
       {hoveredEntity && navLevel !== 'planes' && (
         <div
-          className="fixed z-50 pointer-events-none bg-white/95 text-slate-800 text-sm p-4 rounded-2xl shadow-2xl border border-slate-200/90 backdrop-blur-xl transition-all duration-75 min-w-[250px] ring-1 ring-slate-900/5"
+          className="fixed z-50 pointer-events-none bg-white text-slate-800 p-4 sm:p-4.5 rounded-2xl shadow-2xl border border-slate-200/90 transition-all duration-75 min-w-[260px] max-w-[300px] ring-1 ring-slate-900/5 select-none"
           style={{ left: tooltipPos.x, top: tooltipPos.y }}
         >
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-2.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-600 animate-pulse"></span>
-            <h4 className="font-extrabold text-base text-slate-900 leading-snug">
+          {/* Cabecera */}
+          <div className="flex items-baseline justify-between border-b border-slate-100 pb-2 mb-2.5">
+            <h4 className="font-extrabold text-base text-slate-900 tracking-tight">
               {hoveredEntity.title}
             </h4>
+            <span className="text-[11px] font-semibold text-slate-400">
+              {hoveredEntity.subtitle || 'CNE 2023'}
+            </span>
           </div>
-          <div className="space-y-1.5">
-            {hoveredEntity.metrics.map((m, i) => (
-              <div key={i} className="flex justify-between items-center text-xs sm:text-sm gap-4">
-                <span className="text-slate-500 font-semibold">{m.label}:</span>
-                <span className="font-bold text-slate-900 bg-slate-50 px-2.5 py-0.5 rounded-lg border border-slate-200/70 shadow-2xs">
-                  {m.value}
+
+          {/* Lista de Candidatos Habilitados y Desglose por Dignidad */}
+          {hoveredEntity.candidatosStats && (
+            <div className="space-y-1.5 text-xs sm:text-sm pb-2.5 border-b border-slate-100">
+              {/* Total Habilitados */}
+              <div className="flex justify-between items-center font-bold text-slate-900 pb-1 border-b border-slate-100">
+                <span>Candidatos habilitados</span>
+                <span className="font-black text-slate-900">
+                  {hoveredEntity.candidatosStats.total.toLocaleString()}
                 </span>
               </div>
-            ))}
-          </div>
+
+              {/* Prefectura */}
+              {hoveredEntity.candidatosStats.prefectura !== undefined && (
+                <div className="flex justify-between items-center text-slate-600 font-normal">
+                  <span>Prefectura</span>
+                  <span className="font-bold text-slate-900">
+                    {hoveredEntity.candidatosStats.prefectura}
+                  </span>
+                </div>
+              )}
+
+              {/* Alcaldías */}
+              <div className="flex justify-between items-center text-slate-600 font-normal">
+                <span>Alcaldías</span>
+                <span className="font-bold text-slate-900">
+                  {hoveredEntity.candidatosStats.alcaldia}
+                </span>
+              </div>
+
+              {/* Concejalías */}
+              <div className="flex justify-between items-center text-slate-600 font-normal">
+                <span>Concejalías</span>
+                <span className="font-bold text-slate-900">
+                  {hoveredEntity.candidatosStats.concejales}
+                </span>
+              </div>
+
+              {/* Juntas Parroquiales */}
+              <div className="flex justify-between items-center text-slate-600 font-normal">
+                <span>Juntas Parroquiales</span>
+                <span className="font-bold text-slate-900">
+                  {hoveredEntity.candidatosStats.juntas_parroquiales}
+                </span>
+              </div>
+
+              {/* Organizaciones Políticas */}
+              {hoveredEntity.partidos && hoveredEntity.partidos.length > 0 && (
+                <div className="flex justify-between items-center text-slate-600 font-normal pt-1 border-t border-slate-100">
+                  <span>Organizaciones políticas</span>
+                  <span className="font-bold text-slate-900">
+                    {hoveredEntity.partidos.length}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Métricas territoriales complementarias (Capital / Región) */}
+          {hoveredEntity.metrics.length > 0 && (
+            <div className="pt-2 space-y-1 text-xs sm:text-sm">
+              {hoveredEntity.metrics.map((m, i) => (
+                <div key={i} className="flex justify-between items-center text-slate-500 font-normal">
+                  <span>{m.label}</span>
+                  <span className="font-semibold text-slate-800">{m.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

@@ -13,7 +13,8 @@ export interface EstadisticasElectoral {
   conteoPorCanton: Record<string, number>;
   distribucionCompetencias: {
     "Competencia exclusiva municipal": number;
-    "Competencia concurrente": number;
+    "Parcialmente viable": number;
+    "Competencia concurrente"?: number;
     "Fuera de competencia": number;
   };
 }
@@ -79,7 +80,7 @@ export const useElectoralData = (candidatos: Candidato[]) => {
     const conteoPorCanton: Record<string, number> = {};
     const distribucionCompetencias = {
       "Competencia exclusiva municipal": 0,
-      "Competencia concurrente": 0,
+      "Parcialmente viable": 0,
       "Fuera de competencia": 0,
     };
 
@@ -90,8 +91,12 @@ export const useElectoralData = (candidatos: Candidato[]) => {
 
       // Distribución de competencias
       const comp = c.analisis.clasificacion_competencia;
-      if (comp in distribucionCompetencias) {
-        distribucionCompetencias[comp]++;
+      if (comp === "Competencia exclusiva municipal") {
+        distribucionCompetencias["Competencia exclusiva municipal"]++;
+      } else if (comp === "Competencia concurrente" || comp === "Parcialmente viable") {
+        distribucionCompetencias["Parcialmente viable"]++;
+      } else if (comp === "Fuera de competencia") {
+        distribucionCompetencias["Fuera de competencia"]++;
       }
     });
 

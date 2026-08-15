@@ -1,10 +1,12 @@
 import {
-  Grid, Columns, Users, CheckCircle2, AlertCircle, XCircle, Sparkles, TrendingUp, Info, FileSpreadsheet, ArrowRight, Check
+  Grid, Columns, Users, CheckCircle2, AlertCircle, XCircle, Sparkles, TrendingUp, Info, FileSpreadsheet, ArrowRight, Check, Award
 } from 'lucide-react';
 import { Candidato, SimilitudCandidato } from '../types/electoral';
 import CandidatoCard from './CandidatoCard';
 
 interface PlansViewProps {
+  dignidad: string;
+  setDignidad: (d: string) => void;
   provincia: string;
   canton: string;
   selectedParroquia: string;
@@ -18,8 +20,8 @@ interface PlansViewProps {
   selectedKeywords: string[];
   toggleKeyword: (kw: string) => void;
   topKeywords: string[];
-  sortPlanesBy: 'fecha_desc' | 'viabilidad_desc' | 'paginas_asc' | 'paginas_desc';
-  setSortPlanesBy: (s: 'fecha_desc' | 'viabilidad_desc' | 'paginas_asc' | 'paginas_desc') => void;
+  sortPlanesBy: 'dignidad_hierarchy' | 'fecha_desc' | 'viabilidad_desc' | 'paginas_asc' | 'paginas_desc';
+  setSortPlanesBy: (s: 'dignidad_hierarchy' | 'fecha_desc' | 'viabilidad_desc' | 'paginas_asc' | 'paginas_desc') => void;
   anchorCandidate: Candidato | null;
   setAnchorCandidate: (c: Candidato | null) => void;
   sortedAnchorCandidates: Candidato[];
@@ -33,6 +35,8 @@ interface PlansViewProps {
 }
 
 export default function PlansView({
+  dignidad,
+  setDignidad,
   provincia,
   canton,
   selectedParroquia,
@@ -55,7 +59,7 @@ export default function PlansView({
 }: PlansViewProps) {
   const total = estadisticas.total || 1;
   const countExclusiva = estadisticas.distribucionCompetencias['Competencia exclusiva municipal'] || 0;
-  const countConcurrente = estadisticas.distribucionCompetencias['Competencia concurrente'] || 0;
+  const countConcurrente = estadisticas.distribucionCompetencias['Parcialmente viable'] || estadisticas.distribucionCompetencias['Competencia concurrente'] || 0;
   const countFuera = estadisticas.distribucionCompetencias['Fuera de competencia'] || 0;
 
   const pctExclusiva = Math.round((countExclusiva / total) * 100);
@@ -130,6 +134,93 @@ export default function PlansView({
         </div>
       </div>
 
+      {/* BARRA DE FILTRO POR JERARQUÍA DE DIGNIDAD */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-indigo-600" />
+            <h3 className="text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wider">
+              Nivel de Elección y Jerarquía Territorial:
+            </h3>
+          </div>
+          <span className="text-xs text-slate-500 font-medium">
+            Seleccione una dignidad para filtrar las tarjetas
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+          {/* Todas */}
+          <button
+            type="button"
+            onClick={() => setDignidad('TODAS')}
+            className={`py-3 px-4 rounded-xl border text-xs sm:text-sm font-extrabold transition-all flex items-center justify-center gap-2 ${
+              dignidad === 'TODAS'
+                ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <span>🏛️ Todas</span>
+            <span className="text-xs font-bold opacity-75">({candidatosFiltrados.length})</span>
+          </button>
+
+          {/* 1. Prefectura (Verde Esmeralda) */}
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Prefecto' ? 'TODAS' : 'Prefecto')}
+            className={`py-3 px-4 rounded-xl border text-xs sm:text-sm font-extrabold transition-all flex items-center justify-center gap-2 ${
+              dignidad === 'Prefecto'
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                : 'bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100'
+            }`}
+          >
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+            <span>1. Prefectura</span>
+          </button>
+
+          {/* 2. Alcaldía (Índigo/Morado) */}
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Alcalde' ? 'TODAS' : 'Alcalde')}
+            className={`py-3 px-4 rounded-xl border text-xs sm:text-sm font-extrabold transition-all flex items-center justify-center gap-2 ${
+              dignidad === 'Alcalde'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                : 'bg-indigo-50 text-indigo-900 border-indigo-200 hover:bg-indigo-100'
+            }`}
+          >
+            <span className="h-2.5 w-2.5 rounded-full bg-indigo-500 shrink-0"></span>
+            <span>2. Alcaldía</span>
+          </button>
+
+          {/* 3. Concejales (Celeste/Sky) */}
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Concejal' ? 'TODAS' : 'Concejal')}
+            className={`py-3 px-4 rounded-xl border text-xs sm:text-sm font-extrabold transition-all flex items-center justify-center gap-2 ${
+              dignidad === 'Concejal'
+                ? 'bg-sky-600 text-white border-sky-600 shadow-sm'
+                : 'bg-sky-50 text-sky-900 border-sky-200 hover:bg-sky-100'
+            }`}
+          >
+            <span className="h-2.5 w-2.5 rounded-full bg-sky-500 shrink-0"></span>
+            <span>3. Concejales</span>
+          </button>
+
+          {/* 4. Juntas Parroquiales (Ámbar/Naranja) */}
+          <button
+            type="button"
+            onClick={() => setDignidad(dignidad === 'Vocal Junta Parroquial' ? 'TODAS' : 'Vocal Junta Parroquial')}
+            className={`py-3 px-4 rounded-xl border text-xs sm:text-sm font-extrabold transition-all flex items-center justify-center gap-2 ${
+              dignidad === 'Vocal Junta Parroquial'
+                ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100'
+            }`}
+          >
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shrink-0"></span>
+            <span>4. Juntas Parroq.</span>
+          </button>
+        </div>
+      </div>
+
       {/* TARJETAS DE INDICADORES CLAVE (KPI METRICS) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* KPI 1: Total Candidatos */}
@@ -169,7 +260,7 @@ export default function PlansView({
         <div className="bg-white border border-amber-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
           <div>
             <span className="text-sm font-bold text-amber-900 uppercase tracking-wider block mb-1.5">
-              Competencia Concurrente
+              Parcialmente Viable
             </span>
             <div className="text-3xl sm:text-4xl font-extrabold text-amber-600 tracking-tight">{countConcurrente}</div>
             <div className="flex items-center gap-2 mt-1.5">
@@ -221,6 +312,7 @@ export default function PlansView({
                 onChange={(e) => setSortPlanesBy(e.target.value as any)}
                 className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm md:text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 min-h-[48px] shadow-2xs w-full sm:w-auto"
               >
+                <option value="dignidad_hierarchy">1. Jerarquía Institucional (Prefectura › Alcaldía › Concejales › Juntas)</option>
                 <option value="fecha_desc">Inscripción Más Reciente (Fecha)</option>
                 <option value="viabilidad_desc">Mayor Viabilidad Jurídica COOTAD</option>
                 <option value="paginas_desc">Mayor Extensión del Plan (Páginas)</option>

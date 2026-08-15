@@ -1,51 +1,93 @@
 [
   {
+    "id": "q2",
+    "nombre": "Jorge Homero Yunda Machado",
+    "partido_politico": "Juntos por la Gente 2023",
+    "lista": "45-70",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "1671550473_Jorge_HomeroYunda_Machado.pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Quito",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan de trabajo 'Juntos por la gente 2023' se centra en mejorar la calidad de vida de los quiteños, con un enfoque en la competitividad, el turismo, la movilidad, el medio ambiente, la gestión integral de residuos y la seguridad vial. El plan busca recoger las necesidades y propuestas de la ciudadanía y rescatar el valor de las intervenciones y proyectos pendientes. Se alinea con la normativa vigente y se basa en un diagnóstico situacional del Distrito Metropolitano de Quito.",
+      "palabras_clave": [
+        "Competitividad",
+        "Turismo",
+        "Movilidad",
+        "Medio Ambiente",
+        "Gestión Integral De Residuos",
+        "Seguridad Vial",
+        "Desarrollo Sostenible",
+        "Gobernanza",
+        "Institucionalidad"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "El plan prioriza competencias exclusivas del GAD: transporte, medio ambiente, vialidad y gestión de residuos sólidos (art. 55 COOTAD).",
+      "paginas_total": 30,
+      "promesas_clasificadas": [
+        { "promesa": "Sistema integrado de Transporte Público", "viable": "Sí", "justificacion": "Tránsito y transporte terrestre cantonal (art. 55 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Programa Medio ambiente para la gente", "viable": "Sí", "justificacion": "Manejo de desechos y saneamiento (art. 55 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Programa Gestión integral de Residuos", "viable": "Sí", "justificacion": "Manejo de desechos sólidos (art. 55 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Programa Seguridad vial para la gente", "viable": "Sí", "justificacion": "Seguridad vial cantonal (art. 55 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Programa Vialidad para la gente", "viable": "Sí", "justificacion": "Vialidad urbana (art. 55 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Programa Fomento del turismo", "viable": "Parcial", "justificacion": "Turismo es materia compartida con rectoría del Estado Central (art. 55 COOTAD)", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Programa Gobernanza democrática con la gente", "viable": "Parcial", "justificacion": "Participación ciudadana actúa coordinadamente con el Estado Central (art. 55 COOTAD)", "tipo_competencia": "Parcialmente viable" }
+      ],
+      "temas_disruptivos": [
+        "Implementación de herramientas digitales para mejorar la eficiencia administrativa municipal",
+        "Uso de nuevas tecnologías para evitar presencialidad y congestión en balcones de servicios",
+        "Acceso virtual y tramitación en línea como eje de modernización del GAD"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "q1",
+        "nombre": "Pabel Muñoz",
+        "porcentaje": 45.5,
+        "puntos_coincidencia": ["Movilidad Sostenible y transporte público", "Gestión ambiental urbana"],
+        "puntos_diferencia": ["Yunda: eficiencia tecnológica; Muñoz: equidad social barrial", "Yunda: competitividad económica; Muñoz: participación colectiva"]
+      }
+    ]
+  },
+  {
     "id": "q1",
     "nombre": "Pabel Muñoz",
     "partido_politico": "Revolución Ciudadana",
     "lista": "5",
-    "fecha_inscripcion": "12 de Noviembre, 2024",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "2. Plan de Trabajo Pabel Munoz.pdf",
     "jurisdiccion": {
       "provincia": "Pichincha",
       "canton": "Quito",
       "dignidad": "Alcalde"
     },
     "analisis": {
-      "resumen_abstract": "Propone una ciudad más equitativa con fuerte inversión en movilidad sostenible, operación integral del Metro y modernización del transporte público urbano.",
+      "resumen_abstract": "El plan de gobierno del DMQ se centra en la construcción de una ciudad equitativa, integrada y productiva. Se busca reconstruir desde el barrio y promover la vida digna para todas y todos, a través de cinco ejes: hábitat y seguridad; trabajo y economía; bienestar y protección social; movilidad sostenible; y territorio intercultural y ecológico.",
       "palabras_clave": [
-        "movilidad",
-        "equidad",
-        "transporte",
-        "Metro",
-        "seguridad"
+        "Ciudad Equitativa",
+        "Integración",
+        "Productividad",
+        "Participación Ciudadana",
+        "Desarrollo Sostenible",
+        "Equidad",
+        "Convivencia"
       ],
       "clasificacion_competencia": "Competencia exclusiva municipal",
-      "justificacion_competencia": "Las propuestas de movilidad, transporte masivo (Metro) y vialidad urbana recaen directamente en las competencias exclusivas del GAD Metropolitano (Art. 55 COOTAD).",
-      "paginas_total": 45,
+      "justificacion_competencia": "El plan se articula sobre los ejes de planificación urbana, movilidad y hábitat, que son competencias exclusivas del GAD Quito (art. 55 COOTAD).",
+      "paginas_total": 85,
       "promesas_clasificadas": [
-        {
-          "promesa": "Integración tarifaria y física del Metro de Quito con Trolebús y Ecovía",
-          "viable": "Sí",
-          "justificacion": "Atribución directa del GAD municipal según el Art. 55 num. 6 del COOTAD (Tránsito y Transporte).",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        },
-        {
-          "promesa": "Sistema unificado de videovigilancia barrial con inteligencia artificial",
-          "viable": "Parcial",
-          "justificacion": "La seguridad ciudadana es compartida con el Ministerio del Interior. El Municipio aporta cámaras pero no ejerce mando policial.",
-          "tipo_competencia": "Competencia concurrente"
-        },
-        {
-          "promesa": "Construcción de 5 Hospitales Regionales de especialidades",
-          "viable": "No",
-          "justificacion": "La construcción de centros de salud de alta complejidad excede la competencia municipal y es atribución del Ministerio de Salud Pública.",
-          "tipo_competencia": "Fuera de competencia (Estatal)"
-        }
+        { "promesa": "Reconstruir desde el barrio", "viable": "Sí", "justificacion": "La Constitución consagra el derecho a la ciudad y la gestión democrática del territorio.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promover la vida digna para todas y todos", "viable": "Sí", "justificacion": "La política pública municipal como herramienta de vida digna.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Construir una ciudad equitativa, integrada y productiva", "viable": "Sí", "justificacion": "El GAD tiene potestad de planificación y ordenamiento territorial.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Implementar un plan de gestión participativa", "viable": "Parcial", "justificacion": "La participación ciudadana actúa en coordinación con las directrices nacionales (art. 55 COOTAD).", "tipo_competencia": "Parcialmente viable" }
       ],
       "temas_disruptivos": [
-        "Red de corredores biológicos urbanos con sensores de biodiversidad",
-        "Fondo Municipal de Capital Semilla para Economía Circular",
-        "Boleto electrónico único con reconocimiento facial opcional"
+        "Reconstrucción barrial como nueva forma de gobernanza territorial participativa",
+        "Vida digna como eje central de política pública municipal",
+        "Ciudad equitativa mediante construcción colectiva y democrática"
       ]
     },
     "similitudes": [
@@ -53,340 +95,446 @@
         "candidato_id": "q2",
         "nombre": "Jorge Yunda",
         "porcentaje": 45.5,
-        "puntos_coincidencia": [
-          "Coinciden en destinar presupuesto municipal para seguridad comunitaria y alarmas barriales",
-          "Ambos apoyan la intervención y repavimentación prioritaria en las parroquias del sur de Quito"
-        ],
-        "puntos_diferencia": [
-          "Pabel Muñoz plantea gestión directa estatal/municipal del transporte masivo, mientras Jorge Yunda propone incentivos al sector privado",
-          "Difieren en la reestructuración de la tasa de seguridad barrial"
-        ]
-      },
-      {
-        "candidato_id": "q3",
-        "nombre": "Pedro Freile",
-        "porcentaje": 20.0,
-        "puntos_coincidencia": [
-          "Coinciden en la necesidad de digitalizar los trámites de licencias de funcionamiento de negocios (LUAE)"
-        ],
-        "puntos_diferencia": [
-          "Freile propone la privatización parcial del recaudo municipal, mientras Muñoz exige control público directo",
-          "Freile aboga por alianzas público-privadas en vialidad de peaje urbano"
-        ]
+        "puntos_coincidencia": ["Movilidad Sostenible y transporte público", "Gestión ambiental urbana"],
+        "puntos_diferencia": ["Muñoz: equidad social barrial; Yunda: eficiencia tecnológica", "Muñoz: participación colectiva; Yunda: competitividad económica"]
       }
     ]
   },
   {
-    "id": "q2",
-    "nombre": "Jorge Yunda",
-    "partido_politico": "Alianza Juntos por la Gente",
-    "lista": "45-70",
-    "fecha_inscripcion": "08 de Noviembre, 2024",
+    "id": "mal1",
+    "nombre": "Candidatos Vocales Malchingui - Alianza 23-18-117",
+    "partido_politico": "Alianza 23 - 18 - 117",
+    "lista": "23-18-117",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Alianza 23 - 18 - 117 Plan de trabajo vocales Malchingui.pdf",
     "jurisdiccion": {
       "provincia": "Pichincha",
-      "canton": "Quito",
-      "dignidad": "Alcalde"
+      "canton": "Pedro Moncayo",
+      "dignidad": "Vocal Junta Parroquial"
     },
     "analisis": {
-      "resumen_abstract": "Enfoque en seguridad ciudadana con alarmas comunitarias, reactivación económica barrial y programas de salud integral y esterilización animal.",
+      "resumen_abstract": "El plan de trabajo busca abordar las necesidades de la parroquia de Malchingui mediante políticas públicas de desarrollo sustentable, equidad e inclusión, participación ciudadana y gestión de recursos naturales. Se articula con otros niveles de gobierno y la comunidad, comprometiéndose con el marco legal del COOTAD y el Plan de Desarrollo y Ordenamiento Territorial Parroquial.",
       "palabras_clave": [
-        "seguridad",
-        "reactivación",
-        "social",
-        "salud",
-        "emprendimiento"
+        "Desarrollo Sostenible",
+        "Equidad e Inclusión",
+        "Participación Ciudadana",
+        "Gestión De Recursos Naturales",
+        "Competencias Exclusivas"
       ],
-      "clasificacion_competencia": "Competencia concurrente",
-      "justificacion_competencia": "La seguridad ciudadana es compartida concurrentemente con el Ministerio del Interior y Policía Nacional, manteniendo el municipio rol preventivo.",
-      "paginas_total": 38,
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "El GAD parroquial tiene competencias exclusivas para implementar participación ciudadana y promover el desarrollo sustentable (art. 64-67 COOTAD).",
+      "paginas_total": 30,
       "promesas_clasificadas": [
-        {
-          "promesa": "Instalación de 10.000 alarmas comunitarias con botón de pánico",
-          "viable": "Sí",
-          "justificacion": "El Municipio puede financiar equipamiento preventivo bajo el Art. 60 del COOTAD.",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        },
-        {
-          "promesa": "Unidades móviles de atención médica general y odontológica",
-          "viable": "Parcial",
-          "justificacion": "Requiere convenio y aval del Ministerio de Salud (MSP) para expedir certificados médicos autorizados.",
-          "tipo_competencia": "Competencia concurrente"
-        },
-        {
-          "promesa": "Rebaja obligatoria del IVA al 5% para comercios del centro histórico",
-          "viable": "No",
-          "justificacion": "La fijación de tributos nacionales como el IVA es facultad exclusiva de la Asamblea Nacional y el Ejecutivo.",
-          "tipo_competencia": "Fuera de competencia (Nacional)"
-        }
+        { "promesa": "Implementar un sistema de participación ciudadana", "viable": "Sí", "justificacion": "Art. 64 COOTAD: función del GAD parroquial implementar participación ciudadana.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promover el desarrollo sustentable de la circunscripción parroquial", "viable": "Sí", "justificacion": "Art. 64 COOTAD: función del GAD parroquial promover el buen vivir.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Gestionar cooperación internacional para sus competencias", "viable": "Sí", "justificacion": "Art. 65 COOTAD: función del GAD parroquial gestionar cooperación internacional.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promover la organización de comunas y asentamientos rurales", "viable": "Sí", "justificacion": "Art. 65 COOTAD: función del GAD parroquial promover la organización territorial de base.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Autorizar empréstitos para programas del plan parroquial", "viable": "Sí", "justificacion": "Art. 67 COOTAD: atribución de la junta parroquial autorizar empréstitos.", "tipo_competencia": "Parcialmente viable" }
       ],
       "temas_disruptivos": [
-        "Clinicas veterinarias municipales 24/7 y registro chip obligatorio para mascotas",
-        "Mercados nocturnos gastronómicos con patrullaje barrial privado pagado por tasa",
-        "Plataforma municipal de streaming cultural para artistas locales"
+        "Gestionar cooperación internacional como mecanismo de financiamiento parroquial autónomo",
+        "Autorizar empréstitos para ejecutar el plan de ordenamiento territorial parroquial"
       ]
     },
-    "similitudes": [
-      {
-        "candidato_id": "q1",
-        "nombre": "Pabel Muñoz",
-        "porcentaje": 45.5,
-        "puntos_coincidencia": [
-          "Coinciden en destinar presupuesto municipal para seguridad comunitaria y alarmas barriales",
-          "Ambos apoyan la intervención y repavimentación prioritaria en las parroquias del sur de Quito"
-        ],
-        "puntos_diferencia": [
-          "Pabel Muñoz plantea gestión directa estatal/municipal del transporte masivo, mientras Jorge Yunda propone incentivos al sector privado",
-          "Difieren en la reestructuración de la tasa de seguridad barrial"
-        ]
-      },
-      {
-        "candidato_id": "q3",
-        "nombre": "Pedro Freile",
-        "porcentaje": 30.2,
-        "puntos_coincidencia": [
-          "Coinciden en simplificar la entrega de permisos para microempresas y emprendedores"
-        ],
-        "puntos_diferencia": [
-          "Yunda se enfoca en asistencia social directa y unidades médicas, mientras Freile rechaza el asistencialismo municipal"
-        ]
-      }
-    ]
+    "similitudes": []
   },
   {
-    "id": "q3",
-    "nombre": "Pedro Freile",
+    "id": "uio_centro1",
+    "nombre": "Candidatos Alianza UIO - Centro",
     "partido_politico": "Alianza UIO",
     "lista": "17-23",
-    "fecha_inscripcion": "15 de Noviembre, 2024",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Alianza UIO - Plan Trabajo Centro.pdf",
     "jurisdiccion": {
       "provincia": "Pichincha",
       "canton": "Quito",
-      "dignidad": "Alcalde"
+      "dignidad": "Concejal"
     },
     "analisis": {
-      "resumen_abstract": "Busca una gestión municipal eficiente, digitalización total de trámites, reducción de burocracia e impulso a la inversión privada bajo alianzas público-privadas.",
+      "resumen_abstract": "El plan se centra en mejorar la calidad de vida de la ciudadanía de Quito, abordando la infraestructura, la seguridad, la economía y la cultura. Se propone mejorar la gestión del comercio informal, reducir la criminalidad mediante prevención comunitaria y aumentar la participación ciudadana en la toma de decisiones.",
       "palabras_clave": [
-        "eficiencia",
-        "inversión",
-        "empleo",
-        "tecnología",
-        "transparencia"
+        "Quito",
+        "Infraestructura",
+        "Seguridad",
+        "Economía",
+        "Cultura",
+        "Comercio Informal",
+        "Participación Ciudadana"
       ],
-      "clasificacion_competencia": "Competencia exclusiva municipal",
-      "justificacion_competencia": "La optimización de procesos municipales, uso de suelo y simplificación regulatoria son facultades exclusivas del cabildo.",
-      "paginas_total": 60,
+      "clasificacion_competencia": "Parcialmente viable",
+      "justificacion_competencia": "La seguridad ciudadana y el comercio informal son materias concurrentes donde el municipio actúa de forma parcialmente viable en coordinación con el Estado Central (art. 55 COOTAD).",
+      "paginas_total": 14,
       "promesas_clasificadas": [
-        {
-          "promesa": "Ventanilla única digital con aprobación automática de planos en 48 horas",
-          "viable": "Sí",
-          "justificacion": "Competencia exclusiva de planificación urbana y uso del suelo (Art. 55 COOTAD).",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        },
-        {
-          "promesa": "Concesión privada del mantenimiento vial metropolitano",
-          "viable": "Sí",
-          "justificacion": "Atribución municipal delegar servicios mediante Alianzas Público-Privadas (APP).",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        },
-        {
-          "promesa": "Eliminación de impuestos de matriculación vehicular nacional",
-          "viable": "No",
-          "justificacion": "El impuesto a la propiedad vehicular es de regulación nacional emitida por el SRI.",
-          "tipo_competencia": "Fuera de competencia (Nacional)"
-        }
+        { "promesa": "Mejorar la gestión del comercio informal", "viable": "Parcial", "justificacion": "La gestión del comercio informal requiere coordinación con el régimen tributario nacional (COOTAD).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Reducir la criminalidad mediante prevención comunitaria", "viable": "Parcial", "justificacion": "Seguridad ciudadana es materia compartida; el mando policial es privativo del Estado Central.", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Aumentar la participación ciudadana en la toma de decisiones", "viable": "Sí", "justificacion": "La participación ciudadana en la gestión municipal es competencia exclusiva del GAD (COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" }
       ],
       "temas_disruptivos": [
-        "Auditoría con Blockchain para todos los contratos de obra pública municipal",
-        "Zonas de libre comercio libre de tasas en valles periféricos",
-        "Subasta transparente en vivo de bienes inmuebles municipales sin uso"
+        "Desplazar comerciantes informales a mercados y centros comerciales formales",
+        "La burocracia como barrera de acceso al comercio formal para emprendedores"
       ]
     },
-    "similitudes": [
-      {
-        "candidato_id": "q1",
-        "nombre": "Pabel Muñoz",
-        "porcentaje": 20.0,
-        "puntos_coincidencia": [
-          "Coinciden en la necesidad de digitalizar los trámites de licencias de funcionamiento de negocios (LUAE)"
-        ],
-        "puntos_diferencia": [
-          "Freile propone la privatización parcial del recaudo municipal, mientras Muñoz exige control público directo",
-          "Freile aboga por alianzas público-privadas en vialidad de peaje urbano"
-        ]
-      },
-      {
-        "candidato_id": "q2",
-        "nombre": "Jorge Yunda",
-        "porcentaje": 30.2,
-        "puntos_coincidencia": [
-          "Coinciden en simplificar la entrega de permisos para microempresas y emprendedores"
-        ],
-        "puntos_diferencia": [
-          "Yunda se enfoca en asistencia social directa y unidades médicas, mientras Freile rechaza el asistencialismo municipal"
-        ]
-      }
-    ]
+    "similitudes": []
   },
   {
-    "id": "r1",
-    "nombre": "Fabián Iza",
-    "partido_politico": "Movimiento Ciudadano",
-    "lista": "100",
-    "fecha_inscripcion": "10 de Noviembre, 2024",
+    "id": "uio_rural1",
+    "nombre": "Candidatos Alianza UIO - Concejales Rurales",
+    "partido_politico": "Alianza UIO",
+    "lista": "17-23",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Alianza UIO - Plan Trabajo Concejales Rurales.pdf",
     "jurisdiccion": {
       "provincia": "Pichincha",
-      "canton": "Rumiñahui",
-      "dignidad": "Alcalde"
+      "canton": "Quito",
+      "dignidad": "Concejal"
     },
     "analisis": {
-      "resumen_abstract": "Prioriza obras de vialidad, redes de agua potable y alcantarillado en parroquias rurales y periferias de Sangolquí y San Pedro.",
+      "resumen_abstract": "El plan busca mejorar la calidad de vida de la ciudadanía de Quito mediante políticas que promuevan el desarrollo turístico, económico y social de las parroquias rurales. Se busca crear un Municipio eficiente y moderno que emplee la participación ciudadana como mecanismo de gestión pública.",
       "palabras_clave": [
-        "vialidad",
-        "agua potable",
-        "alcantarillado",
-        "rural",
-        "obras públicas"
+        "Desarrollo Turístico",
+        "Economía",
+        "Desarrollo Social",
+        "Participación Ciudadana",
+        "Municipio Eficiente",
+        "Modernidad"
       ],
       "clasificacion_competencia": "Competencia exclusiva municipal",
-      "justificacion_competencia": "La dotación de servicios básicos, agua potable y alcantarillado son competencias exclusivas primarias del GAD municipal.",
-      "paginas_total": 25,
+      "justificacion_competencia": "Las ordenanzas de gestión turística-ambiental y la atención a grupos vulnerables son competencias exclusivas del GAD municipal (art. 61 COOTAD).",
+      "paginas_total": 9,
       "promesas_clasificadas": [
-        {
-          "promesa": "Ampliación de la planta de tratamiento de agua potable de Sangolquí",
-          "viable": "Sí",
-          "justificacion": "Competencia primaria directa municipal de saneamiento (Art. 55 COOTAD).",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        }
+        { "promesa": "Elaborar ordenanzas de gestión turístico-ambiental para parroquias rurales", "viable": "Sí", "justificacion": "Competencia exclusiva municipal (art. 61 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Gestionar ordenanzas que promuevan actividades comerciales y turísticas", "viable": "Sí", "justificacion": "Competencia exclusiva municipal (art. 61 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promover espacios seguros mediante campañas de prevención", "viable": "Sí", "justificacion": "Competencia exclusiva municipal en coordinación ciudadana (art. 61 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Garantizar políticas de atención integral a grupos vulnerables", "viable": "Sí", "justificacion": "Competencia exclusiva municipal (art. 61 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Diagnóstico de movilidad en las 33 parroquias rurales del DMQ", "viable": "Sí", "justificacion": "Planificación de movilidad local (art. 62 COOTAD)", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Regularización de vías en 33 parroquias rurales", "viable": "Sí", "justificacion": "Vialidad parroquial en coordinación interinstitucional (art. 62 COOTAD)", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Talleres con mujeres víctimas de violencia de género", "viable": "Sí", "justificacion": "Competencia exclusiva municipal en protección de grupos vulnerables (art. 61 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" }
       ],
       "temas_disruptivos": [
-        "Red de tanques de reserva inteligentes con alertas telefónicas comunitarias",
-        "Mercado flotante ecológico en riberas turísticas"
+        "Transformar el Municipio del DMQ en administración pública eficiente con participación ciudadana como mecanismo de gestión",
+        "Regularización integral de vías en las 33 parroquias rurales del cantón Quito"
       ]
     },
-    "similitudes": [
-      {
-        "candidato_id": "r2",
-        "nombre": "Wilfrido Carrera",
-        "porcentaje": 65.0,
-        "puntos_coincidencia": [
-          "Coinciden en priorizar la infraestructura hídrica para parroquias rurales"
-        ],
-        "puntos_diferencia": [
-          "Iza se enfoca en grandes obras físicas, mientras Carrera prioriza la conservación ambiental de cuencas"
-        ]
-      }
-    ]
+    "similitudes": []
   },
   {
-    "id": "g1",
-    "nombre": "Aquiles Alvarez",
-    "partido_politico": "Revolución Ciudadana / RETO",
-    "lista": "5-33",
-    "fecha_inscripcion": "05 de Noviembre, 2024",
+    "id": "mejia_urb1",
+    "nombre": "Candidatos Juntos x Mejía - Concejales Urbanos",
+    "partido_politico": "Juntos x Mejía",
+    "lista": "J-M",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Juntos x Mejia Plan Trabajo Consejales Urbanos.pdf",
     "jurisdiccion": {
-      "provincia": "Guayas",
-      "canton": "Guayaquil",
-      "dignidad": "Alcalde"
+      "provincia": "Pichincha",
+      "canton": "Mejía",
+      "dignidad": "Concejal"
     },
     "analisis": {
-      "resumen_abstract": "Plan de pacificación y reconstrucción del tejido social, fortalecimiento de Segura EP, reordenamiento de la Metrovía y dotación de agua en Monte Sinaí.",
+      "resumen_abstract": "El plan de los Concejales Urbanos del cantón Mejía se centra en la transparencia y rendición de cuentas, con implementación de acceso a la información pública y ruedas de prensa periódicas. También se aborda la seguridad ciudadana preventiva y la prevención de incendios.",
       "palabras_clave": [
-        "pacificación",
-        "seguridad",
-        "Metrovía",
-        "agua potable",
-        "social"
+        "Transparencia",
+        "Rendición De Cuentas",
+        "Seguridad Ciudadana",
+        "Prevención De Incendios"
       ],
       "clasificacion_competencia": "Competencia exclusiva municipal",
-      "justificacion_competencia": "La administración de la Metrovía, servicios sanitarios y agua potable son competencias exclusivas municipales.",
-      "paginas_total": 52,
+      "justificacion_competencia": "La transparencia, rendición de cuentas y prevención de incendios son competencias exclusivas del GAD municipal (art. 3.1 COOTAD).",
+      "paginas_total": 23,
       "promesas_clasificadas": [
-        {
-          "promesa": "Construcción del sistema de alcantarillado en Monte Sinaí",
-          "viable": "Sí",
-          "justificacion": "Competencia exclusiva municipal según el Art. 55 del COOTAD.",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        },
-        {
-          "promesa": "Patrullajes armados con militares municipales",
-          "viable": "No",
-          "justificacion": "El uso de la fuerza pública armada corresponde de forma privativa a Fuerzas Armadas y Policía Nacional del Ministerio de Defensa e Interior.",
-          "tipo_competencia": "Fuera de competencia (Estatal)"
-        }
+        { "promesa": "Implementar acceso a la información pública", "viable": "Sí", "justificacion": "Competencia exclusiva municipal en transparencia (art. 3.1 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Ruedas de prensa periódicas para rendición de cuentas", "viable": "Sí", "justificacion": "Competencia exclusiva municipal en transparencia (art. 3.1 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Prevenir incendios con equipamiento a los Bomberos", "viable": "Sí", "justificacion": "Prevención de incendios es competencia exclusiva municipal (art. 3.1 COOTAD)", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Fomentar la seguridad ciudadana preventiva", "viable": "Parcial", "justificacion": "Seguridad ciudadana es materia compartida; municipio coordina pero mando policial es del Estado Central (art. 3.2 COOTAD)", "tipo_competencia": "Parcialmente viable" }
       ],
       "temas_disruptivos": [
-        "Centros de desarrollo infantil y paz comunitaria en distritos de alto riesgo",
-        "Flota de buses alimentadores 100% eléctricos con internet libre"
+        "Sistema de gestión de riesgos para prevención de incendios en zonas urbanas de Mejía",
+        "Programa de seguridad ciudadana con participación activa de la comunidad cantonal"
       ]
     },
-    "similitudes": [
-      {
-        "candidato_id": "g2",
-        "nombre": "Cynthia Viteri",
-        "porcentaje": 42.0,
-        "puntos_coincidencia": [
-          "Ambos concuerdan en la necesidad de abastecer de agua potable a Monte Sinaí y sectores del noroeste"
-        ],
-        "puntos_diferencia": [
-          "Alvarez propone auditoría completa a la concesionaria Interagua, mientras Viteri defendía el contrato actual"
-        ]
-      }
-    ]
+    "similitudes": []
   },
   {
-    "id": "a1",
-    "nombre": "Cristian Zamora",
-    "partido_politico": "Izquierda Democrática / Mover",
-    "lista": "12-35",
-    "fecha_inscripcion": "14 de Noviembre, 2024",
+    "id": "mejia_aloag1",
+    "nombre": "Candidatos Juntos x Mejía - Alóag",
+    "partido_politico": "Juntos x Mejía",
+    "lista": "J-M",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Juntos x Mejia-Aloag- plan trabajo.pdf",
     "jurisdiccion": {
-      "provincia": "Azuay",
-      "canton": "Cuenca",
+      "provincia": "Pichincha",
+      "canton": "Mejía",
+      "dignidad": "Vocal Junta Parroquial"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan de trabajo de Juntos por Mejía para Alóag se centra en mejorar la movilidad, el desarrollo productivo, la seguridad y el desarrollo rural. Se propone la creación de un parque artesanal, terminales de pasajeros y la promoción del turismo de montaña, aventura y ciencia.",
+      "palabras_clave": [
+        "Movilidad",
+        "Desarrollo Productivo",
+        "Seguridad",
+        "Desarrollo Rural",
+        "Turismo",
+        "Parque Artesanal",
+        "Terminales De Pasajeros"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La construcción de infraestructura de transporte y el fomento económico local son competencias exclusivas del GAD (art. 61 COOTAD).",
+      "paginas_total": 19,
+      "promesas_clasificadas": [
+        { "promesa": "Crear un parque artesanal en Alóag", "viable": "Sí", "justificacion": "Fomento económico local es competencia exclusiva municipal.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Implementar terminales de pasajeros en Alóag", "viable": "Sí", "justificacion": "Infraestructura de transporte es competencia exclusiva municipal.", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promover el turismo de montaña, aventura y ciencia en Alóag", "viable": "Parcial", "justificacion": "Turismo es materia compartida con el ministerio rector (art. 62 COOTAD).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Crear un colegio de seguridad permanente en Alóag", "viable": "Parcial", "justificacion": "Seguridad ciudadana es materia compartida; el municipio puede coordinar pero no ejercer mando policial.", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Implementar sistemas de activación comunitarios", "viable": "Sí", "justificacion": "Participación ciudadana y redes comunitarias son competencia exclusiva municipal.", "tipo_competencia": "Competencia exclusiva municipal" }
+      ],
+      "temas_disruptivos": [
+        "Crear un parque de la familia en Alóag como espacio de recreación comunitario",
+        "Plan de asociatividad para el fortalecimiento de encadenamientos productivos",
+        "Turismo de montaña, aventura y ciencia como eje económico diferenciador de la parroquia"
+      ]
+    },
+    "similitudes": []
+  },
+  {
+    "id": "mejia_tambillo1",
+    "nombre": "Candidatos JxM - Tambillo",
+    "partido_politico": "Juntos x Mejía",
+    "lista": "J-M",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "JxM TAMBILLO - PLAN TRABAJO.pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Mejía",
+      "dignidad": "Vocal Junta Parroquial"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan para Tambillo se centra en mejorar la movilidad, desarrollo productivo, seguridad y hábitat. Se propone crear cooperativas de transporte público, un parque artesanal, zonas comerciales y promover el turismo. También se busca disminuir los incidentes delincuenciales y aumentar la convivencia armónica.",
+      "palabras_clave": [
+        "Movilidad",
+        "Desarrollo Productivo",
+        "Seguridad",
+        "Hábitat y Ambiente",
+        "Turismo",
+        "Cooperativas",
+        "Parque Artesanal",
+        "Zonas Comerciales"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La creación de cooperativas de transporte, planificación urbana y zonas comerciales son competencias exclusivas del GAD (art. 61 COOTAD).",
+      "paginas_total": 17,
+      "promesas_clasificadas": [
+        { "promesa": "Crear cooperativas de transporte público en Tambillo", "viable": "Sí", "justificacion": "Competencia exclusiva municipal en tránsito y transporte cantonal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Crear parque artesanal en Tambillo", "viable": "Sí", "justificacion": "Competencia exclusiva municipal en fomento económico local (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promover el turismo local en Tambillo", "viable": "Parcial", "justificacion": "Turismo es materia compartida con el Estado Central (art. 62 COOTAD).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Crear zonas comerciales en Tambillo", "viable": "Sí", "justificacion": "Planificación urbana y uso del suelo es competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Disminuir incidentes delincuenciales", "viable": "Parcial", "justificacion": "Seguridad ciudadana es compartida; el mando policial es privativo del Estado Central (art. 62 COOTAD).", "tipo_competencia": "Parcialmente viable" }
+      ],
+      "temas_disruptivos": [
+        "Crear un comité de seguridad permanente con participación ciudadana en Tambillo",
+        "Impulsar la apropiación ciudadana de parques, plazas y zonas comerciales",
+        "Involucrar al fuerte Militar Atahualpa en el sistema de seguridad cantonal de Mejía"
+      ]
+    },
+    "similitudes": []
+  },
+  {
+    "id": "calacali1",
+    "nombre": "Candidatos GAD Calacalí 2022",
+    "partido_politico": "Movimiento Ciudadano",
+    "lista": "Cal-2022",
+    "fecha_inscripcion": "2022",
+    "archivo_pdf": "Plan de Trabajo (GAD Calacali) 5 sept2022.pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Quito",
+      "dignidad": "Vocal Junta Parroquial"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan busca impulsar el crecimiento de Calacalí como territorio ordenado, fomentando el desarrollo social inclusivo, la gestión de riesgos, la vida saludable y la igualdad. Se identifican problemas en servicios básicos, contaminación ambiental, educación, salud, seguridad y planificación urbana.",
+      "palabras_clave": [
+        "Desarrollo Social",
+        "Gestión De Riesgos",
+        "Vida Saludable",
+        "Igualdad",
+        "Bienestar Común",
+        "Planificación Urbana",
+        "Contaminación Ambiental",
+        "Educación",
+        "Salud",
+        "Seguridad"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La infraestructura de servicios básicos, manejo de desechos y planificación urbana son competencias exclusivas del GAD (art. 61 COOTAD).",
+      "paginas_total": 31,
+      "promesas_clasificadas": [
+        { "promesa": "Mejorar la infraestructura de servicios básicos", "viable": "Sí", "justificacion": "Agua potable, alcantarillado y saneamiento son competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Reducir la contaminación ambiental en la parroquia", "viable": "Sí", "justificacion": "Manejo de desechos sólidos es competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Mejorar la educación en la parroquia (infraestructura)", "viable": "Parcial", "justificacion": "El municipio puede apoyar en infraestructura; la rectoría educativa es del Estado Central (art. 62 COOTAD).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Mejorar la salud en la parroquia (infraestructura)", "viable": "Parcial", "justificacion": "El municipio puede apoyar en infraestructura; la rectoría de salud es del MSP (art. 62 COOTAD).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Mejorar la planificación urbana de Calacalí", "viable": "Sí", "justificacion": "Uso y ocupación del suelo y planificación urbana son competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Mejorar la gestión de residuos y desechos", "viable": "Sí", "justificacion": "Competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" }
+      ],
+      "temas_disruptivos": [
+        "Crear un parque industrial sostenible en Calacalí como motor de desarrollo económico",
+        "Fomentar la producción agrícola orgánica como eje económico parroquial",
+        "Sistema de reciclaje eficiente y uso de energías renovables en la parroquia"
+      ]
+    },
+    "similitudes": []
+  },
+  {
+    "id": "puellaro1",
+    "nombre": "Candidatos GAD Puéllaro",
+    "partido_politico": "Movimiento Ciudadano",
+    "lista": "Pue-2023",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Plan de Trabajo (GAD PUELLARO).pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Quito",
+      "dignidad": "Vocal Junta Parroquial"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan de vocales del GAD de Puéllaro propone la creación de un plan de desarrollo y ordenamiento territorial con visión de mediano plazo, objetivos estratégicos, metas e indicadores. Se propone también un modelo de gestión institucional con articulación interinstitucional y reducción de factores de riesgo geodinámico.",
+      "palabras_clave": [
+        "Desarrollo Sostenible",
+        "Ordenamiento Territorial",
+        "Gestión De Riesgos",
+        "Desarrollo Social",
+        "Plan De Desarrollo",
+        "Modelo De Gestión"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La planificación y ordenamiento del territorio parroquial es competencia exclusiva del GAD (COOTAD, Art. 61).",
+      "paginas_total": 124,
+      "promesas_clasificadas": [
+        { "promesa": "Crear un plan de desarrollo y ordenamiento territorial parroquial", "viable": "Sí", "justificacion": "Planificación y ordenamiento parroquial es competencia exclusiva (COOTAD, Art. 61).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Crear un modelo de gestión institucional parroquial", "viable": "Sí", "justificacion": "Gestión parroquial es competencia exclusiva (COOTAD, Art. 61).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Reducir los factores de riesgo geodinámico y ambiental", "viable": "Sí", "justificacion": "Prevención de riesgos y protección ambiental es competencia exclusiva (COOTAD, Art. 61).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Fomentar el desarrollo social inclusivo en Puéllaro", "viable": "Parcial", "justificacion": "Salud y educación son materias compartidas con el Estado Central (COOTAD, Art. 62).", "tipo_competencia": "Parcialmente viable" }
+      ],
+      "temas_disruptivos": [
+        "La falta de sistema de desechos como crisis ambiental urgente en Puéllaro",
+        "Contaminación de quebradas como problema de salud pública parroquial",
+        "Exposición a peligros geodinámicos sin plan de contingencia vigente"
+      ]
+    },
+    "similitudes": []
+  },
+  {
+    "id": "uyumbicho1",
+    "nombre": "Candidatos Junta Parroquial Uyumbicho",
+    "partido_politico": "Movimiento Ciudadano",
+    "lista": "Uyu-2023",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "PLAN DE TRABAJO UYUMBICHO.pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Mejía",
+      "dignidad": "Vocal Junta Parroquial"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan de la Junta Parroquial de Uyumbicho se centra en mejorar la movilidad, infraestructura, desarrollo productivo, seguridad, hábitat y cultura. Se identifican problemas de planificación en obra pública, comercialización, productividad agrícola, seguridad y cuidado ambiental.",
+      "palabras_clave": [
+        "Movilidad",
+        "Infraestructura",
+        "Desarrollo Productivo",
+        "Seguridad",
+        "Hábitat y Ambiente",
+        "Sociedad y Cultura"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La vialidad, obra pública e infraestructura de servicios son competencias exclusivas del GAD parroquial (art. 61 COOTAD).",
+      "paginas_total": 6,
+      "promesas_clasificadas": [
+        { "promesa": "Mejorar la movilidad en la parroquia de Uyumbicho", "viable": "Sí", "justificacion": "Tránsito y vialidad son competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Mejorar la infraestructura de obras públicas parroquiales", "viable": "Sí", "justificacion": "Construcción y mantenimiento de vialidad es competencia exclusiva municipal (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Desarrollar la productividad agrícola y empresarial", "viable": "Parcial", "justificacion": "Fomento productivo es materia compartida con el Estado Central (art. 62 COOTAD).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Mejorar la seguridad ciudadana en Uyumbicho", "viable": "Parcial", "justificacion": "Seguridad ciudadana es compartida; el municipio puede coordinar pero no ejercer mando policial.", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Mejorar el hábitat y ambiente en Uyumbicho", "viable": "Sí", "justificacion": "Manejo de desechos y saneamiento son competencias exclusivas municipales (art. 61 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" }
+      ],
+      "temas_disruptivos": [
+        "Reactivar el mercado de Uyumbicho como motor de economía local",
+        "Manejo clasificado de basura con reciclaje comunitario participativo",
+        "Coordinar con MIES para atención a grupos vulnerables de la parroquia",
+        "Crear espacios artísticos para fortalecer la identidad cultural parroquial"
+      ]
+    },
+    "similitudes": []
+  },
+  {
+    "id": "vsanchez2023",
+    "nombre": "Verónica Sánchez",
+    "partido_politico": "Movimiento Ciudadano",
+    "lista": "VS-2023",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "PLAN DE TRABAJO VERONICA SANCHEZ 2023.pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Pedro Moncayo",
       "dignidad": "Alcalde"
     },
     "analisis": {
-      "resumen_abstract": "Construcción de retenes en los accesos al Centro de Rehabilitación Turi, defensa estricta de las fuentes de agua y auditoría ambiental a la minería.",
+      "resumen_abstract": "El plan de trabajo para la Alcaldía de Pedro Moncayo se centra en mejorar la calidad de vida de los habitantes del cantón, mediante proyectos de infraestructura vial, educativa y de salud. El plan se basa en el diagnóstico de la situación actual y en la identificación de las necesidades de la población.",
       "palabras_clave": [
-        "seguridad",
-        "agua",
-        "ambiente",
-        "Turi",
-        "auditoría"
+        "Desarrollo",
+        "Educación",
+        "Salud",
+        "Infraestructura",
+        "Calidad De Vida",
+        "Pedro Moncayo"
       ],
       "clasificacion_competencia": "Competencia exclusiva municipal",
-      "justificacion_competencia": "El uso del suelo, control territorial en el perímetro carcelario y protección de cuencas abastecedoras hídricas corresponden a las competencias municipales.",
-      "paginas_total": 44,
+      "justificacion_competencia": "La construcción de infraestructura vial, educativa y de salud son competencias exclusivas del GAD municipal (Artículo 55 COOTAD).",
+      "paginas_total": 30,
       "promesas_clasificadas": [
-        {
-          "promesa": "Construcción de retenes de control municipal en la entrada al CRS Turi",
-          "viable": "Sí",
-          "justificacion": "El Municipio ejerce control del uso del suelo y movilidad en vías de acceso municipales (Art. 55 COOTAD).",
-          "tipo_competencia": "Competencia exclusiva municipal"
-        },
-        {
-          "promesa": "Revogación de concesiones mineras nacionales en fuentes hídricas",
-          "viable": "No",
-          "justificacion": "Las concesiones mineras son competencia exclusiva del Gobierno Central (Ministerio de Energía y Minas). El Municipio solo puede ejercer consulta popular y control de suelo.",
-          "tipo_competencia": "Fuera de competencia (Nacional)"
-        }
+        { "promesa": "Implementar proyectos de infraestructura para mejorar la vialidad urbana y rural", "viable": "Sí", "justificacion": "Planificación, construcción y mantenimiento de vialidad urbana (Artículo 55 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Mejorar la infraestructura de salud y educación en el cantón", "viable": "Sí", "justificacion": "Construcción de infraestructura física de salud y educación (Artículo 55 COOTAD).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Reducir la pobreza y la desigualdad en el cantón", "viable": "Parcial", "justificacion": "Fomento productivo actúa en coordinación con las políticas nacionales (Artículo 4 COOTAD).", "tipo_competencia": "Parcialmente viable" }
       ],
       "temas_disruptivos": [
-        "Bloqueadores de señal celular de alta potencia en cerco municipal alrededor de Turi",
-        "Sistema de monitoreo de calidad del agua en tiempo real accesible por app"
+        "Sistema de transporte público eficiente y sostenible para Pedro Moncayo",
+        "Programa de capacitación y empleo para jóvenes y adultos del cantón"
       ]
     },
-    "similitudes": [
-      {
-        "candidato_id": "a2",
-        "nombre": "Pedro Palacios",
-        "porcentaje": 51.2,
-        "puntos_coincidencia": [
-          "Ambos protegen el agua de Cuenca mediante la empresa pública ETAPA"
-        ],
-        "puntos_diferencia": [
-          "Zamora exige retenes físicos en la cárcel de Turi mientras Palacios proponía coordinación policial sin retenes"
-        ]
-      }
-    ]
+    "similitudes": []
+  },
+  {
+    "id": "pquito_conc1",
+    "nombre": "Candidatos Alianza Suma Amigo - Puerto Quito",
+    "partido_politico": "Alianza Suma Amigo",
+    "lista": "SA-PQ",
+    "fecha_inscripcion": "2023",
+    "archivo_pdf": "Puerto Quito - Plan Trabajo Concejales Urbanos.pdf",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Puerto Quito",
+      "dignidad": "Concejal"
+    },
+    "analisis": {
+      "resumen_abstract": "El plan de la Alianza Suma Amigo por Puerto Quito se centra en la promoción del turismo, la economía y la infraestructura cantonal. Se enfoca en la creación de empleos, la mejora de la calidad de vida y la protección del medio ambiente, incluyendo construcción de infraestructura turística, promoción agropecuaria y programas de capacitación.",
+      "palabras_clave": [
+        "Turismo",
+        "Economía",
+        "Infraestructura",
+        "Empleo",
+        "Calidad De Vida",
+        "Medio Ambiente",
+        "Seguridad Ciudadana"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La construcción de infraestructura turística y los programas de capacitación local son competencias exclusivas del GAD municipal (art. 253 Constitución).",
+      "paginas_total": 31,
+      "promesas_clasificadas": [
+        { "promesa": "Construcción de infraestructura turística en Puerto Quito", "viable": "Sí", "justificacion": "Infraestructura turística es competencia exclusiva municipal (art. 253 Constitución).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Promoción de la agricultura y la acuicultura local", "viable": "Parcial", "justificacion": "Fomento agropecuario es materia compartida con el MAG (art. 264 Constitución).", "tipo_competencia": "Parcialmente viable" },
+        { "promesa": "Creación de programas de capacitación y empleo en Puerto Quito", "viable": "Sí", "justificacion": "Fomento productivo y capacitación local es competencia exclusiva municipal (art. 253 Constitución).", "tipo_competencia": "Competencia exclusiva municipal" },
+        { "promesa": "Mejora de la seguridad ciudadana en Puerto Quito", "viable": "Parcial", "justificacion": "Seguridad ciudadana es compartida; el municipio coordina pero no ejerce mando policial (art. 264 Constitución).", "tipo_competencia": "Parcialmente viable" }
+      ],
+      "temas_disruptivos": [
+        "Creación de un parque eólico en Puerto Quito como fuente de energía alternativa",
+        "Implementación de un sistema de transporte público eficiente para el cantón"
+      ]
+    },
+    "similitudes": []
   }
 ]
