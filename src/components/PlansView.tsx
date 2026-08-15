@@ -94,7 +94,7 @@ export default function PlansView({
             </div>
 
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-              Planes de Trabajo y Viabilidad Jurídica COOTAD
+              Planes de Trabajo y Competencias COOTAD
             </h2>
             <p className="text-base sm:text-lg text-slate-300 font-medium mt-2.5 max-w-2xl leading-relaxed">
               Consulte el desglose riguroso de propuestas de los <strong className="text-white font-bold">{candidatosFiltrados.length} planes registrados</strong> ante el Consejo Nacional Electoral (CNE).
@@ -237,11 +237,11 @@ export default function PlansView({
           </div>
         </div>
 
-        {/* KPI 2: Viabilidad Exclusiva */}
+        {/* KPI 2: Competencia: Sí */}
         <div className="bg-white border border-emerald-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
           <div>
             <span className="text-sm font-bold text-emerald-900 uppercase tracking-wider block mb-1.5">
-              Exclusiva Municipal
+              Competencia: Sí
             </span>
             <div className="text-3xl sm:text-4xl font-extrabold text-emerald-700 tracking-tight">{countExclusiva}</div>
             <div className="flex items-center gap-2 mt-1.5">
@@ -256,11 +256,11 @@ export default function PlansView({
           </div>
         </div>
 
-        {/* KPI 3: Concurrente */}
+        {/* KPI 3: Competencia: Parcialmente */}
         <div className="bg-white border border-amber-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
           <div>
             <span className="text-sm font-bold text-amber-900 uppercase tracking-wider block mb-1.5">
-              Parcialmente Viable
+              Competencia: Parcialmente
             </span>
             <div className="text-3xl sm:text-4xl font-extrabold text-amber-600 tracking-tight">{countConcurrente}</div>
             <div className="flex items-center gap-2 mt-1.5">
@@ -275,11 +275,11 @@ export default function PlansView({
           </div>
         </div>
 
-        {/* KPI 4: Fuera de Competencia */}
+        {/* KPI 4: Competencia: No */}
         <div className="bg-white border border-rose-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
           <div>
             <span className="text-sm font-bold text-rose-900 uppercase tracking-wider block mb-1.5">
-              Fuera de Competencia
+              Competencia: No
             </span>
             <div className="text-3xl sm:text-4xl font-extrabold text-rose-600 tracking-tight">{countFuera}</div>
             <div className="flex items-center gap-2 mt-1.5">
@@ -314,7 +314,7 @@ export default function PlansView({
               >
                 <option value="dignidad_hierarchy">1. Jerarquía Institucional (Prefectura › Alcaldía › Concejales › Juntas)</option>
                 <option value="fecha_desc">Inscripción Más Reciente (Fecha)</option>
-                <option value="viabilidad_desc">Mayor Viabilidad Jurídica COOTAD</option>
+                <option value="viabilidad_desc">Mayor Alineación con Competencias (COOTAD)</option>
                 <option value="paginas_desc">Mayor Extensión del Plan (Páginas)</option>
                 <option value="paginas_asc">Menor Extensión del Plan (Páginas)</option>
               </select>

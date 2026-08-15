@@ -151,11 +151,11 @@ export default function CandidatoCard({ candidato, onOpenDetail, onSelectAsAncho
           </span>
         </div>
 
-        {/* Resumen de Viabilidad COOTAD */}
+        {/* Resumen de Competencias COOTAD */}
         <div className="mt-4 bg-slate-50 rounded-xl p-4 border border-slate-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2.5">
             <span className="text-sm text-slate-700 font-bold flex items-center gap-1.5">
-              Evaluación Jurídica COOTAD:
+              Evaluación de Competencia COOTAD:
             </span>
             <CompetenciaBadge competencia={candidato.analisis.clasificacion_competencia} />
           </div>
@@ -165,17 +165,17 @@ export default function CandidatoCard({ candidato, onOpenDetail, onSelectAsAncho
             <div className="mt-2.5 pt-2.5 border-t border-slate-200/80">
               <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
                 <span>Promesas analizadas ({promesas.length}):</span>
-                <span className="text-emerald-700">{pctViable}% viables</span>
+                <span className="text-emerald-700">{pctViable}% Competencia: Sí</span>
               </div>
               <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden flex">
-                <div style={{ width: `${(countViables / totalPromesas) * 100}%` }} className="bg-emerald-500 h-full" title={`${countViables} viables`} />
-                <div style={{ width: `${(countParciales / totalPromesas) * 100}%` }} className="bg-amber-400 h-full" title={`${countParciales} parcialmente viables`} />
-                <div style={{ width: `${(countNo / totalPromesas) * 100}%` }} className="bg-rose-500 h-full" title={`${countNo} fuera de competencia`} />
+                <div style={{ width: `${(countViables / totalPromesas) * 100}%` }} className="bg-emerald-500 h-full" title={`${countViables} Competencia: Sí`} />
+                <div style={{ width: `${(countParciales / totalPromesas) * 100}%` }} className="bg-amber-400 h-full" title={`${countParciales} Competencia: Parcialmente`} />
+                <div style={{ width: `${(countNo / totalPromesas) * 100}%` }} className="bg-rose-500 h-full" title={`${countNo} Competencia: No`} />
               </div>
-              <div className="flex items-center gap-4 mt-2 text-xs font-semibold">
-                <span className="flex items-center gap-1 text-emerald-800"><CheckCircle2 className="h-3.5 w-3.5" /> {countViables} Viables</span>
-                <span className="flex items-center gap-1 text-amber-800"><AlertCircle className="h-3.5 w-3.5" /> {countParciales} Parcial</span>
-                <span className="flex items-center gap-1 text-rose-800"><XCircle className="h-3.5 w-3.5" /> {countNo} Fuera</span>
+              <div className="flex items-center gap-4 mt-2 text-xs font-semibold flex-wrap">
+                <span className="flex items-center gap-1 text-emerald-800"><CheckCircle2 className="h-3.5 w-3.5" /> {countViables} Sí</span>
+                <span className="flex items-center gap-1 text-amber-800"><AlertCircle className="h-3.5 w-3.5" /> {countParciales} Parcialmente</span>
+                <span className="flex items-center gap-1 text-rose-800"><XCircle className="h-3.5 w-3.5" /> {countNo} No</span>
               </div>
             </div>
           )}

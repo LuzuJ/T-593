@@ -23,6 +23,7 @@ export interface AnalisisPlan {
   paginas_total: number;
   promesas_clasificadas?: PromesaClasificada[];
   temas_disruptivos?: string[];
+  propuestas_no_repetidas?: string[];
 }
 
 export interface SimilitudDetalle {

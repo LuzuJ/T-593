@@ -150,13 +150,13 @@ export default function CandidateDetailModal({ candidato, onClose }: Props) {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-slate-100">
               <h3 className="text-base sm:text-lg font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
                 <FileCheck className="h-6 w-6 text-emerald-600" />
-                Evaluación de Viabilidad Legal COOTAD
+                Evaluación de Competencia COOTAD
               </h3>
               <CompetenciaBadge competencia={candidato.analisis.clasificacion_competencia} />
             </div>
             <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
               <p className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                Fundamentación y Alcance Jurídico:
+                Fundamentación y Alcance de Competencias:
               </p>
               <p className="text-base sm:text-lg text-slate-900 font-medium leading-relaxed">
                 "{candidato.analisis.justificacion_competencia}"
@@ -184,17 +184,17 @@ export default function CandidateDetailModal({ candidato, onClose }: Props) {
                     <div className="shrink-0 flex flex-col items-start sm:items-end gap-1.5">
                       {p.viable === 'Sí' && (
                         <span className="bg-emerald-100 text-emerald-900 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full border border-emerald-300 flex items-center gap-1.5 shadow-2xs">
-                          <Check className="h-4 w-4 text-emerald-700" /> Viable (100%)
+                          <Check className="h-4 w-4 text-emerald-700" /> Competencia: Sí
                         </span>
                       )}
                       {p.viable === 'Parcial' && (
                         <span className="bg-amber-100 text-amber-900 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full border border-amber-300 flex items-center gap-1.5 shadow-2xs">
-                          <AlertTriangle className="h-4 w-4 text-amber-700" /> Parcialmente viable
+                          <AlertTriangle className="h-4 w-4 text-amber-700" /> Competencia: Parcialmente
                         </span>
                       )}
                       {p.viable === 'No' && (
                         <span className="bg-rose-100 text-rose-900 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full border border-rose-300 flex items-center gap-1.5 shadow-2xs">
-                          <XCircle className="h-4 w-4 text-rose-700" /> Fuera de Alcance
+                          <XCircle className="h-4 w-4 text-rose-700" /> Competencia: No
                         </span>
                       )}
                       <span className="text-xs font-semibold text-slate-500">{p.tipo_competencia}</span>
@@ -205,15 +205,16 @@ export default function CandidateDetailModal({ candidato, onClose }: Props) {
             </div>
           )}
 
-          {/* Section 4: Temas Disruptivos */}
-          {candidato.analisis.temas_disruptivos && candidato.analisis.temas_disruptivos.length > 0 && (
+          {/* Section 4: Propuestas No Repetidas */}
+          {((candidato.analisis.propuestas_no_repetidas && candidato.analisis.propuestas_no_repetidas.length > 0) ||
+            (candidato.analisis.temas_disruptivos && candidato.analisis.temas_disruptivos.length > 0)) && (
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
               <h3 className="text-base sm:text-lg font-bold text-blue-950 mb-3 uppercase tracking-wider flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-blue-600" />
-                Propuestas Disruptivas e Innovadoras
+                Propuestas No Repetidas
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {candidato.analisis.temas_disruptivos.map((t, idx) => (
+                {(candidato.analisis.propuestas_no_repetidas || candidato.analisis.temas_disruptivos || []).map((t, idx) => (
                   <div key={idx} className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm flex items-start gap-3">
                     <Sparkles className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
                     <p className="text-sm sm:text-base font-semibold text-slate-900">{t}</p>
