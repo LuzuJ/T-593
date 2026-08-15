@@ -1,0 +1,330 @@
+{
+  "totalParishes": 1661,
+  "nationalViewBox": "0 0 2048 2228",
+  "provinces": [
+    {
+      "name": "AZUAY",
+      "file": "provinces/azuay.json",
+      "viewBox": "583.6 1529.3 524.5 466.7",
+      "count": 53,
+      "cantons": [
+        "Chordeleg",
+        "Cuenca",
+        "Giron",
+        "Guachapala",
+        "Gualaceo",
+        "Nabon",
+        "Ona",
+        "Paute",
+        "Pucara",
+        "San Fernando",
+        "Santa Isabel",
+        "Sigsig"
+      ]
+    },
+    {
+      "name": "BOLIVAR",
+      "file": "provinces/bolivar.json",
+      "viewBox": "563.3 930.8 368.1 436.1",
+      "count": 43,
+      "cantons": [
+        "Caluma",
+        "Chillanes",
+        "Chimbo",
+        "Guaranda",
+        "Las Naves",
+        "San Miguel"
+      ]
+    },
+    {
+      "name": "CANAR",
+      "file": "provinces/canar.json",
+      "viewBox": "436.5 1032.1 1125.3 816.2",
+      "count": 113,
+      "cantons": [
+        "Azogues",
+        "Biblia",
+        "Canar",
+        "Deleg",
+        "El Tambo",
+        "La Troncal",
+        "Suscal"
+      ]
+    },
+    {
+      "name": "CHIMBORAZO",
+      "file": "provinces/chimborazo.json",
+      "viewBox": "609.9 1025.7 583.1 469.0",
+      "count": 44,
+      "cantons": [
+        "Alausi",
+        "Chambo",
+        "Colta",
+        "Cumanda",
+        "Guamote",
+        "Guano",
+        "Pallatanga",
+        "Penipe",
+        "Riobamba"
+      ]
+    },
+    {
+      "name": "COTOPAXI",
+      "file": "provinces/cotopaxi.json",
+      "viewBox": "532.0 654.2 476.3 465.2",
+      "count": 50,
+      "cantons": [
+        "La Mana",
+        "Latacunga",
+        "Pangua",
+        "Pujili",
+        "Salcedo",
+        "Saquisili",
+        "Sigchos"
+      ]
+    },
+    {
+      "name": "EL ORO",
+      "file": "provinces/el_oro.json",
+      "viewBox": "190.8 1525.0 593.1 701.8",
+      "count": 171,
+      "cantons": [
+        "Arenillas",
+        "Atahualpa",
+        "Chilla",
+        "El Guabo",
+        "Huaquillas",
+        "Las Lajas",
+        "Machala",
+        "Pasaje",
+        "Santa Rosa"
+      ]
+    },
+    {
+      "name": "ESMERALDAS",
+      "file": "provinces/esmeraldas.json",
+      "viewBox": "-35.8 -23.2 984.3 453.7",
+      "count": 104,
+      "cantons": [
+        "Eloy Alfaro",
+        "Muisne",
+        "Quininde",
+        "Rioverde"
+      ]
+    },
+    {
+      "name": "GALAPAGOS",
+      "file": "provinces/galapagos.json",
+      "viewBox": "-10 370 430 790",
+      "count": 245,
+      "cantons": [
+        "Isabela",
+        "San Cristobal",
+        "Santa Cruz"
+      ]
+    },
+    {
+      "name": "GUAYAS",
+      "file": "provinces/guayas.json",
+      "viewBox": "164.9 827.5 617.4 830.2",
+      "count": 76,
+      "cantons": [
+        "Daule",
+        "Duran",
+        "El Triunfo",
+        "Guayaquil",
+        "Isidro Ayora",
+        "Lomas de Sargentillo",
+        "Milagro",
+        "Naranjal",
+        "Nobol",
+        "Pedro Carbo",
+        "Playas",
+        "Salitre",
+        "Samborondon",
+        "Santa Lucia",
+        "Simon Bolivar",
+        "Yaguachi"
+      ]
+    },
+    {
+      "name": "IMBABURA",
+      "file": "provinces/imbabura.json",
+      "viewBox": "850.3 137.0 427.0 433.4",
+      "count": 57,
+      "cantons": [
+        "Antonio Ante",
+        "Cotacachi",
+        "Ibarra",
+        "Otavalo",
+        "Pimampiro",
+        "Urcuqui"
+      ]
+    },
+    {
+      "name": "LOJA",
+      "file": "provinces/loja.json",
+      "viewBox": "307.6 1672.1 683.9 645.9",
+      "count": 53,
+      "cantons": [
+        "Catamayo",
+        "Chaguarpamba",
+        "Gonzanama",
+        "Loja",
+        "Olmedo L",
+        "Paltas",
+        "Pindal",
+        "Saraguro",
+        "Urdaneta L"
+      ]
+    },
+    {
+      "name": "LOS RIOS",
+      "file": "provinces/los_rios.json",
+      "viewBox": "352.3 724.1 475.1 618.9",
+      "count": 48,
+      "cantons": [
+        "Baba",
+        "Babahoyo",
+        "Mocache",
+        "Palenque",
+        "Puebloviejo",
+        "Quinsaloma",
+        "Ventanas",
+        "Vinces"
+      ]
+    },
+    {
+      "name": "MANABI",
+      "file": "provinces/manabi.json",
+      "viewBox": "-16.0 127.4 717.2 1011.0",
+      "count": 44,
+      "cantons": [
+        "Bolivar",
+        "Chone",
+        "Flavio Alfaro",
+        "Junin",
+        "Pedernales",
+        "Pichincha M",
+        "Santa Ana"
+      ]
+    },
+    {
+      "name": "MORONA SANTIAGO",
+      "file": "provinces/morona_santiago.json",
+      "viewBox": "836.9 1209.5 844.6 490.9",
+      "count": 14,
+      "cantons": [
+        "Huamboya",
+        "Logrono",
+        "Morona",
+        "Santiago",
+        "Sucua",
+        "Taisha"
+      ]
+    },
+    {
+      "name": "NAPO",
+      "file": "provinces/napo.json",
+      "viewBox": "1044.7 317.8 669.7 518.0",
+      "count": 39,
+      "cantons": [
+        "Archidona",
+        "El Chaco",
+        "Quijos"
+      ]
+    },
+    {
+      "name": "ORELLANA",
+      "file": "provinces/orellana.json",
+      "viewBox": "1504.0 442.2 573.0 574.8",
+      "count": 15,
+      "cantons": [
+        "Aguarico",
+        "La Joya de los Sachas"
+      ]
+    },
+    {
+      "name": "PASTAZA",
+      "file": "provinces/pastaza.json",
+      "viewBox": "976.6 557.3 1100.4 949.2",
+      "count": 28,
+      "cantons": [
+        "Arajuno",
+        "Pastaza"
+      ]
+    },
+    {
+      "name": "PICHINCHA",
+      "file": "provinces/pichincha.json",
+      "viewBox": "570.6 194.6 622.0 656.5",
+      "count": 125,
+      "cantons": [
+        "Cayambe",
+        "Mejia",
+        "Pedro Moncayo",
+        "Quito",
+        "Rumiñahui",
+        "San Miguel de los Bancos"
+      ]
+    },
+    {
+      "name": "SANTA ELENA",
+      "file": "provinces/santa_elena.json",
+      "viewBox": "12.7 1084.7 518.9 611.1",
+      "count": 54,
+      "cantons": [
+        "Salinas",
+        "Santa Elena"
+      ]
+    },
+    {
+      "name": "SANTO DOMINGO DE LOS TSACHILAS",
+      "file": "provinces/santo_domingo_de_los_tsachilas.json",
+      "viewBox": "186.1 45.2 786.1 813.6",
+      "count": 164,
+      "cantons": [
+        "La Concordia",
+        "Santo Domingo"
+      ]
+    },
+    {
+      "name": "SUCUMBIOS",
+      "file": "provinces/sucumbios.json",
+      "viewBox": "1044.7 317.8 1020.1 527.1",
+      "count": 8,
+      "cantons": [
+        "Cuyabeno",
+        "Shushufindi"
+      ]
+    },
+    {
+      "name": "TUNGURAHUA",
+      "file": "provinces/tungurahua.json",
+      "viewBox": "717.6 530.5 732.8 670.7",
+      "count": 102,
+      "cantons": [
+        "Ambato",
+        "Banos",
+        "Cevallos",
+        "Mocha",
+        "Pelileo",
+        "Pillaro",
+        "Quero",
+        "Tisaleo"
+      ]
+    },
+    {
+      "name": "ZAMORA CHINCHIPE",
+      "file": "provinces/zamora_chinchipe.json",
+      "viewBox": "642.4 1878.8 289.1 439.2",
+      "count": 11,
+      "cantons": [
+        "Chinchipe",
+        "El Pangui",
+        "Yacuambi",
+        "Zamora"
+      ]
+    }
+  ]
+}

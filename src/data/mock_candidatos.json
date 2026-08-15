@@ -1,0 +1,392 @@
+[
+  {
+    "id": "q1",
+    "nombre": "Pabel Muñoz",
+    "partido_politico": "Revolución Ciudadana",
+    "lista": "5",
+    "fecha_inscripcion": "12 de Noviembre, 2024",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Quito",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "Propone una ciudad más equitativa con fuerte inversión en movilidad sostenible, operación integral del Metro y modernización del transporte público urbano.",
+      "palabras_clave": [
+        "movilidad",
+        "equidad",
+        "transporte",
+        "Metro",
+        "seguridad"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "Las propuestas de movilidad, transporte masivo (Metro) y vialidad urbana recaen directamente en las competencias exclusivas del GAD Metropolitano (Art. 55 COOTAD).",
+      "paginas_total": 45,
+      "promesas_clasificadas": [
+        {
+          "promesa": "Integración tarifaria y física del Metro de Quito con Trolebús y Ecovía",
+          "viable": "Sí",
+          "justificacion": "Atribución directa del GAD municipal según el Art. 55 num. 6 del COOTAD (Tránsito y Transporte).",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        },
+        {
+          "promesa": "Sistema unificado de videovigilancia barrial con inteligencia artificial",
+          "viable": "Parcial",
+          "justificacion": "La seguridad ciudadana es compartida con el Ministerio del Interior. El Municipio aporta cámaras pero no ejerce mando policial.",
+          "tipo_competencia": "Competencia concurrente"
+        },
+        {
+          "promesa": "Construcción de 5 Hospitales Regionales de especialidades",
+          "viable": "No",
+          "justificacion": "La construcción de centros de salud de alta complejidad excede la competencia municipal y es atribución del Ministerio de Salud Pública.",
+          "tipo_competencia": "Fuera de competencia (Estatal)"
+        }
+      ],
+      "temas_disruptivos": [
+        "Red de corredores biológicos urbanos con sensores de biodiversidad",
+        "Fondo Municipal de Capital Semilla para Economía Circular",
+        "Boleto electrónico único con reconocimiento facial opcional"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "q2",
+        "nombre": "Jorge Yunda",
+        "porcentaje": 45.5,
+        "puntos_coincidencia": [
+          "Coinciden en destinar presupuesto municipal para seguridad comunitaria y alarmas barriales",
+          "Ambos apoyan la intervención y repavimentación prioritaria en las parroquias del sur de Quito"
+        ],
+        "puntos_diferencia": [
+          "Pabel Muñoz plantea gestión directa estatal/municipal del transporte masivo, mientras Jorge Yunda propone incentivos al sector privado",
+          "Difieren en la reestructuración de la tasa de seguridad barrial"
+        ]
+      },
+      {
+        "candidato_id": "q3",
+        "nombre": "Pedro Freile",
+        "porcentaje": 20.0,
+        "puntos_coincidencia": [
+          "Coinciden en la necesidad de digitalizar los trámites de licencias de funcionamiento de negocios (LUAE)"
+        ],
+        "puntos_diferencia": [
+          "Freile propone la privatización parcial del recaudo municipal, mientras Muñoz exige control público directo",
+          "Freile aboga por alianzas público-privadas en vialidad de peaje urbano"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q2",
+    "nombre": "Jorge Yunda",
+    "partido_politico": "Alianza Juntos por la Gente",
+    "lista": "45-70",
+    "fecha_inscripcion": "08 de Noviembre, 2024",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Quito",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "Enfoque en seguridad ciudadana con alarmas comunitarias, reactivación económica barrial y programas de salud integral y esterilización animal.",
+      "palabras_clave": [
+        "seguridad",
+        "reactivación",
+        "social",
+        "salud",
+        "emprendimiento"
+      ],
+      "clasificacion_competencia": "Competencia concurrente",
+      "justificacion_competencia": "La seguridad ciudadana es compartida concurrentemente con el Ministerio del Interior y Policía Nacional, manteniendo el municipio rol preventivo.",
+      "paginas_total": 38,
+      "promesas_clasificadas": [
+        {
+          "promesa": "Instalación de 10.000 alarmas comunitarias con botón de pánico",
+          "viable": "Sí",
+          "justificacion": "El Municipio puede financiar equipamiento preventivo bajo el Art. 60 del COOTAD.",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        },
+        {
+          "promesa": "Unidades móviles de atención médica general y odontológica",
+          "viable": "Parcial",
+          "justificacion": "Requiere convenio y aval del Ministerio de Salud (MSP) para expedir certificados médicos autorizados.",
+          "tipo_competencia": "Competencia concurrente"
+        },
+        {
+          "promesa": "Rebaja obligatoria del IVA al 5% para comercios del centro histórico",
+          "viable": "No",
+          "justificacion": "La fijación de tributos nacionales como el IVA es facultad exclusiva de la Asamblea Nacional y el Ejecutivo.",
+          "tipo_competencia": "Fuera de competencia (Nacional)"
+        }
+      ],
+      "temas_disruptivos": [
+        "Clinicas veterinarias municipales 24/7 y registro chip obligatorio para mascotas",
+        "Mercados nocturnos gastronómicos con patrullaje barrial privado pagado por tasa",
+        "Plataforma municipal de streaming cultural para artistas locales"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "q1",
+        "nombre": "Pabel Muñoz",
+        "porcentaje": 45.5,
+        "puntos_coincidencia": [
+          "Coinciden en destinar presupuesto municipal para seguridad comunitaria y alarmas barriales",
+          "Ambos apoyan la intervención y repavimentación prioritaria en las parroquias del sur de Quito"
+        ],
+        "puntos_diferencia": [
+          "Pabel Muñoz plantea gestión directa estatal/municipal del transporte masivo, mientras Jorge Yunda propone incentivos al sector privado",
+          "Difieren en la reestructuración de la tasa de seguridad barrial"
+        ]
+      },
+      {
+        "candidato_id": "q3",
+        "nombre": "Pedro Freile",
+        "porcentaje": 30.2,
+        "puntos_coincidencia": [
+          "Coinciden en simplificar la entrega de permisos para microempresas y emprendedores"
+        ],
+        "puntos_diferencia": [
+          "Yunda se enfoca en asistencia social directa y unidades médicas, mientras Freile rechaza el asistencialismo municipal"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "q3",
+    "nombre": "Pedro Freile",
+    "partido_politico": "Alianza UIO",
+    "lista": "17-23",
+    "fecha_inscripcion": "15 de Noviembre, 2024",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Quito",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "Busca una gestión municipal eficiente, digitalización total de trámites, reducción de burocracia e impulso a la inversión privada bajo alianzas público-privadas.",
+      "palabras_clave": [
+        "eficiencia",
+        "inversión",
+        "empleo",
+        "tecnología",
+        "transparencia"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La optimización de procesos municipales, uso de suelo y simplificación regulatoria son facultades exclusivas del cabildo.",
+      "paginas_total": 60,
+      "promesas_clasificadas": [
+        {
+          "promesa": "Ventanilla única digital con aprobación automática de planos en 48 horas",
+          "viable": "Sí",
+          "justificacion": "Competencia exclusiva de planificación urbana y uso del suelo (Art. 55 COOTAD).",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        },
+        {
+          "promesa": "Concesión privada del mantenimiento vial metropolitano",
+          "viable": "Sí",
+          "justificacion": "Atribución municipal delegar servicios mediante Alianzas Público-Privadas (APP).",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        },
+        {
+          "promesa": "Eliminación de impuestos de matriculación vehicular nacional",
+          "viable": "No",
+          "justificacion": "El impuesto a la propiedad vehicular es de regulación nacional emitida por el SRI.",
+          "tipo_competencia": "Fuera de competencia (Nacional)"
+        }
+      ],
+      "temas_disruptivos": [
+        "Auditoría con Blockchain para todos los contratos de obra pública municipal",
+        "Zonas de libre comercio libre de tasas en valles periféricos",
+        "Subasta transparente en vivo de bienes inmuebles municipales sin uso"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "q1",
+        "nombre": "Pabel Muñoz",
+        "porcentaje": 20.0,
+        "puntos_coincidencia": [
+          "Coinciden en la necesidad de digitalizar los trámites de licencias de funcionamiento de negocios (LUAE)"
+        ],
+        "puntos_diferencia": [
+          "Freile propone la privatización parcial del recaudo municipal, mientras Muñoz exige control público directo",
+          "Freile aboga por alianzas público-privadas en vialidad de peaje urbano"
+        ]
+      },
+      {
+        "candidato_id": "q2",
+        "nombre": "Jorge Yunda",
+        "porcentaje": 30.2,
+        "puntos_coincidencia": [
+          "Coinciden en simplificar la entrega de permisos para microempresas y emprendedores"
+        ],
+        "puntos_diferencia": [
+          "Yunda se enfoca en asistencia social directa y unidades médicas, mientras Freile rechaza el asistencialismo municipal"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r1",
+    "nombre": "Fabián Iza",
+    "partido_politico": "Movimiento Ciudadano",
+    "lista": "100",
+    "fecha_inscripcion": "10 de Noviembre, 2024",
+    "jurisdiccion": {
+      "provincia": "Pichincha",
+      "canton": "Rumiñahui",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "Prioriza obras de vialidad, redes de agua potable y alcantarillado en parroquias rurales y periferias de Sangolquí y San Pedro.",
+      "palabras_clave": [
+        "vialidad",
+        "agua potable",
+        "alcantarillado",
+        "rural",
+        "obras públicas"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La dotación de servicios básicos, agua potable y alcantarillado son competencias exclusivas primarias del GAD municipal.",
+      "paginas_total": 25,
+      "promesas_clasificadas": [
+        {
+          "promesa": "Ampliación de la planta de tratamiento de agua potable de Sangolquí",
+          "viable": "Sí",
+          "justificacion": "Competencia primaria directa municipal de saneamiento (Art. 55 COOTAD).",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        }
+      ],
+      "temas_disruptivos": [
+        "Red de tanques de reserva inteligentes con alertas telefónicas comunitarias",
+        "Mercado flotante ecológico en riberas turísticas"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "r2",
+        "nombre": "Wilfrido Carrera",
+        "porcentaje": 65.0,
+        "puntos_coincidencia": [
+          "Coinciden en priorizar la infraestructura hídrica para parroquias rurales"
+        ],
+        "puntos_diferencia": [
+          "Iza se enfoca en grandes obras físicas, mientras Carrera prioriza la conservación ambiental de cuencas"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "g1",
+    "nombre": "Aquiles Alvarez",
+    "partido_politico": "Revolución Ciudadana / RETO",
+    "lista": "5-33",
+    "fecha_inscripcion": "05 de Noviembre, 2024",
+    "jurisdiccion": {
+      "provincia": "Guayas",
+      "canton": "Guayaquil",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "Plan de pacificación y reconstrucción del tejido social, fortalecimiento de Segura EP, reordenamiento de la Metrovía y dotación de agua en Monte Sinaí.",
+      "palabras_clave": [
+        "pacificación",
+        "seguridad",
+        "Metrovía",
+        "agua potable",
+        "social"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "La administración de la Metrovía, servicios sanitarios y agua potable son competencias exclusivas municipales.",
+      "paginas_total": 52,
+      "promesas_clasificadas": [
+        {
+          "promesa": "Construcción del sistema de alcantarillado en Monte Sinaí",
+          "viable": "Sí",
+          "justificacion": "Competencia exclusiva municipal según el Art. 55 del COOTAD.",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        },
+        {
+          "promesa": "Patrullajes armados con militares municipales",
+          "viable": "No",
+          "justificacion": "El uso de la fuerza pública armada corresponde de forma privativa a Fuerzas Armadas y Policía Nacional del Ministerio de Defensa e Interior.",
+          "tipo_competencia": "Fuera de competencia (Estatal)"
+        }
+      ],
+      "temas_disruptivos": [
+        "Centros de desarrollo infantil y paz comunitaria en distritos de alto riesgo",
+        "Flota de buses alimentadores 100% eléctricos con internet libre"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "g2",
+        "nombre": "Cynthia Viteri",
+        "porcentaje": 42.0,
+        "puntos_coincidencia": [
+          "Ambos concuerdan en la necesidad de abastecer de agua potable a Monte Sinaí y sectores del noroeste"
+        ],
+        "puntos_diferencia": [
+          "Alvarez propone auditoría completa a la concesionaria Interagua, mientras Viteri defendía el contrato actual"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a1",
+    "nombre": "Cristian Zamora",
+    "partido_politico": "Izquierda Democrática / Mover",
+    "lista": "12-35",
+    "fecha_inscripcion": "14 de Noviembre, 2024",
+    "jurisdiccion": {
+      "provincia": "Azuay",
+      "canton": "Cuenca",
+      "dignidad": "Alcalde"
+    },
+    "analisis": {
+      "resumen_abstract": "Construcción de retenes en los accesos al Centro de Rehabilitación Turi, defensa estricta de las fuentes de agua y auditoría ambiental a la minería.",
+      "palabras_clave": [
+        "seguridad",
+        "agua",
+        "ambiente",
+        "Turi",
+        "auditoría"
+      ],
+      "clasificacion_competencia": "Competencia exclusiva municipal",
+      "justificacion_competencia": "El uso del suelo, control territorial en el perímetro carcelario y protección de cuencas abastecedoras hídricas corresponden a las competencias municipales.",
+      "paginas_total": 44,
+      "promesas_clasificadas": [
+        {
+          "promesa": "Construcción de retenes de control municipal en la entrada al CRS Turi",
+          "viable": "Sí",
+          "justificacion": "El Municipio ejerce control del uso del suelo y movilidad en vías de acceso municipales (Art. 55 COOTAD).",
+          "tipo_competencia": "Competencia exclusiva municipal"
+        },
+        {
+          "promesa": "Revogación de concesiones mineras nacionales en fuentes hídricas",
+          "viable": "No",
+          "justificacion": "Las concesiones mineras son competencia exclusiva del Gobierno Central (Ministerio de Energía y Minas). El Municipio solo puede ejercer consulta popular y control de suelo.",
+          "tipo_competencia": "Fuera de competencia (Nacional)"
+        }
+      ],
+      "temas_disruptivos": [
+        "Bloqueadores de señal celular de alta potencia en cerco municipal alrededor de Turi",
+        "Sistema de monitoreo de calidad del agua en tiempo real accesible por app"
+      ]
+    },
+    "similitudes": [
+      {
+        "candidato_id": "a2",
+        "nombre": "Pedro Palacios",
+        "porcentaje": 51.2,
+        "puntos_coincidencia": [
+          "Ambos protegen el agua de Cuenca mediante la empresa pública ETAPA"
+        ],
+        "puntos_diferencia": [
+          "Zamora exige retenes físicos en la cárcel de Turi mientras Palacios proponía coordinación policial sin retenes"
+        ]
+      }
+    ]
+  }
+]
