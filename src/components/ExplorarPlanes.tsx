@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ExternalLink, GitCompareArrows, Loader2, MapPin, Scale } from 'lucide-react';
+import { ArrowLeft, ExternalLink, GitCompareArrows, Loader2, MapPin } from 'lucide-react';
 import ComparadorPlanes from './ComparadorPlanes';
 import {
   FilaPlan,
@@ -108,7 +108,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
         <button
           type="button"
           onClick={onVolver}
-          className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 mb-4"
+          className="hidden sm:inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 mb-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Volver al mapa
@@ -120,18 +120,17 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
           <div>
             <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{sugerencia.titulo}</h2>
             <p className="text-slate-600 mt-1">{lugar}</p>
-            <p className="text-sm text-slate-500 mt-2 flex items-center gap-2">
-              <Scale className="h-4 w-4 text-blue-600" />
-              Las ofertas y su competencia se leen del PDF oficial y conservan la página para comprobarlas.
+            <p className="text-sm text-slate-500 mt-2">
+              Cada frase sale del PDF oficial y se puede abrir en su página.
             </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-5">
+        <div className="flex gap-2 mt-5">
           <button
             type="button"
             onClick={() => setModo('analisis')}
-            className={`px-4 py-2 rounded-full text-sm font-bold border ${
+            className={`flex-1 sm:flex-none min-h-11 px-4 py-2 rounded-full text-sm font-bold border ${
               modo === 'analisis' ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-slate-700 border-slate-300'
             }`}
           >
@@ -140,7 +139,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
           <button
             type="button"
             onClick={() => setModo('comparar')}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border ${
+            className={`flex-1 sm:flex-none min-h-11 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-bold border ${
               modo === 'comparar' ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-slate-700 border-slate-300'
             }`}
           >
@@ -149,7 +148,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-1 px-1">
           {subtipos.map((subtipo) => {
             const cantidad = delLugar.filter((fila) => fila.subtipo === subtipo).length;
             const activo = subtipo === subtipoActivo;
@@ -158,7 +157,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
                 key={subtipo}
                 type="button"
                 onClick={() => setSubtipoActivo(subtipo)}
-                className={`px-4 py-2 rounded-full text-sm font-bold border transition ${
+                className={`shrink-0 min-h-11 px-4 py-2 rounded-full text-sm font-bold border transition ${
                   activo
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
@@ -276,7 +275,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
                   <button
                     type="button"
                     onClick={() => leer(fila)}
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold"
+                    className="min-h-11 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold"
                   >
                     Leer análisis
                   </button>
@@ -285,7 +284,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
                   <button
                     type="button"
                     onClick={() => setPlanAbierto({ fila })}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                    className="min-h-11 inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-700 hover:bg-slate-50"
                   >
                     <ExternalLink className="h-4 w-4" />
                     Ver el plan
@@ -294,7 +293,7 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
                 <button
                   type="button"
                   onClick={() => abrirComparacion(fila.cod_formulario)}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                  className="min-h-11 inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-700 hover:bg-slate-50"
                 >
                   <GitCompareArrows className="h-4 w-4" />
                   Comparar

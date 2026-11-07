@@ -119,18 +119,23 @@ export default function VisorPlan({ fila, paginaInicial, onCerrar }: VisorPlanPr
   return (
     <div className="fixed inset-0 z-[80] bg-slate-950/70 flex items-end sm:items-center justify-center p-0 sm:p-6" onClick={onCerrar}>
       <div
-        className="bg-white w-full sm:max-w-5xl h-[92vh] sm:h-[88vh] rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+        className="bg-white w-full sm:max-w-5xl h-[100dvh] sm:h-[88vh] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="px-4 py-3 border-b border-slate-200 flex items-start justify-between gap-3">
-          <div>
+        <div className="px-3 py-2 sm:px-4 sm:py-3 border-b border-slate-200 flex items-start justify-between gap-3 pt-[max(0.5rem,env(safe-area-inset-top))]">
+          <div className="min-w-0">
             <p className="text-xs font-black uppercase tracking-wide text-blue-700">Plan de trabajo</p>
-            <h3 className="text-lg font-black text-slate-900">{titulo(fila.candidato)}</h3>
+            <h3 className="text-base sm:text-lg font-black text-slate-900 truncate">{titulo(fila.candidato)}</h3>
             <p className="text-sm text-slate-500">
               {titulo(fila.canton || fila.provincia)} · Lista {fila.lista}
             </p>
+            {src && (
+              <a href={src} target="_blank" rel="noopener noreferrer" className="inline-flex mt-1 text-sm font-bold text-blue-700">
+                Abrir en el visor del teléfono
+              </a>
+            )}
           </div>
-          <button type="button" onClick={onCerrar} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600" aria-label="Cerrar plan">
+          <button type="button" onClick={onCerrar} className="min-h-11 min-w-11 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center justify-center" aria-label="Cerrar plan">
             <X className="h-5 w-5" />
           </button>
         </div>

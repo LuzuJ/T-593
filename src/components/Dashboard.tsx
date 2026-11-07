@@ -161,7 +161,7 @@ export default function Dashboard() {
         onExplore={abrirExploracion}
       />
 
-      <main className="w-full max-w-[1600px] mx-auto px-4 md:px-8 mt-6">
+      <main className="w-full max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8 mt-4 sm:mt-6 pb-[env(safe-area-inset-bottom)]">
         {showAuditor ? (
           <CivicUploadAuditor onClose={() => setShowAuditor(false)} onPlanAudited={() => undefined} />
         ) : exploracion ? (
@@ -195,7 +195,7 @@ export default function Dashboard() {
                         if (primera) setExploracion(primera);
                       });
                     }}
-                    className="px-4 py-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-sm font-bold"
+                    className="min-h-11 px-4 py-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-sm font-bold"
                   >
                     {ejemplo}
                   </button>
@@ -203,7 +203,7 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => setShowAuditor(true)}
-                  className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-sm font-bold"
+                  className="min-h-11 px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-sm font-bold"
                 >
                   Auditar un PDF propio
                 </button>

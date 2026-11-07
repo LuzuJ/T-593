@@ -123,7 +123,7 @@ export default function ComparadorPlanes({
             <select
               value={valor || ''}
               onChange={(event) => onCambiarLado(lado, Number(event.target.value))}
-              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-bold text-slate-900"
+              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-base sm:text-sm font-bold text-slate-900 min-h-12"
             >
               {filas.map((fila) => (
                 <option key={fila.cod_formulario} value={fila.cod_formulario}>
@@ -187,7 +187,7 @@ export default function ComparadorPlanes({
       {auditoriaA && auditoriaB && filaA && filaB && comparacionCompleta && (
         <div className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_1fr] gap-3 text-sm">
-            <div />
+            <div className="hidden md:block" />
             {[
               [filaA, auditoriaA],
               [filaB, auditoriaB],
@@ -216,8 +216,14 @@ export default function ComparadorPlanes({
           {temas.map((tema) => (
             <div key={tema} className="grid grid-cols-1 md:grid-cols-[180px_1fr_1fr] gap-3 border-t border-slate-100 pt-4">
               <h4 className="font-black text-slate-900">{tema}</h4>
-              <ColumnaOfertas fila={filaA} ofertas={temasA.get(tema) || []} onAbrirPagina={onAbrirPagina} />
-              <ColumnaOfertas fila={filaB} ofertas={temasB.get(tema) || []} onAbrirPagina={onAbrirPagina} />
+              <div className="rounded-2xl border border-slate-100 p-3 md:border-0 md:p-0">
+                <p className="md:hidden text-xs font-black text-blue-700 mb-2">Lista {filaA.lista} · {titulo(filaA.candidato)}</p>
+                <ColumnaOfertas fila={filaA} ofertas={temasA.get(tema) || []} onAbrirPagina={onAbrirPagina} />
+              </div>
+              <div className="rounded-2xl border border-slate-100 p-3 md:border-0 md:p-0">
+                <p className="md:hidden text-xs font-black text-blue-700 mb-2">Lista {filaB.lista} · {titulo(filaB.candidato)}</p>
+                <ColumnaOfertas fila={filaB} ofertas={temasB.get(tema) || []} onAbrirPagina={onAbrirPagina} />
+              </div>
             </div>
           ))}
         </div>

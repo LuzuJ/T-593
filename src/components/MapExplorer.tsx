@@ -275,7 +275,7 @@ export default function MapExplorer({
   };
 
   return (
-    <section className="lg:col-span-8 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl overflow-hidden shadow-md flex flex-col min-h-[620px]">
+    <section className="lg:col-span-8 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl overflow-hidden shadow-md flex flex-col min-h-[420px] sm:min-h-[620px]">
       {/* Banner de Nivel de Navegación */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm md:text-base font-bold uppercase tracking-wider shadow-sm">
         <span className="flex items-center gap-2">
@@ -298,9 +298,12 @@ export default function MapExplorer({
       </div>
 
       {/* Renderizado Vectorial Delimitado y Limpio */}
-      <div className="flex-1 bg-slate-50/60 p-5 flex items-center justify-center relative min-h-[550px]">
+      <p className="sm:hidden px-4 py-2 text-sm text-slate-600 bg-white border-b border-slate-100">
+        Toca una provincia. Si buscas un cantón, usa el buscador de arriba.
+      </p>
+      <div className="flex-1 bg-slate-50/60 p-2 sm:p-5 flex items-center justify-center relative min-h-[300px] sm:min-h-[550px]">
         {/* Insignia Flotante de Instrucción */}
-        <div className="absolute top-4 left-5 z-10 bg-white/95 border border-slate-200/90 text-slate-800 text-xs sm:text-sm font-bold px-4 py-2 rounded-full shadow-sm flex items-center gap-2.5 backdrop-blur-md pointer-events-none">
+        <div className="hidden sm:flex absolute top-4 left-5 z-10 bg-white/95 border border-slate-200/90 text-slate-800 text-xs sm:text-sm font-bold px-4 py-2 rounded-full shadow-sm items-center gap-2.5 backdrop-blur-md pointer-events-none">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>

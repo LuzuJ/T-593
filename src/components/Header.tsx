@@ -19,38 +19,35 @@ export default function Header({
   const [showCicloInfo, setShowCicloInfo] = useState(false);
 
   return (
-    <header className="bg-white/95 border-b border-slate-200 py-3.5 px-4 md:px-8 shadow-sm sticky top-0 z-30 backdrop-blur-md">
-      <div className="w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row justify-between items-center gap-4">
-        <div className="flex items-center gap-3.5 shrink-0">
-          <span
-            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-sm tracking-wider cursor-help select-none"
-            title="Transparencia 593 — Plataforma cívica de análisis y comparación de planes electorales de Ecuador (+593)"
-          >
-            T-593
-          </span>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                <Compass className="h-7 w-7 text-blue-600" />
-                Observatorio Electoral de Planes de Trabajo
+    <header className="bg-white/95 border-b border-slate-200 py-2.5 sm:py-3.5 px-3 sm:px-4 md:px-8 shadow-sm sticky top-0 z-30 backdrop-blur-md">
+      <div className="w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-3">
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white text-sm font-bold px-3 py-1.5 rounded-full shrink-0">
+              T-593
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                <Compass className="hidden sm:block h-7 w-7 text-blue-600 shrink-0" />
+                <span className="sm:hidden">Planes de trabajo</span>
+                <span className="hidden sm:inline">Observatorio Electoral de Planes de Trabajo</span>
               </h1>
-
-              {/* Badge Informativo de Régimen y Ciclo Electoral */}
-              <button
-                type="button"
-                onClick={() => setShowCicloInfo(true)}
-                className="bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-800 border border-slate-200 hover:border-blue-300 text-xs font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition cursor-pointer"
-                title="Haga clic para ver el alcance temporal y legal de las elecciones en Ecuador"
-              >
-                <Calendar className="h-3.5 w-3.5 text-blue-600" />
-                <span>Elecciones Seccionales CNE (2027–2031) — Proceso 140</span>
-                <Info className="h-3 w-3 text-slate-400" />
-              </button>
+              <p className="hidden sm:block text-xs md:text-sm text-slate-500 font-medium mt-0.5">
+                Lectura ciudadana de los PDF publicados por el CNE. No es un sitio oficial ni un dictamen jurídico.
+              </p>
             </div>
-            <p className="text-xs md:text-sm text-slate-500 font-medium mt-0.5">
-              Lectura ciudadana de los PDF publicados por el CNE. No es un sitio oficial ni un dictamen jurídico.
-            </p>
           </div>
+          <button
+            type="button"
+            onClick={() => setShowCicloInfo(true)}
+            className="shrink-0 min-h-11 min-w-11 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold px-2.5 rounded-xl flex items-center justify-center gap-1.5"
+            title="Alcance de las elecciones 2027"
+          >
+            <Calendar className="h-4 w-4 text-blue-600" />
+            <span className="hidden md:inline">Elecciones Seccionales CNE (2027–2031) — Proceso 140</span>
+            <span className="md:hidden">2027</span>
+            <Info className="hidden md:block h-3 w-3 text-slate-400" />
+          </button>
         </div>
 
         {/* Buscador Nacional Transversal */}
@@ -65,10 +62,10 @@ export default function Header({
           {navLevel === 'planes' || explorando ? (
             <button
               onClick={onBackToMap}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm md:text-base font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all shadow-sm min-h-[44px] cursor-pointer"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm md:text-base font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all shadow-sm min-h-11 w-full sm:w-auto cursor-pointer"
             >
               <ArrowLeft className="h-5 w-5" />
-              Volver al Mapa Territorial
+              Mapa
             </button>
           ) : null}
         </div>
