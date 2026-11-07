@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/cne-plan/:proceso/:formulario/:plan",
+      "destination": "https://backend-apps.cne.gob.ec/vi/api/Catalogos/PlanTrabajo/:proceso/:formulario/:plan"
+    }
+  ]
+}
