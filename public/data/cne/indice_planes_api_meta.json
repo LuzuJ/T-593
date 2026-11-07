@@ -1,0 +1,17 @@
+{
+  "proceso": 140,
+  "titulo": "ELECCIONES SECCIONALES Y CPCCS 2027",
+  "total_listas": 7694,
+  "listas_con_plan": 7690,
+  "listas_sin_plan": 4,
+  "por_subtipo": {
+    "Prefecto y viceprefecto": 147,
+    "Concejales urbanos": 1094,
+    "Concejales rurales": 936,
+    "Vocales de junta parroquial rural": 3830,
+    "Alcalde": 1353,
+    "Concejales urbanos por circunscripcion": 334
+  },
+  "archivo": "public/data/cne/indice_planes_api.jsonl",
+  "url_plantilla": "https://backend-apps.cne.gob.ec/vi/api/Catalogos/PlanTrabajo/{proceso}/{formulario}/{plan}"
+}

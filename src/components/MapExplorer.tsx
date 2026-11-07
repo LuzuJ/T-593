@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { ZoomIn, Loader, MapPin } from 'lucide-react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
-import candidatos2023StatsRaw from '../data/candidatos_2023_stats.json';
-import organizaciones2023Raw from '../data/organizaciones_politicas_2023.json';
+import conteos140 from '../data/conteos_proceso_140.json';
 
 // Colores por región natural del Ecuador
 const REGION_STYLES: Record<string, { fill: string; label: string }> = {
@@ -34,6 +33,7 @@ export interface CandidatosStatsData {
   alcaldia?: number;
   concejales?: number;
   juntas_parroquiales?: number;
+  organizaciones?: number;
 }
 
 export interface PartidoPoliticoInfo {
@@ -44,52 +44,19 @@ export interface PartidoPoliticoInfo {
   canton?: string;
 }
 
-function lookupProvStats(provName: string): any {
-  const norm = normStr(provName).toUpperCase();
-  const mapping: Record<string, string> = {
-    'SANTO DOMINGO': 'STO DGO TSACHILAS',
-    'SANTO DOMINGO DE LOS TSACHILAS': 'STO DGO TSACHILAS',
-    'CANAR': 'CANAR',
-    'GALAPAGOS': 'GALAPAGOS',
-  };
-  const key = mapping[norm] || norm;
-  return (candidatos2023StatsRaw.provincias as any)[key];
+function claveLugar(nombre: string): string {
+  const limpio = normStr(nombre).toUpperCase();
+  if (limpio === 'SANTO DOMINGO' || limpio === 'SANTO DOMINGO DE LOS TSACHILAS') return 'STO DGO TSACHILAS';
+  return limpio;
 }
 
-function lookupProvPartidos(provName: string): PartidoPoliticoInfo[] {
-  const norm = normStr(provName).toUpperCase();
-  const mapping: Record<string, string> = {
-    'SANTO DOMINGO': 'STO DGO TSACHILAS',
-    'SANTO DOMINGO DE LOS TSACHILAS': 'STO DGO TSACHILAS',
-    'CANAR': 'CANAR',
-    'GALAPAGOS': 'GALAPAGOS',
-  };
-  const key = mapping[norm] || norm;
-  const provData = (organizaciones2023Raw.provincias as any)[key];
-  if (!provData || !provData.organizaciones) return [];
-  return provData.organizaciones;
+function lookupProvStats(provName: string): CandidatosStatsData | undefined {
+  return (conteos140.provincias as Record<string, CandidatosStatsData & { cantones?: Record<string, CandidatosStatsData> }>)[claveLugar(provName)];
 }
 
-function lookupCantonStats(provName: string, cantonName: string): any {
-  const pStats = lookupProvStats(provName);
-  if (!pStats || !pStats.cantones) return null;
-  const normC = normStr(cantonName).toUpperCase();
-  return pStats.cantones[normC];
-}
-
-function lookupCantonPartidos(provName: string, cantonName: string): PartidoPoliticoInfo[] {
-  const normP = normStr(provName).toUpperCase();
-  const mapping: Record<string, string> = {
-    'SANTO DOMINGO': 'STO DGO TSACHILAS',
-    'SANTO DOMINGO DE LOS TSACHILAS': 'STO DGO TSACHILAS',
-    'CANAR': 'CANAR',
-    'GALAPAGOS': 'GALAPAGOS',
-  };
-  const key = mapping[normP] || normP;
-  const provData = (organizaciones2023Raw.provincias as any)[key];
-  if (!provData || !provData.cantones) return [];
-  const normC = normStr(cantonName).toUpperCase();
-  return provData.cantones[normC] || [];
+function lookupCantonStats(provName: string, cantonName: string): CandidatosStatsData | undefined {
+  const provincia = lookupProvStats(provName) as (CandidatosStatsData & { cantones?: Record<string, CandidatosStatsData> }) | undefined;
+  return provincia?.cantones?.[claveLugar(cantonName)];
 }
 
 interface BoundingBox {
@@ -377,7 +344,6 @@ export default function MapExplorer({
               const region = getProvRegion(prov.name);
               const fillColor = REGION_STYLES[region].fill;
               const pStats = lookupProvStats(prov.name);
-              const pPartidos = lookupProvPartidos(prov.name);
               return (
                 <g
                   key={prov.id}
@@ -396,9 +362,9 @@ export default function MapExplorer({
                       alcaldia: pStats.alcaldia,
                       concejales: pStats.concejales,
                       juntas_parroquiales: pStats.juntas_parroquiales,
+                      organizaciones: pStats.organizaciones,
                     } : undefined,
-                    'CNE Elecciones 2023',
-                    pPartidos
+                    'Listas del proceso 140 · 2027'
                   )}
                   onMouseLeave={onMouseLeave}
                 >
@@ -470,7 +436,6 @@ export default function MapExplorer({
                 {activeProvGeo.parishes.map((parish: any, idx: number) => {
                   const color = getCantonColor(parish.canton);
                   const cStats = lookupCantonStats(provincia, parish.canton);
-                  const cPartidos = lookupCantonPartidos(provincia, parish.canton);
                   return (
                     <g
                       key={parish.id || idx}
@@ -488,9 +453,9 @@ export default function MapExplorer({
                           alcaldia: cStats.alcaldia,
                           concejales: cStats.concejales,
                           juntas_parroquiales: cStats.juntas_parroquiales,
+                          organizaciones: cStats.organizaciones,
                         } : undefined,
-                        'Candidatos Cantón 2023',
-                        cPartidos
+                        'Listas del proceso 140 · 2027'
                       )}
                       onMouseLeave={onMouseLeave}
                     >

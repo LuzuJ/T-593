@@ -139,7 +139,7 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
                 1. Información de Acceso Público Oficial
               </strong>
               <p className="text-slate-700 text-xs sm:text-sm leading-normal font-normal">
-                Los planes de trabajo y propuestas presentados en este portal han sido recopilados directamente de las fuentes oficiales de dominio público registradas ante el <strong>Consejo Nacional Electoral (CNE)</strong> del Ecuador.
+                Los nombres, las listas y los PDF se consultan en el repositorio público del <strong>Consejo Nacional Electoral (CNE)</strong>. Esta página no pertenece al CNE y no guarda una copia propia del plan.
               </p>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
                 2. Análisis Automatizado y Fines Exclusivamente Cívicos
               </strong>
               <p className="text-slate-700 text-xs sm:text-sm leading-normal font-normal">
-                La clasificación competencial y evaluación conforme al <strong>COOTAD</strong> (Código Orgánico de Organización Territorial, Autonomía y Descentralización) es un ejercicio analítico algorítmico asistido por modelos de inteligencia artificial. No constituye dictamen vinculante, auditoría jurídica formal ni postura política institucional.
+                La muestra de frases usa la misma lista de palabras para todos los partidos. No interviene un modelo de inteligencia artificial ni una persona que califique a un candidato. No es dictamen, ranking ni lectura completa del PDF.
               </p>
             </div>
           </div>
@@ -162,10 +162,10 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
             <ShieldAlert className="h-5 w-5 text-rose-600 shrink-0 mt-0.5" />
             <div>
               <strong className="text-slate-900 block font-bold text-sm sm:text-base mb-0.5">
-                3. Exención Total de Responsabilidad
+                3. Comprueba la página antes de citar
               </strong>
               <p className="text-slate-700 text-xs sm:text-sm leading-normal font-normal">
-                Los autores, desarrolladores y entidades vinculadas al desarrollo de esta herramienta <strong>quedan expresamente exentos de toda responsabilidad legal, civil o política</strong> por las interpretaciones, usos o decisiones tomadas a partir de la información aquí visualizada.
+                Antes de citar una frase, abre la página del PDF. Una captura de los conteos no demuestra que un plan sea mejor o peor que otro. La decisión de voto es de quien lee.
               </p>
             </div>
           </div>
@@ -175,10 +175,10 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
             <Scale className="h-5 w-5 text-purple-600 shrink-0 mt-0.5" />
             <div>
               <strong className="text-slate-900 block font-bold text-sm sm:text-base mb-0.5">
-                4. Responsabilidad Exclusiva sobre Productos Derivados
+                4. Si compartes una captura
               </strong>
               <p className="text-slate-700 text-xs sm:text-sm leading-normal font-normal">
-                Cualquier producto, reporte, análisis, síntesis, gráfico, publicación o contenido derivado que el usuario genere a partir de los datos, herramientas o visualizaciones de esta plataforma es de <strong>responsabilidad neta y exclusiva del usuario</strong> que lo produzca o difunda.
+                Incluye la lista y la página del PDF. La muestra puede omitir temas que sí están más adelante en el documento.
               </p>
             </div>
           </div>
@@ -188,10 +188,10 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
             <FileText className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
             <div>
               <strong className="text-slate-900 block font-bold text-sm sm:text-base mb-0.5">
-                5. Licencia de Uso: Creative Commons (CC BY-NC-SA 4.0)
+                5. Los planes no son de esta página
               </strong>
               <p className="text-slate-700 text-xs sm:text-sm leading-normal font-normal">
-                Esta plataforma y sus análisis de datos abiertos se comparten bajo la licencia <strong>Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional</strong>. Se autoriza su consulta, reutilización no comercial y difusión citando la fuente y manteniendo los mismos términos de apertura cívica.
+                Los planes siguen siendo documentos del CNE y de quienes los presentaron. Esta página no los relicencia ni se atribuye su autoría. Si compartes una frase, cita la lista y la página del PDF.
               </p>
             </div>
           </div>
