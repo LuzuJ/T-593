@@ -1,8 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
-import { Sugerencia, buscarCatalogo, cargarCatalogo, sugerenciaDesdeMapa, type FilaPlan } from '../utils/catalogoPlanes';
+import { Sugerencia, cargarCatalogo, sugerenciaDesdeMapa, type FilaPlan } from '../utils/catalogoPlanes';
 import ExplorarPlanes from './ExplorarPlanes';
-import CivicUploadAuditor from './CivicUploadAuditor';
 import Header from './Header';
 import MapExplorer from './MapExplorer';
 import DisclaimerModal from './DisclaimerModal';
@@ -29,7 +28,9 @@ export default function Dashboard() {
   const [canton, setCanton] = useState('TODOS');
   const [navLevel, setNavLevel] = useState<'ecuador' | 'provincia' | 'canton' | 'planes'>('ecuador');
   const [exploracion, setExploracion] = useState<Sugerencia | null>(null);
-  const [showAuditor, setShowAuditor] = useState(false);
+  const [vista, setVista] = useState<'mapa' | 'lista'>(() =>
+    window.matchMedia('(max-width: 767px)').matches ? 'lista' : 'mapa'
+  );
   const [catalogo, setCatalogo] = useState<FilaPlan[]>([]);
   const [activeProvGeo, setActiveProvGeo] = useState<any>(null);
   const [loadingMap, setLoadingMap] = useState(false);
@@ -52,6 +53,17 @@ export default function Dashboard() {
     () => ['TODAS', ...PROVINCIAS_DATA.map((item) => item.displayName || item.name)],
     []
   );
+  const cantonesVisibles = useMemo(() => {
+    if (!activeProvGeo) return [] as string[];
+    const nombres = new Set<string>();
+    if (Array.isArray(activeProvGeo.cantons)) {
+      activeProvGeo.cantons.forEach((nombre: string) => nombre && nombres.add(nombre));
+    }
+    if (Array.isArray(activeProvGeo.parishes)) {
+      activeProvGeo.parishes.forEach((parroquia: { canton?: string }) => parroquia?.canton && nombres.add(parroquia.canton));
+    }
+    return [...nombres].sort((a, b) => a.localeCompare(b, 'es'));
+  }, [activeProvGeo]);
 
   useEffect(() => {
     if (provincia === 'TODAS') {
@@ -145,12 +157,8 @@ export default function Dashboard() {
       <DisclaimerModal onAccept={() => {}} />
       <Header
         navLevel={navLevel}
-        explorando={Boolean(exploracion) || showAuditor}
+        explorando={Boolean(exploracion)}
         onBackToMap={() => {
-          if (showAuditor) {
-            setShowAuditor(false);
-            return;
-          }
           if (exploracion) {
             setExploracion(null);
             return;
@@ -162,54 +170,81 @@ export default function Dashboard() {
       />
 
       <main className="w-full max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8 mt-4 sm:mt-6 pb-[env(safe-area-inset-bottom)]">
-        {showAuditor ? (
-          <CivicUploadAuditor onClose={() => setShowAuditor(false)} onPlanAudited={() => undefined} />
-        ) : exploracion ? (
+        {exploracion ? (
           <ExplorarPlanes filas={catalogo} sugerencia={exploracion} onVolver={() => setExploracion(null)} />
         ) : (
           <>
-            <div className="mb-5 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-wide">Empieza por un lugar</p>
-              <h2 className="text-2xl font-black text-slate-900 mt-1">¿A quién quieres revisar?</h2>
-              <p className="text-slate-600 mt-1">
-                Busca un lugar arriba, o elige una provincia en el mapa y después un cantón. Las cifras del mapa cuentan listas del proceso 140.
-              </p>
-              {navLevel === 'provincia' && provincia !== 'TODAS' && (
+            <div className="mb-4 bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 shadow-sm">
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => abrirDesdeMapa(provincia)}
-                  className="mt-4 mr-2 px-4 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 text-sm font-bold"
+                  onClick={() => setVista('mapa')}
+                  className={`min-h-12 rounded-2xl text-sm font-bold border ${vista === 'mapa' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-300'}`}
                 >
-                  Ver prefectura de {provincia}
+                  Mapa
                 </button>
-              )}
-              <div className="flex flex-wrap gap-2 mt-4">
-                {['Chone', 'alcalde de Quito', 'prefectura de Bolívar'].map((ejemplo) => (
-                  <button
-                    key={ejemplo}
-                    type="button"
-                    onClick={() => {
-                      cargarCatalogo().then((rows) => {
-                        setCatalogo(rows);
-                        const primera = buscarCatalogo(rows, ejemplo)[0];
-                        if (primera) setExploracion(primera);
-                      });
-                    }}
-                    className="min-h-11 px-4 py-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-sm font-bold"
-                  >
-                    {ejemplo}
-                  </button>
-                ))}
                 <button
                   type="button"
-                  onClick={() => setShowAuditor(true)}
-                  className="min-h-11 px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-sm font-bold"
+                  onClick={() => setVista('lista')}
+                  className={`min-h-12 rounded-2xl text-sm font-bold border ${vista === 'lista' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-300'}`}
                 >
-                  Auditar un PDF propio
+                  Elegir lugar
                 </button>
               </div>
+              <p className="text-sm text-slate-600 mt-3">
+                {vista === 'mapa'
+                  ? 'Toca una provincia y después un cantón. En el teléfono es más cómodo Elegir lugar.'
+                  : 'Elige la provincia y después el cantón. No hace falta mantener el dedo sobre el mapa.'}
+              </p>
             </div>
-            <MapExplorer
+            {vista === 'lista' && (
+              <div className="mb-4 bg-white border border-slate-200 rounded-3xl p-3 shadow-sm space-y-2">
+                {provincia === 'TODAS' ? (
+                  PROVINCIAS_DATA.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => goToProvincia(item.name)}
+                      className="w-full min-h-12 px-4 rounded-2xl border border-slate-200 text-left font-bold text-slate-900 hover:bg-slate-50"
+                    >
+                      {item.displayName}
+                    </button>
+                  ))
+                ) : (
+                  <>
+                    <p className="px-2 pt-1 text-lg font-black text-slate-900">
+                      {PROVINCIAS_DATA.find((item) => normStr(item.name) === normStr(provincia) || normStr(item.displayName) === normStr(provincia))?.displayName || provincia}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={goToEcuador}
+                      className="w-full min-h-12 px-4 rounded-2xl border border-slate-200 text-left text-sm font-bold text-slate-600"
+                    >
+                      Todas las provincias
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => abrirDesdeMapa(provincia)}
+                      className="w-full min-h-12 px-4 rounded-2xl bg-slate-900 text-white text-left font-bold"
+                    >
+                      Prefectura
+                    </button>
+                    {loadingMap && <p className="px-2 text-sm text-slate-500">Cargando cantones…</p>}
+                    {cantonesVisibles.map((nombre) => (
+                      <button
+                        key={nombre}
+                        type="button"
+                        onClick={() => abrirDesdeMapa(provincia, nombre)}
+                        className="w-full min-h-12 px-4 rounded-2xl border border-slate-200 text-left font-bold text-slate-900 hover:bg-slate-50"
+                      >
+                        {nombre}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+            {vista === 'mapa' && <MapExplorer
               navLevel={navLevel === 'planes' ? 'ecuador' : navLevel}
               provincia={provincia}
               canton={canton}
@@ -228,7 +263,7 @@ export default function Dashboard() {
                 setHoveredEntity({ title, subtitle, metrics, candidatosStats });
               }}
               onMouseLeave={() => setHoveredEntity(null)}
-            />
+            />}
           </>
         )}
       </main>
