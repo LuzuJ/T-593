@@ -44,13 +44,32 @@ function motivoSinCitas(auditoria: AuditoriaPlan): string {
   return `Se leyeron ${auditoria.paginasConTexto} páginas con texto y no se aislaron frases comparables. Eso no es un cero de propuestas.`;
 }
 
+const TONO = {
+  a: {
+    nombre: 'text-blue-800',
+    ficha: 'bg-blue-50 border-blue-200',
+    cita: 'text-blue-800 hover:text-blue-950',
+    bloque: 'bg-blue-50 border-blue-200',
+    selector: 'border-blue-300 bg-blue-50',
+  },
+  b: {
+    nombre: 'text-amber-900',
+    ficha: 'bg-amber-50 border-amber-200',
+    cita: 'text-amber-900 hover:text-amber-950',
+    bloque: 'bg-amber-50 border-amber-200',
+    selector: 'border-amber-300 bg-amber-50',
+  },
+} as const;
+
 function ColumnaOfertas({
   fila,
   ofertas,
+  tono,
   onAbrirPagina,
 }: {
   fila: FilaPlan;
   ofertas: PromesaAuditada[];
+  tono: string;
   onAbrirPagina: (fila: FilaPlan, pagina: number) => void;
 }) {
   if (ofertas.length === 0) {
@@ -63,7 +82,7 @@ function ColumnaOfertas({
           <button
             type="button"
             onClick={() => onAbrirPagina(fila, oferta.pagina)}
-            className="text-xs font-black text-blue-700 hover:text-blue-900"
+            className={`text-xs font-black ${tono}`}
           >
             Página {oferta.pagina} · {oferta.articulo}
           </button>
@@ -119,11 +138,11 @@ export default function ComparadorPlanes({
           ['b', ladoB, 'Plan B'],
         ] as const).map(([lado, valor, etiqueta]) => (
           <label key={lado} className="block">
-            <span className="text-xs font-black uppercase text-slate-500">{etiqueta}</span>
+            <span className={`text-xs font-black uppercase ${TONO[lado].nombre}`}>{etiqueta}</span>
             <select
               value={valor || ''}
               onChange={(event) => onCambiarLado(lado, Number(event.target.value))}
-              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-base sm:text-sm font-bold text-slate-900 min-h-12"
+              className={`mt-1 w-full rounded-xl border px-3 py-3 text-base sm:text-sm font-bold text-slate-900 min-h-12 ${TONO[lado].selector}`}
             >
               {filas.map((fila) => (
                 <option key={fila.cod_formulario} value={fila.cod_formulario}>
@@ -154,16 +173,16 @@ export default function ComparadorPlanes({
             La comparación queda suspendida. Hacen falta frases citables en los dos PDF. El plan que sí se pudo leer no aparece aquí como si hubiera ganado los temas.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {[
-              [filaA, auditoriaA],
-              [filaB, auditoriaB],
-            ].map(([fila, auditoria]) => {
-              const plan = fila as FilaPlan;
-              const lectura = auditoria as AuditoriaPlan;
+            {([
+              ['a', filaA, auditoriaA],
+              ['b', filaB, auditoriaB],
+            ] as const).map(([lado, fila, auditoria]) => {
+              const plan = fila;
+              const lectura = auditoria;
               const comparable = puedeCompararse(lectura);
               return (
-                <div key={plan.cod_formulario} className="rounded-2xl border border-slate-200 p-4">
-                  <p className="text-xs font-black text-blue-700">LISTA {plan.lista}</p>
+                <div key={plan.cod_formulario} className={`rounded-2xl border p-4 ${TONO[lado].ficha}`}>
+                  <p className={`text-xs font-black ${TONO[lado].nombre}`}>LISTA {plan.lista}</p>
                   <h4 className="font-black text-slate-900 mt-1">{titulo(plan.candidato)}</h4>
                   <p className="text-sm text-slate-600 mt-3">
                     {comparable
@@ -188,15 +207,15 @@ export default function ComparadorPlanes({
         <div className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_1fr] gap-3 text-sm">
             <div className="hidden md:block" />
-            {[
-              [filaA, auditoriaA],
-              [filaB, auditoriaB],
-            ].map(([fila, auditoria]) => {
-              const plan = fila as FilaPlan;
-              const lectura = auditoria as AuditoriaPlan;
+            {([
+              ['a', filaA, auditoriaA],
+              ['b', filaB, auditoriaB],
+            ] as const).map(([lado, fila, auditoria]) => {
+              const plan = fila;
+              const lectura = auditoria;
               return (
-                <div key={plan.cod_formulario} className="rounded-2xl bg-slate-50 border border-slate-200 p-4">
-                  <p className="text-xs font-black text-blue-700">LISTA {plan.lista}</p>
+                <div key={plan.cod_formulario} className={`rounded-2xl border p-4 ${TONO[lado].ficha}`}>
+                  <p className={`text-xs font-black ${TONO[lado].nombre}`}>LISTA {plan.lista}</p>
                   <h4 className="font-black text-slate-900 mt-1">{titulo(plan.candidato)}</h4>
                   <p className="text-xs text-slate-500 mt-2">
                     Muestra de {lectura.conteos.totalOfertas} frases. No es una nota del candidato.
@@ -216,13 +235,13 @@ export default function ComparadorPlanes({
           {temas.map((tema) => (
             <div key={tema} className="grid grid-cols-1 md:grid-cols-[180px_1fr_1fr] gap-3 border-t border-slate-100 pt-4">
               <h4 className="font-black text-slate-900">{tema}</h4>
-              <div className="rounded-2xl border border-slate-100 p-3 md:border-0 md:p-0">
-                <p className="md:hidden text-xs font-black text-blue-700 mb-2">Lista {filaA.lista} · {titulo(filaA.candidato)}</p>
-                <ColumnaOfertas fila={filaA} ofertas={temasA.get(tema) || []} onAbrirPagina={onAbrirPagina} />
+              <div className={`rounded-2xl border p-3 ${TONO.a.bloque}`}>
+                <p className={`text-xs font-black mb-2 ${TONO.a.nombre}`}>Lista {filaA.lista} · {titulo(filaA.candidato)}</p>
+                <ColumnaOfertas fila={filaA} ofertas={temasA.get(tema) || []} tono={TONO.a.cita} onAbrirPagina={onAbrirPagina} />
               </div>
-              <div className="rounded-2xl border border-slate-100 p-3 md:border-0 md:p-0">
-                <p className="md:hidden text-xs font-black text-blue-700 mb-2">Lista {filaB.lista} · {titulo(filaB.candidato)}</p>
-                <ColumnaOfertas fila={filaB} ofertas={temasB.get(tema) || []} onAbrirPagina={onAbrirPagina} />
+              <div className={`rounded-2xl border p-3 ${TONO.b.bloque}`}>
+                <p className={`text-xs font-black mb-2 ${TONO.b.nombre}`}>Lista {filaB.lista} · {titulo(filaB.candidato)}</p>
+                <ColumnaOfertas fila={filaB} ofertas={temasB.get(tema) || []} tono={TONO.b.cita} onAbrirPagina={onAbrirPagina} />
               </div>
             </div>
           ))}
