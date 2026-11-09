@@ -52,14 +52,9 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
   const cneUrl = urlOficialCne(fila);
   const iframeSrc = srcOficial(fila, paginaInicial);
 
-  // Por defecto en computadoras (>= 768px) usamos el visor nativo con scroll continuo.
-  // En móviles usamos el visor adaptado que no crashea en Android/iOS.
-  const [modo, setModo] = useState<'continuo' | 'paginado'>(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-      return 'continuo';
-    }
-    return 'paginado';
-  });
+  // Por defecto usamos scroll continuo en todos los dispositivos.
+  // El usuario puede alternar a 'paginado' si prefiere ver página por página.
+  const [modo, setModo] = useState<'continuo' | 'paginado'>('continuo');
 
   const [pdfDoc, setPdfDoc] = useState<any>(null);
   const [numPages, setNumPages] = useState<number>(0);
@@ -180,41 +175,100 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
         onClick={(event) => event.stopPropagation()}
       >
         {/* Cabecera del Visor */}
-        <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-3 bg-white shrink-0 pt-[max(0.75rem,env(safe-area-inset-top))]">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] sm:text-xs font-black uppercase tracking-wide bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md border border-blue-200 shrink-0">
-                Plan de Trabajo CNE
-              </span>
-              <span className="text-xs text-slate-500 font-semibold truncate hidden sm:inline">
-                {titulo(fila.canton || fila.provincia)} · Lista {fila.lista}
-              </span>
+        <div className="px-3 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 bg-white shrink-0 pt-[max(0.75rem,env(safe-area-inset-top))]">
+          {/* Fila principal */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-wide bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md border border-blue-200 shrink-0">
+                  Plan de Trabajo CNE
+                </span>
+                <span className="text-xs text-slate-500 font-semibold truncate hidden sm:inline">
+                  {titulo(fila.canton || fila.provincia)} · Lista {fila.lista}
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black text-slate-900 truncate mt-0.5">
+                {titulo(fila.candidato)}
+              </h3>
             </div>
-            <h3 className="text-sm sm:text-base font-black text-slate-900 truncate mt-0.5">
-              {titulo(fila.candidato)}
-            </h3>
+
+            {/* Desktop: Controles a la derecha */}
+            <div className="hidden sm:flex items-center gap-2 shrink-0">
+              <div className="flex bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600">
+                <button
+                  type="button"
+                  onClick={() => setModo('continuo')}
+                  className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
+                    modo === 'continuo' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
+                  }`}
+                  title="Desplazamiento continuo vertical con rueda de ratón o táctil"
+                >
+                  Scroll continuo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModo('paginado')}
+                  className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
+                    modo === 'paginado' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
+                  }`}
+                  title="Vista página por página"
+                >
+                  Paginado
+                </button>
+              </div>
+
+              {cneUrl && (
+                <a
+                  href={cneUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shadow-xs transition cursor-pointer"
+                  title="Abrir el documento original en una pestaña nueva o visor nativo"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  <span>Abrir PDF Oficial</span>
+                </a>
+              )}
+
+              <button
+                type="button"
+                onClick={onCerrar}
+                className="h-9 w-9 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center justify-center transition cursor-pointer"
+                aria-label="Cerrar visor"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Móvil: Botón de cierre compacto */}
+            <button
+              type="button"
+              onClick={onCerrar}
+              className="sm:hidden h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 cursor-pointer"
+              aria-label="Cerrar visor"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Toggle de Modo: Scroll Continuo vs Paginado */}
-            <div className="hidden sm:flex bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600">
+          {/* Fila secundaria en Celular: Selector de Modo (Scroll Continuo / Paginado) y Botón PDF */}
+          <div className="flex sm:hidden items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-100">
+            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-bold text-slate-600">
               <button
                 type="button"
                 onClick={() => setModo('continuo')}
-                className={`px-2.5 py-1 rounded-lg transition ${
-                  modo === 'continuo' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                  modo === 'continuo' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
                 }`}
-                title="Desplazamiento continuo vertical con rueda de ratón"
               >
                 Scroll continuo
               </button>
               <button
                 type="button"
                 onClick={() => setModo('paginado')}
-                className={`px-2.5 py-1 rounded-lg transition ${
-                  modo === 'paginado' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                  modo === 'paginado' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
                 }`}
-                title="Vista página por página"
               >
                 Paginado
               </button>
@@ -225,23 +279,12 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
                 href={cneUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shadow-xs transition cursor-pointer"
-                title="Abrir el documento original en una pestaña nueva o visor nativo"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold shadow-xs cursor-pointer"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Abrir PDF Oficial</span>
-                <span className="sm:hidden">Abrir PDF</span>
+                <ExternalLink className="h-3 w-3" />
+                <span>Abrir PDF</span>
               </a>
             )}
-
-            <button
-              type="button"
-              onClick={onCerrar}
-              className="h-9 w-9 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center justify-center transition cursor-pointer"
-              aria-label="Cerrar visor"
-            >
-              <X className="h-5 w-5" />
-            </button>
           </div>
         </div>
 
