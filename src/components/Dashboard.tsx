@@ -176,6 +176,16 @@ export default function Dashboard() {
     });
   }, []);
 
+  const goHome = useCallback(() => {
+    setExploracion(null);
+    setHoveredEntity(null);
+    setProvincia('TODAS');
+    setCanton('TODOS');
+    setNavLevel('ecuador');
+    setFiltroTexto('');
+    window.history.pushState({ navLevel: 'ecuador' }, '', '#ecuador');
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-100/80 text-slate-800 font-sans antialiased pb-16">
       <DisclaimerModal onAccept={() => {}} />
@@ -190,6 +200,7 @@ export default function Dashboard() {
           setHoveredEntity(null);
           setNavLevel(canton !== 'TODOS' ? 'canton' : provincia !== 'TODAS' ? 'provincia' : 'ecuador');
         }}
+        onHome={goHome}
         onExplore={abrirExploracion}
       />
 

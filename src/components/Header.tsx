@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { Compass, ArrowLeft, Info, Calendar, X, Scale } from 'lucide-react';
+import { Compass, ArrowLeft, Info, Calendar, X, Scale, Search } from 'lucide-react';
 import GlobalSearchBar from './GlobalSearchBar';
 import { Sugerencia } from '../utils/catalogoPlanes';
 
@@ -8,6 +8,7 @@ interface HeaderProps {
   navLevel: 'ecuador' | 'provincia' | 'canton' | 'planes';
   explorando?: boolean;
   onBackToMap: () => void;
+  onHome?: () => void;
   onExplore?: (item: Sugerencia) => void;
 }
 
@@ -15,74 +16,160 @@ export default function Header({
   navLevel,
   explorando = false,
   onBackToMap,
+  onHome,
   onExplore,
 }: HeaderProps) {
   const [showCicloInfo, setShowCicloInfo] = useState(false);
+  const [compacto, setCompacto] = useState(false);
+  const [buscandoMobile, setBuscandoMobile] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setCompacto(true);
+      setBuscandoMobile(false);
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
+    // Al cargar o cambiar de vista, iniciar conteo de 5 segundos
+    resetTimer();
+
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setCompacto(true);
+        setBuscandoMobile(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [resetTimer, explorando, navLevel]);
+
+  const handleHomeClick = () => {
+    if (onHome) {
+      onHome();
+    } else {
+      onBackToMap();
+    }
+  };
+
+  const handleActivarBuscador = () => {
+    setBuscandoMobile(true);
+    setCompacto(false);
+    resetTimer();
+  };
 
   return (
-    <header className="bg-white/95 border-b border-slate-200/80 py-2 sm:py-2.5 px-3 sm:px-6 shadow-sm sticky top-0 z-30 backdrop-blur-md">
-      <div className="w-full max-w-[1600px] mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-4">
-        {/* Marca y Título Compacto */}
-        <div className="flex items-center justify-between gap-3 min-w-0 shrink-0">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white text-xs sm:text-sm font-black px-2.5 py-1 rounded-lg tracking-wider shrink-0 shadow-xs">
+    <header className="bg-white/95 border-b border-slate-200/80 px-3 sm:px-6 shadow-xs sticky top-0 z-30 backdrop-blur-md transition-all duration-300">
+      <div className="w-full max-w-[1600px] mx-auto py-2 sm:py-2.5">
+        {/* Fila Principal: Siempre en una sola línea */}
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
+          {/* Logo T-593 y Título (Clickeable para regresar a inicio/mapa/lista) */}
+          <button
+            type="button"
+            onClick={handleHomeClick}
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0 text-left group cursor-pointer active:scale-95 transition shrink-0"
+            title="Ir al inicio (Mapa y selección de provincia)"
+          >
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white text-xs sm:text-sm font-black px-2.5 py-1 rounded-lg tracking-wider shrink-0 shadow-xs group-hover:brightness-110 transition">
               T-593
             </span>
             <div className="min-w-0">
               <h1 className="text-sm sm:text-base md:text-lg font-black text-slate-900 tracking-tight flex items-center gap-1.5 truncate">
                 <Compass className="h-5 w-5 text-blue-600 shrink-0 hidden sm:block" />
-                <span className="truncate">Observatorio Electoral</span>
+                <span className="truncate group-hover:text-blue-600 transition">Observatorio Electoral</span>
                 <span className="text-xs font-semibold text-slate-400 hidden lg:inline">· Planes 2027</span>
               </h1>
             </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setShowCicloInfo(true)}
-            className="md:hidden shrink-0 h-9 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl flex items-center gap-1 transition"
-            title="Información del proceso electoral 2027"
-          >
-            <Calendar className="h-3.5 w-3.5 text-blue-600" />
-            <span>2027</span>
-            <Info className="h-3 w-3 text-slate-400" />
           </button>
+
+          {/* Buscador en Desktop (Siempre visible en pantallas medianas y grandes) */}
+          {onExplore && (
+            <div className="hidden md:block flex-1 max-w-xl min-w-0 mx-2">
+              <GlobalSearchBar onExplore={onExplore} />
+            </div>
+          )}
+
+          {/* Acciones de la derecha */}
+          <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
+            {/* Lupa para abrir buscador en celular cuando está compactado */}
+            {onExplore && (
+              <button
+                type="button"
+                onClick={handleActivarBuscador}
+                className="md:hidden h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition cursor-pointer"
+                title="Buscar candidato o lugar"
+                aria-label="Abrir buscador"
+              >
+                <Search className="h-4 w-4 text-slate-600" />
+              </button>
+            )}
+
+            {/* Botón 2027 en Celular (Solo si no estamos explorando planes para ahorrar espacio) */}
+            {!explorando && navLevel !== 'planes' && (
+              <button
+                type="button"
+                onClick={() => setShowCicloInfo(true)}
+                className="md:hidden shrink-0 h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer"
+                title="Información del proceso electoral 2027"
+              >
+                <Calendar className="h-3.5 w-3.5 text-blue-600" />
+                <span>2027</span>
+                <Info className="h-3 w-3 text-slate-400" />
+              </button>
+            )}
+
+            {/* Botón Seccionales 2027 en Desktop */}
+            <button
+              type="button"
+              onClick={() => setShowCicloInfo(true)}
+              className="hidden md:flex shrink-0 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold px-3 rounded-xl items-center gap-1.5 transition cursor-pointer"
+              title="Alcance de las elecciones 2027"
+            >
+              <Calendar className="h-4 w-4 text-blue-600" />
+              <span>Seccionales 2027</span>
+              <Info className="h-3 w-3 text-slate-400" />
+            </button>
+
+            {/* Botón Volver (Siempre accesible cuando se navega dentro de un cantón o explorando) */}
+            {(navLevel === 'planes' || explorando) && (
+              <button
+                type="button"
+                onClick={onBackToMap}
+                className="flex items-center justify-center gap-1 px-3 py-1 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white transition shadow-sm h-8 sm:h-9 cursor-pointer shrink-0 active:scale-95"
+                title="Volver a seleccionar lugar o mapa"
+              >
+                <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span>Volver</span>
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Buscador Nacional Transversal */}
-        {onExplore && (
-          <div className="w-full md:flex-1 md:max-w-xl min-w-0">
-            <GlobalSearchBar onExplore={onExplore} />
+        {/* Fila secundaria en celular: Buscador expandible (Se oculta tras 5 segundos para liberar pantalla) */}
+        {onExplore && (!compacto || buscandoMobile) && (
+          <div className="md:hidden pt-2 mt-2 border-t border-slate-100 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="flex-1 min-w-0" onClick={resetTimer}>
+              <GlobalSearchBar onExplore={onExplore} />
+            </div>
+            <button
+              type="button"
+              onClick={() => setCompacto(true)}
+              className="h-8 w-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center shrink-0"
+              title="Cerrar buscador"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         )}
-
-        {/* Controles de la derecha */}
-        <div className="flex items-center justify-end gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={() => setShowCicloInfo(true)}
-            className="hidden md:flex shrink-0 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold px-3 rounded-xl items-center gap-1.5 transition"
-            title="Alcance de las elecciones 2027"
-          >
-            <Calendar className="h-4 w-4 text-blue-600" />
-            <span>Seccionales 2027</span>
-            <Info className="h-3 w-3 text-slate-400" />
-          </button>
-
-          {(navLevel === 'planes' || explorando) && (
-            <button
-              onClick={onBackToMap}
-              className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white transition shadow-sm h-9 cursor-pointer shrink-0"
-              title="Volver a seleccionar lugar o mapa"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Volver</span>
-            </button>
-          )}
-        </div>
       </div>
 
-      {/* Modal / Ventana Explicativa del Régimen Electoral del Ecuador montado fuera del header para evitar bugs de backdrop-filter */}
+      {/* Modal / Ventana Explicativa del Régimen Electoral del Ecuador */}
       {showCicloInfo && typeof document !== 'undefined' && createPortal(
         <div
           className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
