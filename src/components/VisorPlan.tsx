@@ -47,13 +47,113 @@ function srcOficial(fila: FilaPlan, paginaInicial?: number): string | null {
   return null;
 }
 
+// Componente para renderizar cada página del PDF en flujo continuo para celulares (sin iframes que causan error 10369)
+function PaginaPdf({
+  pdfDoc,
+  pageNumber,
+  parentWidth,
+}: {
+  pdfDoc: any;
+  pageNumber: number;
+  parentWidth: number;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(pageNumber <= 2);
+  const [cargada, setCargada] = useState(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible(true);
+        }
+      },
+      { rootMargin: '350px 0px' }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible || !pdfDoc || !canvasRef.current) return;
+    let cancelado = false;
+    let renderTask: any = null;
+
+    const render = async () => {
+      try {
+        const page = await pdfDoc.getPage(pageNumber);
+        if (cancelado || !canvasRef.current) return;
+
+        const viewportUnscaled = page.getViewport({ scale: 1 });
+        const scale = Math.min(2.0, Math.max(0.6, (parentWidth - 32) / (viewportUnscaled.width || 600)));
+        const viewport = page.getViewport({ scale });
+
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+        if (!context) return;
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        renderTask = page.render({ canvasContext: context, viewport });
+        await renderTask.promise;
+        if (!cancelado) setCargada(true);
+      } catch (e: any) {
+        if (e?.name !== 'RenderingCancelledException') {
+          console.warn(`Error renderizando pág ${pageNumber}:`, e);
+        }
+      }
+    };
+
+    render();
+
+    return () => {
+      cancelado = true;
+      if (renderTask) {
+        try {
+          renderTask.cancel();
+        } catch {}
+      }
+    };
+  }, [visible, pdfDoc, pageNumber, parentWidth]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full flex flex-col items-center bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
+    >
+      <div className="w-full px-3 py-1 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+        <span>Página {pageNumber}</span>
+      </div>
+      <div className="p-2 flex items-center justify-center min-h-[220px] w-full relative">
+        <canvas ref={canvasRef} className="max-w-full h-auto rounded-lg" />
+        {!cargada && (
+          <div className="absolute inset-0 flex items-center justify-center gap-2 text-xs text-slate-400 font-semibold bg-slate-50/60">
+            <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+            <span>Cargando pág. {pageNumber}…</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPlanProps) {
   const proxySrc = urlProxy(fila);
   const cneUrl = urlOficialCne(fila);
   const iframeSrc = srcOficial(fila, paginaInicial);
 
-  // Por defecto usamos scroll continuo en todos los dispositivos.
-  // El usuario puede alternar a 'paginado' si prefiere ver página por página.
+  const [esMovil, setEsMovil] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
+
+  useEffect(() => {
+    const check = () => setEsMovil(window.innerWidth < 768);
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Por defecto usamos scroll continuo.
   const [modo, setModo] = useState<'continuo' | 'paginado'>('continuo');
 
   const [pdfDoc, setPdfDoc] = useState<any>(null);
@@ -65,9 +165,12 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderTaskRef = useRef<any>(null);
 
-  // Cargar el documento PDF vía PDF.js para renderizado en Canvas cuando está en modo paginado (celulares)
+  // En celulares siempre usamos el motor Canvas (scroll continuo o paginado) para evitar el error de iframes en Android
+  const debeUsarCanvas = modo === 'paginado' || esMovil;
+
+  // Cargar el documento PDF vía PDF.js
   useEffect(() => {
-    if (modo !== 'paginado') return;
+    if (!debeUsarCanvas) return;
     let cancelado = false;
     setCargandoPdf(true);
     setErrorPdf(null);
@@ -104,7 +207,7 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
     return () => {
       cancelado = true;
     };
-  }, [proxySrc, cneUrl, paginaInicial, modo]);
+  }, [proxySrc, cneUrl, paginaInicial, debeUsarCanvas]);
 
   // Renderizar la página actual en el Canvas
   useEffect(() => {
@@ -332,8 +435,8 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
           </div>
         )}
 
-        {/* Área de Visualización: Modo Continuo (iframe nativo con scroll vertical libre) */}
-        {modo === 'continuo' && iframeSrc && (
+        {/* Caso 1: Computadora en Modo Continuo (iframe nativo con scroll y zoom por rueda de ratón) */}
+        {modo === 'continuo' && !esMovil && iframeSrc && (
           <iframe
             key={iframeSrc}
             title={`Plan de ${titulo(fila.candidato)}`}
@@ -343,7 +446,56 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
           />
         )}
 
-        {/* Área de Visualización: Modo Paginado (Canvas para móviles o modo alternativo) */}
+        {/* Caso 2: Celular en Modo Continuo (flujo vertical nativo de páginas con Canvas, sin iframes) */}
+        {modo === 'continuo' && esMovil && (
+          <div className="flex-1 bg-slate-100/90 overflow-y-auto p-2.5 sm:p-4 min-h-0">
+            {cargandoPdf && (
+              <div className="my-auto flex flex-col items-center justify-center p-8 text-center text-slate-500">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600 mb-2" />
+                <p className="text-sm font-bold text-slate-700">Cargando PDF oficial…</p>
+                <p className="text-xs text-slate-400 mt-1">Preparando páginas para desplazamiento vertical</p>
+              </div>
+            )}
+
+            {errorPdf && !cargandoPdf && (
+              <div className="my-auto max-w-md bg-white border border-slate-200 rounded-3xl p-6 text-center space-y-4 shadow-sm mx-auto">
+                <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+                  <AlertCircle className="h-6 w-6" />
+                </div>
+                <div>
+                  <h4 className="font-black text-slate-900 text-base">Visualización directa</h4>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">{errorPdf}</p>
+                </div>
+                {cneUrl && (
+                  <a
+                    href={cneUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-md transition"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Abrir PDF Oficial en el Teléfono
+                  </a>
+                )}
+              </div>
+            )}
+
+            {!cargandoPdf && !errorPdf && numPages > 0 && (
+              <div className="flex flex-col items-center gap-3 max-w-2xl mx-auto pb-8">
+                {Array.from({ length: numPages }, (_, index) => (
+                  <PaginaPdf
+                    key={index + 1}
+                    pdfDoc={pdfDoc}
+                    pageNumber={index + 1}
+                    parentWidth={typeof window !== 'undefined' ? window.innerWidth : 360}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Caso 3: Modo Paginado (Canvas con control manual de páginas) */}
         {modo === 'paginado' && (
           <div className="flex-1 bg-slate-100/90 overflow-y-auto p-2 sm:p-4 flex flex-col items-center justify-start min-h-0">
             {cargandoPdf && (
