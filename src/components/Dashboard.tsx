@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
 import { Sugerencia, cargarCatalogo, sugerenciaDesdeMapa, type FilaPlan } from '../utils/catalogoPlanes';
 import ExplorarPlanes from './ExplorarPlanes';
@@ -64,6 +65,29 @@ export default function Dashboard() {
     }
     return [...nombres].sort((a, b) => a.localeCompare(b, 'es'));
   }, [activeProvGeo]);
+
+  const [filtroTexto, setFiltroTexto] = useState('');
+
+  const nombreProvincia = useMemo(() => {
+    if (provincia === 'TODAS') return '';
+    return (
+      PROVINCIAS_DATA.find(
+        (item) => normStr(item.name) === normStr(provincia) || normStr(item.displayName) === normStr(provincia)
+      )?.displayName || provincia
+    );
+  }, [provincia]);
+
+  const provinciasFiltradas = useMemo(() => {
+    if (!filtroTexto.trim()) return PROVINCIAS_DATA;
+    const q = normStr(filtroTexto);
+    return PROVINCIAS_DATA.filter((item) => normStr(item.displayName || item.name).includes(q));
+  }, [filtroTexto]);
+
+  const cantonesFiltrados = useMemo(() => {
+    if (!filtroTexto.trim()) return cantonesVisibles;
+    const q = normStr(filtroTexto);
+    return cantonesVisibles.filter((nombre) => normStr(nombre).includes(q));
+  }, [cantonesVisibles, filtroTexto]);
 
   useEffect(() => {
     if (provincia === 'TODAS') {
@@ -198,49 +222,153 @@ export default function Dashboard() {
               </p>
             </div>
             {vista === 'lista' && (
-              <div className="mb-4 bg-white border border-slate-200 rounded-3xl p-3 shadow-sm space-y-2">
+              <div className="mb-4 bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 shadow-sm space-y-4">
                 {provincia === 'TODAS' ? (
-                  PROVINCIAS_DATA.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => goToProvincia(item.name)}
-                      className="w-full min-h-12 px-4 rounded-2xl border border-slate-200 text-left font-bold text-slate-900 hover:bg-slate-50"
-                    >
-                      {item.displayName}
-                    </button>
-                  ))
+                  <div>
+                    <div className="mb-3">
+                      <h3 className="text-base sm:text-lg font-black text-slate-900">
+                        Selecciona una Provincia
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Elige una provincia del Ecuador para consultar sus planes a Prefectura y Alcaldías
+                      </p>
+                    </div>
+
+                    <div className="relative mb-3">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input
+                        type="text"
+                        value={filtroTexto}
+                        onChange={(e) => setFiltroTexto(e.target.value)}
+                        placeholder="Buscar provincia (ej. Pichincha, Guayas, Manabí)..."
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2.5 max-h-[60vh] overflow-y-auto pr-1">
+                      {provinciasFiltradas.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            setFiltroTexto('');
+                            goToProvincia(item.name);
+                          }}
+                          className="p-3 sm:p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-left transition group shadow-2xs flex flex-col justify-between cursor-pointer"
+                        >
+                          <span className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-blue-600 line-clamp-1">
+                            {item.displayName}
+                          </span>
+                          <span className="text-[10px] sm:text-[11px] text-slate-400 mt-2 font-semibold flex items-center justify-between">
+                            <span>Ver cantones</span>
+                            <ChevronRight className="h-3.5 w-3.5 text-slate-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition" />
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {provinciasFiltradas.length === 0 && (
+                      <p className="text-center py-6 text-xs text-slate-400">
+                        No se encontró ninguna provincia con "{filtroTexto}".
+                      </p>
+                    )}
+                  </div>
                 ) : (
-                  <>
-                    <p className="px-2 pt-1 text-lg font-black text-slate-900">
-                      {PROVINCIAS_DATA.find((item) => normStr(item.name) === normStr(provincia) || normStr(item.displayName) === normStr(provincia))?.displayName || provincia}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={goToEcuador}
-                      className="w-full min-h-12 px-4 rounded-2xl border border-slate-200 text-left text-sm font-bold text-slate-600"
-                    >
-                      Todas las provincias
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => abrirDesdeMapa(provincia)}
-                      className="w-full min-h-12 px-4 rounded-2xl bg-slate-900 text-white text-left font-bold"
-                    >
-                      Prefectura
-                    </button>
-                    {loadingMap && <p className="px-2 text-sm text-slate-500">Cargando cantones…</p>}
-                    {cantonesVisibles.map((nombre) => (
+                  <div className="space-y-4">
+                    {/* Barra de navegación superior (Reemplaza al confuso botón 'Todas las provincias') */}
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                       <button
-                        key={nombre}
                         type="button"
-                        onClick={() => abrirDesdeMapa(provincia, nombre)}
-                        className="w-full min-h-12 px-4 rounded-2xl border border-slate-200 text-left font-bold text-slate-900 hover:bg-slate-50"
+                        onClick={() => {
+                          setFiltroTexto('');
+                          goToEcuador();
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer"
                       >
-                        {nombre}
+                        <ChevronLeft className="h-4 w-4" />
+                        <span>Volver a Provincias</span>
                       </button>
-                    ))}
-                  </>
+                      <span className="text-xs text-slate-500 font-bold truncate max-w-[200px]">
+                        Ecuador › {nombreProvincia}
+                      </span>
+                    </div>
+
+                    {/* Tarjeta destacada para la Prefectura Provincial */}
+                    <div className="p-4 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                      <div>
+                        <span className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 text-[10px] font-black uppercase tracking-wider border border-blue-400/30">
+                          Gobierno Provincial
+                        </span>
+                        <h3 className="text-base font-black text-white mt-1">
+                          Prefectura de {nombreProvincia}
+                        </h3>
+                        <p className="text-xs text-slate-300 mt-0.5">
+                          Planes de trabajo para Prefecto y Viceprefecto
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => abrirDesdeMapa(provincia)}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-black text-xs rounded-xl transition shadow-md shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <span>Ver Prefectura</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    {/* Listado de Cantones / Alcaldías */}
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between px-1">
+                        <div>
+                          <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700">
+                            Cantones de {nombreProvincia} ({cantonesVisibles.length})
+                          </h4>
+                          <p className="text-[11px] text-slate-400">
+                            Planes para Alcaldes, concejales y juntas parroquiales
+                          </p>
+                        </div>
+                      </div>
+
+                      {cantonesVisibles.length > 5 && (
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                          <input
+                            type="text"
+                            value={filtroTexto}
+                            onChange={(e) => setFiltroTexto(e.target.value)}
+                            placeholder={`Buscar cantón en ${nombreProvincia}...`}
+                            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                          />
+                        </div>
+                      )}
+
+                      {loadingMap && (
+                        <p className="px-2 py-4 text-xs font-bold text-slate-400 text-center animate-pulse">
+                          Cargando cantones de {nombreProvincia}…
+                        </p>
+                      )}
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[50vh] overflow-y-auto pr-1">
+                        {cantonesFiltrados.map((nombre) => (
+                          <button
+                            key={nombre}
+                            type="button"
+                            onClick={() => abrirDesdeMapa(provincia, nombre)}
+                            className="px-3.5 py-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-left font-bold text-slate-800 text-xs sm:text-sm flex items-center justify-between group transition cursor-pointer"
+                          >
+                            <span className="truncate">{nombre}</span>
+                            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition shrink-0 ml-1" />
+                          </button>
+                        ))}
+                      </div>
+
+                      {cantonesFiltrados.length === 0 && !loadingMap && (
+                        <p className="text-center py-6 text-xs text-slate-400">
+                          No se encontraron cantones con el filtro "{filtroTexto}".
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
             )}
