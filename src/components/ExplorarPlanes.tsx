@@ -34,10 +34,24 @@ function colorViable(viable: string): string {
 
 export default function ExplorarPlanes({ filas, sugerencia, onVolver }: ExplorarPlanesProps) {
   const delLugar = useMemo(() => filasDelLugar(filas, sugerencia), [filas, sugerencia]);
+
+  // Si estamos en un cantón, rescatamos también las prefecturas de la provincia correspondiente
+  const filasPrefectura = useMemo(() => {
+    if (sugerencia.cod_provincia) {
+      return filas.filter(
+        (fila) => fila.cod_provincia === sugerencia.cod_provincia && fila.cod_canton === 0
+      );
+    }
+    return [];
+  }, [filas, sugerencia.cod_provincia]);
+
   const subtipos = useMemo(() => {
     const presentes = new Set(delLugar.map((fila) => fila.subtipo));
+    if (filasPrefectura.length > 0) {
+      presentes.add('Prefecto y viceprefecto');
+    }
     return ORDEN_SUBTIPO.filter((subtipo) => presentes.has(subtipo));
-  }, [delLugar]);
+  }, [delLugar, filasPrefectura]);
 
   const [subtipoActivo, setSubtipoActivo] = useState(sugerencia.subtipo || subtipos[0] || '');
   const [estados, setEstados] = useState<Record<number, EstadoPlan>>({});
@@ -50,16 +64,18 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
     setSubtipoActivo(sugerencia.subtipo && subtipos.includes(sugerencia.subtipo) ? sugerencia.subtipo : subtipos[0] || '');
   }, [sugerencia, subtipos]);
 
-  const visibles = useMemo(
-    () => delLugar.filter((fila) => fila.subtipo === subtipoActivo),
-    [delLugar, subtipoActivo]
-  );
+  const visibles = useMemo(() => {
+    if (subtipoActivo === 'Prefecto y viceprefecto' && !delLugar.some((f) => f.subtipo === subtipoActivo)) {
+      return filasPrefectura;
+    }
+    return delLugar.filter((fila) => fila.subtipo === subtipoActivo);
+  }, [delLugar, subtipoActivo, filasPrefectura]);
 
   useEffect(() => {
     const conPlan = visibles.filter((fila) => fila.tiene_plan && fila.cod_plan > 0);
     setLadoA(conPlan[0]?.cod_formulario ?? null);
     setLadoB(conPlan[1]?.cod_formulario ?? conPlan[0]?.cod_formulario ?? null);
-  }, [subtipoActivo, sugerencia.id]);
+  }, [subtipoActivo, sugerencia.id, visibles]);
 
   const abrirComparacion = (codigo: number) => {
     const conPlan = visibles.filter((fila) => fila.tiene_plan && fila.cod_plan > 0);
@@ -82,19 +98,41 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
       .then((auditoria) => {
         setEstados((prev) => ({ ...prev, [fila.cod_formulario]: { estado: 'listo', auditoria } }));
       })
-      .catch(() => {
+      .catch((err) => {
+        console.warn('Error al auditar plan:', err);
         setEstados((prev) => ({
           ...prev,
-          [fila.cod_formulario]: { estado: 'error', mensaje: 'No se pudo leer el plan. Puedes abrir el PDF oficial.' },
+          [fila.cod_formulario]: {
+            estado: 'error',
+            mensaje: 'No se pudo procesar el plan en este momento. Puedes abrir el PDF oficial con el botón.',
+          },
         }));
       });
   };
 
+  // Carga secuencial respetuosa para no saturar memoria ni red en dispositivos móviles
   useEffect(() => {
-    if (visibles.length === 0 || visibles.length > LIMITE_AUTOMATICO) return;
-    const pendientes = visibles.filter((fila) => fila.tiene_plan && !estados[fila.cod_formulario]);
-    pendientes.forEach((fila) => leer(fila));
-    // La lectura se dispara al cambiar de pestaña, no en cada actualización del estado.
+    if (visibles.length === 0) return;
+    let activo = true;
+
+    const procesarLigeramente = async () => {
+      // Priorizar hasta 3 listas que tengan plan y no hayan sido procesadas
+      const pendientes = visibles.filter(
+        (fila) => fila.tiene_plan && fila.cod_plan > 0 && !estados[fila.cod_formulario]
+      );
+      for (const fila of pendientes.slice(0, 3)) {
+        if (!activo) break;
+        leer(fila);
+        // Pausa de 400ms para no bloquear sockets de red móvil
+        await new Promise((resolve) => setTimeout(resolve, 400));
+      }
+    };
+
+    procesarLigeramente();
+
+    return () => {
+      activo = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subtipoActivo, sugerencia.id, visibles.length]);
 
@@ -150,7 +188,10 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
 
         <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-1 px-1">
           {subtipos.map((subtipo) => {
-            const cantidad = delLugar.filter((fila) => fila.subtipo === subtipo).length;
+            const cantidad =
+              subtipo === 'Prefecto y viceprefecto' && !delLugar.some((f) => f.subtipo === subtipo)
+                ? filasPrefectura.length
+                : delLugar.filter((fila) => fila.subtipo === subtipo).length;
             const activo = subtipo === subtipoActivo;
             return (
               <button
@@ -225,7 +266,18 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
               )}
 
               {estado.estado === 'error' && (
-                <p className="text-sm text-rose-800 bg-rose-50 border border-rose-200 rounded-2xl px-4 py-3">{estado.mensaje}</p>
+                <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <p className="text-xs sm:text-sm text-rose-800 leading-relaxed font-medium">
+                    {estado.mensaje}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => leer(fila)}
+                    className="shrink-0 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition cursor-pointer"
+                  >
+                    Reintentar lectura
+                  </button>
+                </div>
               )}
 
               {estado.estado === 'listo' && (

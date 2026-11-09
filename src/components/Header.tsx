@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Compass, ArrowLeft, Info, Calendar, X, Scale } from 'lucide-react';
 import GlobalSearchBar from './GlobalSearchBar';
 import { Sugerencia } from '../utils/catalogoPlanes';
@@ -19,86 +20,99 @@ export default function Header({
   const [showCicloInfo, setShowCicloInfo] = useState(false);
 
   return (
-    <header className="bg-white/95 border-b border-slate-200 py-2.5 sm:py-3.5 px-3 sm:px-4 md:px-8 shadow-sm sticky top-0 z-30 backdrop-blur-md">
-      <div className="w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-3">
-        <div className="flex items-center justify-between gap-2 min-w-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white text-sm font-bold px-3 py-1.5 rounded-full shrink-0">
+    <header className="bg-white/95 border-b border-slate-200/80 py-2 sm:py-2.5 px-3 sm:px-6 shadow-sm sticky top-0 z-30 backdrop-blur-md">
+      <div className="w-full max-w-[1600px] mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-4">
+        {/* Marca y Título Compacto */}
+        <div className="flex items-center justify-between gap-3 min-w-0 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white text-xs sm:text-sm font-black px-2.5 py-1 rounded-lg tracking-wider shrink-0 shadow-xs">
               T-593
             </span>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                <Compass className="hidden sm:block h-7 w-7 text-blue-600 shrink-0" />
-                <span className="sm:hidden">Planes de trabajo</span>
-                <span className="hidden sm:inline">Observatorio Electoral de Planes de Trabajo</span>
+              <h1 className="text-sm sm:text-base md:text-lg font-black text-slate-900 tracking-tight flex items-center gap-1.5 truncate">
+                <Compass className="h-5 w-5 text-blue-600 shrink-0 hidden sm:block" />
+                <span className="truncate">Observatorio Electoral</span>
+                <span className="text-xs font-semibold text-slate-400 hidden lg:inline">· Planes 2027</span>
               </h1>
-              <p className="hidden sm:block text-xs md:text-sm text-slate-500 font-medium mt-0.5">
-                Lectura ciudadana de los PDF publicados por el CNE. No es un sitio oficial ni un dictamen jurídico.
-              </p>
             </div>
           </div>
+
           <button
             type="button"
             onClick={() => setShowCicloInfo(true)}
-            className="shrink-0 min-h-11 min-w-11 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold px-2.5 rounded-xl flex items-center justify-center gap-1.5"
-            title="Alcance de las elecciones 2027"
+            className="md:hidden shrink-0 h-9 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl flex items-center gap-1 transition"
+            title="Información del proceso electoral 2027"
           >
-            <Calendar className="h-4 w-4 text-blue-600" />
-            <span className="hidden md:inline">Elecciones Seccionales CNE (2027–2031) — Proceso 140</span>
-            <span className="md:hidden">2027</span>
-            <Info className="hidden md:block h-3 w-3 text-slate-400" />
+            <Calendar className="h-3.5 w-3.5 text-blue-600" />
+            <span>2027</span>
+            <Info className="h-3 w-3 text-slate-400" />
           </button>
         </div>
 
         {/* Buscador Nacional Transversal */}
         {onExplore && (
-          <div className="w-full lg:max-w-xl">
+          <div className="w-full md:flex-1 md:max-w-xl min-w-0">
             <GlobalSearchBar onExplore={onExplore} />
           </div>
         )}
 
-        {/* Acceso Rápido */}
-        <div className="flex items-center gap-3 shrink-0">
-          {navLevel === 'planes' || explorando ? (
+        {/* Controles de la derecha */}
+        <div className="flex items-center justify-end gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowCicloInfo(true)}
+            className="hidden md:flex shrink-0 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold px-3 rounded-xl items-center gap-1.5 transition"
+            title="Alcance de las elecciones 2027"
+          >
+            <Calendar className="h-4 w-4 text-blue-600" />
+            <span>Seccionales 2027</span>
+            <Info className="h-3 w-3 text-slate-400" />
+          </button>
+
+          {(navLevel === 'planes' || explorando) && (
             <button
               onClick={onBackToMap}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm md:text-base font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all shadow-sm min-h-11 w-full sm:w-auto cursor-pointer"
+              className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white transition shadow-sm h-9 cursor-pointer shrink-0"
+              title="Volver a seleccionar lugar o mapa"
             >
-              <ArrowLeft className="h-5 w-5" />
-              Mapa
+              <ArrowLeft className="h-4 w-4" />
+              <span>Volver</span>
             </button>
-          ) : null}
+          )}
         </div>
       </div>
 
-      {/* Modal / Ventana Explicativa del Régimen Electoral del Ecuador */}
-      {showCicloInfo && (
+      {/* Modal / Ventana Explicativa del Régimen Electoral del Ecuador montado fuera del header para evitar bugs de backdrop-filter */}
+      {showCicloInfo && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
           onClick={() => setShowCicloInfo(false)}
         >
           <div
-            className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-xl w-full p-6 space-y-4"
+            className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-xl w-full p-5 sm:p-6 space-y-4 my-auto max-h-[92vh] flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-start border-b border-slate-100 pb-3">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3 shrink-0">
               <div className="flex items-center gap-2">
-                <Scale className="h-6 w-6 text-blue-600" />
-                <h3 className="text-lg font-black text-slate-900">
+                <div className="h-9 w-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <Scale className="h-5 w-5" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900">
                   Régimen Electoral y Marco Legal en Ecuador
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCicloInfo(false)}
-                className="text-slate-400 hover:text-slate-800 p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-800 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+                aria-label="Cerrar modal"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5">
+            <div className="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed overflow-y-auto pr-1">
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3.5">
                 <strong className="text-blue-950 font-bold block mb-1">
                   1. Elecciones Seccionales GADs y CPCCS (Período 2027–2031 — Proceso 140)
                 </strong>
@@ -126,17 +140,18 @@ export default function Header({
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end">
+            <div className="pt-2 flex justify-end shrink-0 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setShowCicloInfo(false)}
-                className="bg-slate-900 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl cursor-pointer"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition cursor-pointer shadow-xs"
               >
                 Entendido
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );

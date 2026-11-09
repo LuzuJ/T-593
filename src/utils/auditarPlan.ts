@@ -88,26 +88,67 @@ const PARCIAL: Regla = {
   ],
 };
 
+function resolverDignidad(dignidadRaw: string): string {
+  const normDig = norm(dignidadRaw || '');
+  if (normDig.includes('prefect')) return 'Prefecto';
+  if (normDig.includes('concej')) return 'Concejal';
+  if (normDig.includes('junta') || normDig.includes('vocal') || normDig.includes('parroq')) return 'Vocal Junta Parroquial';
+  return 'Alcalde';
+}
+
 const POR_DIGNIDAD: Record<string, Regla> = {
   Prefecto: {
     viable: 'Sí',
     tipo: 'Competencia provincial',
-    articulo: 'COOTAD Art. 42',
+    articulo: 'COOTAD Art. 42 / CRE Art. 263',
     claves: [
       'vialidad rural',
       'vial rural',
       'camino vecinal',
       'caminos vecinales',
       'red vial provincial',
+      'mantenimiento vial',
+      'asfaltado rural',
+      'asfalto rural',
+      'lastrado',
+      'puente',
+      'puentes',
+      'carretera rural',
+      'conectividad rural',
       'riego',
       'drenaje',
-      'agropec',
-      'productiv',
+      'represa',
+      'canal de riego',
+      'canales de riego',
+      'cuenca hidrografica',
+      'microcuenca',
       'cuenca',
-      'reforest',
+      'recurso hidrico',
+      'fuentes de agua',
       'paramo',
-      'gestion ambiental',
+      'paramos',
       'fomento productivo',
+      'agropecuar',
+      'productiv',
+      'agricultura',
+      'ganaderia',
+      'cadena de valor',
+      'soberania alimentaria',
+      'agroecol',
+      'semillas',
+      'asistencia tecnica',
+      'emprendimiento rural',
+      'gestion ambiental',
+      'medio ambiente',
+      'reforest',
+      'conservacion',
+      'area protegida',
+      'turismo rural',
+      'turismo comunitario',
+      'turismo provincial',
+      'desarrollo rural',
+      'infraestructura rural',
+      'ordenamiento territorial provincial',
     ],
   },
   Alcalde: {
@@ -164,7 +205,7 @@ const AJENO: Record<string, Regla> = {
     viable: 'No',
     tipo: 'Corresponde al municipio',
     articulo: 'COOTAD Art. 55',
-    claves: ['agua potable', 'alcantarillado', 'catastro', 'transito cantonal', 'cementerio', 'mercado municipal'],
+    claves: ['agua potable domiciliaria', 'alcantarillado urbano', 'catastro urbano', 'transito cantonal', 'cementerio cantonal', 'mercado municipal'],
   },
   Alcalde: {
     viable: 'No',
@@ -184,7 +225,7 @@ const VERBOS_ACCION =
   /\b(construir|implementar|desarrollar|fortalecer|garantizar|promover|mejorar|rehabilitar|mantener|crear|elaborar|ejecutar|gestionar|impulsar|ampliar|optimizar|regular|fiscalizar|coordinar|recuperar|dotar|modernizar|establecer|fomentar|reducir|incrementar|formular|actualizar|consolidar|capacitar|proteger|instalar|adecuar|brindar|generar)(emos|an|á|a|ar|er|ir)?\b/i;
 
 const SECCION_PROPUESTAS =
-  /\b(propuestas?|plan de accion|planes programas y proyectos|objetivos? estrategicos?|lineas? de accion|programas? y proyectos?|metas?|banco de ideas|plan plurianual)\b/i;
+  /\b(propuestas?|plan de accion|planes programas y proyectos|objetivos? estrategicos?|lineas? de accion|programas? y proyectos?|metas?|banco de ideas|plan plurianual|ejes? estrategicos?|eje\s+\d+|componentes?|proyectos?|estrategias?|plan de trabajo|lineas? estrategicas?|dimension\s+\w+|competencias?)\b/i;
 const SECCION_DIAGNOSTICO =
   /\b(diagnostico|situacion actual|caracterizacion|antecedentes|marco legal|base legal|datos generales|metodologia)\b/i;
 const MARCA_INDICE = /\b(indice|contenido|tabla de contenido)\b/i;
@@ -232,7 +273,8 @@ function temaDe(clave: string): string {
   return 'Otra oferta';
 }
 
-function clasificarOferta(linea: string, dignidad: string, pagina: number): PromesaAuditada | null {
+function clasificarOferta(linea: string, dignidadRaw: string, pagina: number): PromesaAuditada | null {
+  const dignidad = resolverDignidad(dignidadRaw);
   const fuera = contiene(linea, FUERA.claves, true);
   if (fuera && MENCIONA_COORDINACION.test(norm(linea))) {
     return {
@@ -396,7 +438,7 @@ function extraerOfertas(paginas: PaginaAuditada[], dignidad: string): { promesas
         !pareceIndice(frase) &&
         !pareceMetadato(frase) &&
         !/\b(fuente:|se recomienda|recomendacion tecnica|rendicion de cuentas)\b/i.test(frase) &&
-        (seccionActiva === 'propuestas' || pagina.tipo === 'propuestas' || /\b(proponemos|nos comprometemos|se ejecutara|se implementara)\b/i.test(frase));
+        (seccionActiva === 'propuestas' || pagina.tipo === 'propuestas' || seccionActiva === 'otro' || /\b(proponemos|nos comprometemos|se ejecutara|se implementara|planteamos|garantizaremos|construiremos)\b/i.test(frase));
       if (!esOferta) {
         descartadas += 1;
         continue;
@@ -423,7 +465,8 @@ function extraerOfertas(paginas: PaginaAuditada[], dignidad: string): { promesas
   return { promesas: muestraEquilibrada(promesas), descartadas };
 }
 
-function temasDeFrase(linea: string, dignidad: string): string[] {
+function temasDeFrase(linea: string, dignidadRaw: string): string[] {
+  const dignidad = resolverDignidad(dignidadRaw);
   const temas = new Set<string>();
   const marcar = (claves: string[], completa: boolean) => {
     claves.forEach((clave) => {
@@ -541,6 +584,20 @@ const cache = new Map<string, Promise<AuditoriaPlan>>();
 let descargasActivas = 0;
 const colaDescargas: Array<() => void> = [];
 
+let precalculadasPromise: Promise<Record<string, AuditoriaPlan>> | null = null;
+
+function cargarPrecalculadas(): Promise<Record<string, AuditoriaPlan>> {
+  if (!precalculadasPromise) {
+    precalculadasPromise = fetch('/data/cne/auditorias_precalculadas.json')
+      .then((res) => {
+        if (!res.ok) return {};
+        return res.json() as Promise<Record<string, AuditoriaPlan>>;
+      })
+      .catch(() => ({}));
+  }
+  return precalculadasPromise;
+}
+
 function conCupo<T>(tarea: () => Promise<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     const correr = () => {
@@ -559,7 +616,7 @@ function idSeguro(valor: number): boolean {
   return Number.isInteger(valor) && valor > 0 && valor < 1_000_000;
 }
 
-export function auditarPlanCne(
+export async function auditarPlanCne(
   codFormulario: number,
   codPlan: number,
   dignidad: string,
@@ -572,6 +629,21 @@ export function auditarPlanCne(
   const guardada = cache.get(clave);
   if (guardada) return guardada;
 
+  // 1. Revisar si ya está precalculado estáticamente en auditorias_precalculadas.json (0 ms, 0 peticiones al CNE)
+  try {
+    const precalculadas = await cargarPrecalculadas();
+    const claveCorta = `${proceso}-${codFormulario}-${codPlan}`;
+    const pre = precalculadas[clave] || precalculadas[claveCorta] || precalculadas[String(codFormulario)];
+    if (pre) {
+      const resProm = Promise.resolve(pre);
+      cache.set(clave, resProm);
+      return pre;
+    }
+  } catch {
+    // Si no se encuentra el archivo precalculado, continúa con fallback
+  }
+
+  // 2. Fallback dinámico bajo demanda
   const tarea = conCupo(async () => {
     const respuesta = await fetch(`/cne-plan/${proceso}/${codFormulario}/${codPlan}`);
     if (!respuesta.ok) throw new Error('El CNE no entregó este plan.');

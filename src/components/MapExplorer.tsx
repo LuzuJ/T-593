@@ -82,6 +82,7 @@ interface MapExplorerProps {
   onGoToCanton: (cant: string) => void;
   onGoToEcuador: () => void;
   onGoToPlanes: (parroquia?: string) => void;
+  onSwitchToLista?: () => void;
   onMouseMove: (
     e: React.MouseEvent,
     title: string,
@@ -104,6 +105,7 @@ export default function MapExplorer({
   onGoToCanton,
   onGoToEcuador,
   onGoToPlanes,
+  onSwitchToLista,
   onMouseMove,
   onMouseLeave,
 }: MapExplorerProps) {
@@ -277,24 +279,52 @@ export default function MapExplorer({
   return (
     <section className="lg:col-span-8 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl overflow-hidden shadow-md flex flex-col min-h-[420px] sm:min-h-[620px]">
       {/* Banner de Nivel de Navegación */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm md:text-base font-bold uppercase tracking-wider shadow-sm">
+      <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm">
         <span className="flex items-center gap-2">
-          <ZoomIn className="h-5 w-5 text-sky-200" />
-          {navLevel === 'ecuador' && 'Nivel 1: Mapa Territorial de Ecuador'}
-          {navLevel === 'provincia' && `Nivel 2: Cantones de ${provincia}`}
-          {navLevel === 'canton' && `Nivel 3: Parroquias de ${canton}`}
+          <ZoomIn className="h-4 w-4 text-sky-200 shrink-0" />
+          <span className="truncate">
+            {navLevel === 'ecuador' && 'Nivel 1: Mapa Territorial de Ecuador'}
+            {navLevel === 'provincia' && `Nivel 2: Cantones de ${provincia}`}
+            {navLevel === 'canton' && `Nivel 3: Parroquias de ${canton}`}
+          </span>
         </span>
-        {navLevel !== 'ecuador' && (
-          <button
-            onClick={() => {
-              if (navLevel === 'canton') onGoToProvincia(provincia);
-              else onGoToEcuador();
-            }}
-            className="text-xs md:text-sm bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl transition font-bold shadow-sm min-h-[36px]"
-          >
-            ← Zoom Atrás
-          </button>
-        )}
+
+        <div className="flex items-center gap-2 flex-wrap ml-auto">
+          {navLevel === 'provincia' && (
+            <button
+              type="button"
+              onClick={() => onGoToPlanes()}
+              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer normal-case"
+              title={`Ver planes de trabajo a la Prefectura de ${provincia}`}
+            >
+              <span>🏛️ Ver Prefectura de {provincia}</span>
+            </button>
+          )}
+
+          {onSwitchToLista && (
+            <button
+              type="button"
+              onClick={onSwitchToLista}
+              className="bg-white/20 hover:bg-white/30 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition normal-case"
+              title="Cambiar a selección rápida por lista"
+            >
+              📋 Ver en Lista
+            </button>
+          )}
+
+          {navLevel !== 'ecuador' && (
+            <button
+              type="button"
+              onClick={() => {
+                if (navLevel === 'canton') onGoToProvincia(provincia);
+                else onGoToEcuador();
+              }}
+              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl transition font-bold shadow-sm"
+            >
+              ← Zoom Atrás
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Renderizado Vectorial Delimitado y Limpio */}

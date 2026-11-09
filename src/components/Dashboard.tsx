@@ -258,6 +258,7 @@ export default function Dashboard() {
               onGoToPlanes={() => {
                 if (provincia !== 'TODAS') abrirDesdeMapa(provincia, canton !== 'TODOS' ? canton : undefined);
               }}
+              onSwitchToLista={() => setVista('lista')}
               onMouseMove={(e, title, metrics, candidatosStats, subtitle) => {
                 setTooltipPos({ x: e.clientX + 15, y: e.clientY - 20 });
                 setHoveredEntity({ title, subtitle, metrics, candidatosStats });
