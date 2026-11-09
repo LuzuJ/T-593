@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ExternalLink, ChevronLeft, ChevronRight, Download, Loader2, FileText, AlertCircle } from 'lucide-react';
+import { X, ExternalLink, ChevronLeft, ChevronRight, Download, Loader2, AlertCircle } from 'lucide-react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-import { FilaPlan, cargarCatalogo, encontrarPlan, titulo } from '../utils/catalogoPlanes';
+import { FilaPlan, titulo } from '../utils/catalogoPlanes';
 
 GlobalWorkerOptions.workerSrc = workerUrl;
 
