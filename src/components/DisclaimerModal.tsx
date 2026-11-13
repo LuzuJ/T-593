@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { ShieldAlert, CheckCircle2, XCircle, FileText, AlertTriangle, Scale, Lock, ArrowDownCircle, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ShieldAlert, CheckCircle2, XCircle, FileText, AlertTriangle, Scale, Lock } from 'lucide-react';
 
 interface DisclaimerModalProps {
   onAccept: () => void;
@@ -10,8 +10,6 @@ const STORAGE_KEY = 'hackaton_electoral_disclaimer_accepted_v1';
 export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasRejected, setHasRejected] = useState(false);
-  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const accepted = localStorage.getItem(STORAGE_KEY);
@@ -22,37 +20,7 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
     }
   }, [onAccept]);
 
-  // Verificar si el contenido cabe sin necesidad de scroll (pantallas muy grandes)
-  useEffect(() => {
-    if (isOpen && contentRef.current) {
-      const { scrollHeight, clientHeight } = contentRef.current;
-      if (scrollHeight <= clientHeight + 10) {
-        setHasScrolledToBottom(true);
-      }
-    }
-  }, [isOpen]);
-
-  const handleScroll = () => {
-    if (contentRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-      // Tolerancia de 20px
-      if (scrollTop + clientHeight >= scrollHeight - 20) {
-        setHasScrolledToBottom(true);
-      }
-    }
-  };
-
-  const scrollToBottomAction = () => {
-    if (contentRef.current) {
-      contentRef.current.scrollTo({
-        top: contentRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-  };
-
   const handleAccept = () => {
-    if (!hasScrolledToBottom) return;
     localStorage.setItem(STORAGE_KEY, 'true');
     setIsOpen(false);
     setHasRejected(false);
@@ -67,7 +35,6 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
 
   const handleReopen = () => {
     setHasRejected(false);
-    setHasScrolledToBottom(false);
     setIsOpen(true);
   };
 
@@ -126,11 +93,7 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
         </div>
 
         {/* Contenido scrolleable claro y nítido */}
-        <div
-          ref={contentRef}
-          onScroll={handleScroll}
-          className="p-6 sm:p-7 space-y-3.5 text-slate-700 text-sm sm:text-base leading-relaxed overflow-y-auto flex-1 scroll-smooth bg-white"
-        >
+        <div className="p-6 sm:p-7 space-y-3.5 text-slate-700 text-sm sm:text-base leading-relaxed overflow-y-auto flex-1 scroll-smooth bg-white">
           {/* Cláusula 1 */}
           <div className="bg-blue-50/80 p-4 rounded-2xl border border-blue-200/90 flex items-start gap-3.5 shadow-2xs">
             <FileText className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
@@ -196,36 +159,10 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
             </div>
           </div>
 
-          {/* Indicador de lectura completada */}
-          <div className="pt-2 text-center">
-            {hasScrolledToBottom ? (
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-300 animate-in fade-in shadow-2xs">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                Ha leído el documento completo. Puede aceptar para continuar.
-              </div>
-            ) : (
-              <button
-                onClick={scrollToBottomAction}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-full border border-amber-300 transition-all cursor-pointer shadow-2xs"
-              >
-                <ChevronDown className="h-4 w-4 text-amber-600 animate-bounce" />
-                Deslice hasta el final para habilitar el botón de aceptación
-              </button>
-            )}
-          </div>
         </div>
 
         {/* Footer Claro con Botones */}
-        <div className="bg-slate-50 p-5 sm:p-6 border-t border-slate-200 flex flex-col sm:flex-row gap-3 justify-between items-center shrink-0">
-          <div className="text-xs text-slate-500 text-center sm:text-left font-medium">
-            {!hasScrolledToBottom && (
-              <span className="text-amber-700 font-bold flex items-center gap-1">
-                <ArrowDownCircle className="h-4 w-4 shrink-0 text-amber-600" />
-                Debe leer hasta el final para aceptar
-              </span>
-            )}
-          </div>
-
+        <div className="bg-slate-50 p-5 sm:p-6 border-t border-slate-200 flex flex-col sm:flex-row gap-3 justify-end items-center shrink-0">
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <button
               onClick={handleReject}
@@ -237,16 +174,10 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
 
             <button
               onClick={handleAccept}
-              disabled={!hasScrolledToBottom}
-              className={`w-full sm:w-auto px-7 py-3 rounded-xl text-sm font-extrabold shadow-sm transition flex items-center justify-center gap-2 ${
-                hasScrolledToBottom
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md cursor-pointer transform active:scale-95'
-                  : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
-              }`}
-              title={!hasScrolledToBottom ? 'Deslice hacia abajo para leer todo el descargo' : 'Aceptar términos'}
+              className="w-full sm:w-auto px-7 py-3 rounded-xl text-sm font-extrabold transition flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md cursor-pointer transform active:scale-95"
             >
               <CheckCircle2 className="h-4 w-4" />
-              Aceptar Términos y Continuar
+              Aceptar y Continuar
             </button>
           </div>
         </div>
