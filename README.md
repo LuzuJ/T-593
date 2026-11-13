@@ -9,14 +9,15 @@
 
 1. [Objetivo del Proyecto](#-objetivo-del-proyecto)
 2. [Características Principales](#-características-principales)
-3. [Diferenciación de Dignidades Electorales](#-diferenciación-de-dignidades-electorales)
-4. [Evaluación de Viabilidad Legal (COOTAD)](#-evaluación-de-viabilidad-legal-cootad)
-5. [Arquitectura y Pipeline de Inteligencia Artificial](#-arquitectura-y-pipeline-de-inteligencia-artificial)
-6. [Stack Tecnológico](#-stack-tecnológico)
-7. [Estructura del Proyecto](#-estructura-del-proyecto)
-8. [Instalación y Ejecución Local](#-instalación-y-ejecución-local)
-9. [Descargo de Responsabilidad y Aviso Legal](#-descargo-de-responsabilidad-y-aviso-legal)
-10. [Licencia](#-licencia)
+3. [Fuente de Datos Oficiales (CNE — Proceso 140)](#-fuente-de-datos-oficiales-cne--proceso-140)
+4. [Diferenciación de Dignidades Electorales](#-diferenciación-de-dignidades-electorales)
+5. [Evaluación de Viabilidad Legal (COOTAD)](#-evaluación-de-viabilidad-legal-cootad)
+6. [Arquitectura y Pipeline de Inteligencia Artificial](#-arquitectura-y-pipeline-de-inteligencia-artificial)
+7. [Stack Tecnológico](#-stack-tecnológico)
+8. [Estructura del Proyecto](#-estructura-del-proyecto)
+9. [Instalación y Ejecución Local](#-instalación-y-ejecución-local)
+10. [Descargo de Responsabilidad y Aviso Legal](#-descargo-de-responsabilidad-y-aviso-legal)
+11. [Licencia](#-licencia)
 
 ---
 
@@ -39,6 +40,31 @@ Democratizar el acceso y la comprensión técnica de los **planes de trabajo de 
 * 📊 **Matriz de Similitud y Candidato Ancla:** Comparador entre planes para detectar coincidencias textuales y divergencias de enfoque político.
 * 🛡️ **Seguridad Zero-Trust en Ingesta:** Sanitización contra Prompt Injection y validación estricta de esquemas mediante Pydantic.
 * ⚖️ **Descargo de Responsabilidad Legal:** Pantalla inicial de aceptación de términos de uso de información de acceso público.
+
+---
+
+## 📡 Fuente de Datos Oficiales (CNE — Proceso 140)
+
+Todos los catálogos de candidaturas, organizaciones políticas y planes de trabajo en PDF provienen directamente de los servicios públicos oficiales de **Voto Informado** y **SARE** del **Consejo Nacional Electoral (CNE)** para el **Proceso Electoral `140`**:
+
+### Endpoints Utilizados
+* **Origen Web:** `https://votoinformado.cne.gob.ec`
+* **Autenticación Voto Informado (`AUTH_VI`):** `https://votoinformado.cne.gob.ec/voto-informado/api/auth-vi`
+* **Autenticación SARE (`AUTH_SARE`):** `https://votoinformado.cne.gob.ec/voto-informado/api/auth`
+* **Catálogos Voto Informado (`VI_BASE`):** `https://backend-apps.cne.gob.ec/vi/api/Catalogos`
+* **Consultas SARE (`SARE_BASE`):** `https://backend-apps.cne.gob.ec/sare-consulta/api`
+* **Descarga de Planes de Trabajo (`PLAN_URL`):** `https://backend-apps.cne.gob.ec/vi/api/Catalogos/PlanTrabajo/{proceso}/{formulario}/{plan}`
+
+### Catálogo de Dignidades y Subtipos (`PROCESO = 140`)
+
+| Código (`cod_dignidad`) | Dignidad | Subtipo Oficial CNE | Ámbito Territorial |
+| :---: | :--- | :--- | :--- |
+| `2` | **Prefecto** | Prefecto y viceprefecto | `provincia` |
+| `4` | **Alcalde** | Alcalde | `provincia`, `canton` |
+| `3` | **Concejal** | Concejales rurales | `provincia`, `canton` |
+| `5` | **Concejal** | Concejales urbanos | `provincia`, `canton` |
+| `12` | **Concejal** | Concejales urbanos por circunscripción | `provincia`, `canton`, `circunscripcion` |
+| `6` | **Vocal Junta Parroquial** | Vocales de junta parroquial rural | `provincia`, `canton`, `parroquia` |
 
 ---
 

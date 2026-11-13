@@ -121,5 +121,8 @@ dist/
 dist-ssr/
 *.local
 
+# Local ETL / scraping scripts (kept on disk, excluded from repo)
+src/scripts/
+
 # Caché local del precalculador de auditorías (>25 MiB, solo se despliegan las particiones por provincia)
 src/data/cne_cache/
