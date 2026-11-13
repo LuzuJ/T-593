@@ -156,6 +156,9 @@ export default function ExplorarPlanes({ filas, sugerencia, onVolver }: Explorar
             <MapPin className="h-6 w-6" />
           </div>
           <div>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-extrabold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 mb-1.5">
+              Seccionales 2027–2031 · Proceso CNE 140
+            </span>
             <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{sugerencia.titulo}</h2>
             <p className="text-slate-600 mt-1">{lugar}</p>
             <p className="text-sm text-slate-500 mt-2">

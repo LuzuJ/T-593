@@ -83,7 +83,9 @@ export default function Header({
               <h1 className="text-sm sm:text-base md:text-lg font-black text-slate-900 tracking-tight flex items-center gap-1.5 truncate">
                 <Compass className="h-5 w-5 text-blue-600 shrink-0 hidden sm:block" />
                 <span className="truncate group-hover:text-blue-600 transition">Observatorio Electoral</span>
-                <span className="text-xs font-semibold text-slate-400 hidden lg:inline">· Planes 2027</span>
+                <span className="text-[11px] sm:text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md shrink-0">
+                  2027
+                </span>
               </h1>
             </div>
           </button>
