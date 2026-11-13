@@ -499,9 +499,12 @@ function muestraEquilibrada(promesas: PromesaAuditada[]): PromesaAuditada[] {
   return salida;
 }
 
-function resumenDe(promesas: PromesaAuditada[]): string {
+function resumenDe(promesas: PromesaAuditada[], paginasConTexto: number, totalPaginas: number): string {
   if (promesas.length === 0) {
-    return 'No se encontraron ofertas concretas con verbo de acción y competencia identificable en el texto extraíble.';
+    if (paginasConTexto < totalPaginas) {
+      return `Este PDF contiene ${paginasConTexto} de ${totalPaginas} páginas con texto digital seleccionable; el resto puede estar escaneado como imagen, por lo que la lectura automática no pudo extraer propuestas de esas páginas. Esto no indica ausencia de propuestas.`;
+    }
+    return 'El lector automático basado en reglas no aisló frases en el formato esperado dentro del texto extraíble. Esto no indica ausencia de propuestas en el plan.';
   }
   const temas = [...new Set(promesas.map((promesa) => promesa.tema))].slice(0, 4);
   return `Muestra de hasta 12 frases sobre ${temas.join(', ')}. La misma regla se aplica a todas las listas. No es una calificación ni cubre todo el PDF.`;
@@ -513,7 +516,7 @@ export function auditarPaginas(paginas: PaginaAuditada[], dignidad: string, tota
   const sinTexto = caracteresExtraidos < 40;
   if (sinTexto) {
     return {
-      resumen: 'Este PDF no contiene texto extraíble. Puede ser un documento escaneado.',
+      resumen: 'Este PDF está publicado como imagen escaneada y no contiene texto digital seleccionable. Es una limitación técnica del archivo y no indica ausencia de propuestas.',
       paginas: totalPaginas,
       paginasConTexto,
       paginasProcesadas: paginas.length,
@@ -527,7 +530,7 @@ export function auditarPaginas(paginas: PaginaAuditada[], dignidad: string, tota
         lineasDescartadas: 0,
       },
       paginasExtraidas: paginas.map((pagina) => ({ ...pagina, texto: '' })),
-      aviso: 'No se asignó ninguna calificación. Abre el PDF oficial para revisarlo.',
+      aviso: 'No se asignó ninguna calificación. Consulta el PDF oficial directamente con el botón "Ver el plan".',
       sinTexto: true,
     };
   }
@@ -540,8 +543,14 @@ export function auditarPaginas(paginas: PaginaAuditada[], dignidad: string, tota
     totalOfertas: promesas.length,
     lineasDescartadas: descartadas,
   };
+  const aviso =
+    promesas.length === 0
+      ? paginasConTexto < totalPaginas
+        ? 'Limitación técnica de extracción automática (PDF parcialmente escaneado). No es una calificación; revisa el PDF oficial completo.'
+        : 'Extracción automática por reglas fijas. Puede omitir propuestas redactadas en tablas, gráficos o formatos distintos; consulta el PDF oficial.'
+      : 'Muestra automática del PDF oficial, con la misma regla para todas las listas. No es un dictamen, un ranking ni una lectura completa.';
   return {
-    resumen: resumenDe(promesas),
+    resumen: resumenDe(promesas, paginasConTexto, totalPaginas),
     paginas: totalPaginas,
     paginasConTexto,
     paginasProcesadas: paginas.length,
@@ -549,7 +558,7 @@ export function auditarPaginas(paginas: PaginaAuditada[], dignidad: string, tota
     promesas,
     conteos,
     paginasExtraidas: paginas.map((pagina) => ({ ...pagina, texto: '' })),
-    aviso: 'Muestra automática del PDF oficial, con la misma regla para todas las listas. No es un dictamen, un ranking ni una lectura completa.',
+    aviso,
     sinTexto: false,
   };
 }

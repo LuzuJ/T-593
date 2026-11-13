@@ -352,25 +352,44 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
                 </div>
               )}
 
-              {estado.estado === 'listo' && (
+              {estado.estado === 'listo' && (() => {
+                const aud = estado.auditoria;
+                const esTextoAntiguoVacio =
+                  aud.promesas.length === 0 &&
+                  (aud.sinTexto || aud.resumen.includes('No se encontraron ofertas concretas'));
+                const resumenMostrar = esTextoAntiguoVacio
+                  ? aud.sinTexto
+                    ? 'Este PDF está publicado como imagen escaneada y no contiene texto digital seleccionable. Es una limitación técnica del archivo y no indica ausencia de propuestas.'
+                    : aud.paginasConTexto < aud.paginas
+                      ? `Este PDF contiene ${aud.paginasConTexto} de ${aud.paginas} páginas con texto digital seleccionable; el resto puede estar escaneado como imagen, por lo que la lectura automática no pudo extraer propuestas de esas páginas. Esto no indica ausencia de propuestas.`
+                      : 'El lector automático basado en reglas no aisló frases en el formato esperado dentro del texto extraíble. Esto no indica ausencia de propuestas en el plan.'
+                  : aud.resumen;
+                const avisoMostrar = esTextoAntiguoVacio
+                  ? aud.sinTexto
+                    ? 'No se asignó ninguna calificación. Consulta el PDF oficial directamente con el botón "Ver el plan".'
+                    : aud.paginasConTexto < aud.paginas
+                      ? 'Limitación técnica de extracción automática (PDF parcialmente escaneado). No es una calificación; revisa el PDF oficial completo.'
+                      : 'Extracción automática por reglas fijas. Puede omitir propuestas redactadas en tablas, gráficos o formatos distintos; consulta el PDF oficial.'
+                  : aud.aviso;
+                return (
                 <div className="space-y-3">
                   <div className="flex flex-wrap gap-2 text-xs font-bold">
                     <span className="rounded-full bg-slate-100 text-slate-700 px-3 py-1">
-                      {estado.auditoria.paginasProcesadas} de {estado.auditoria.paginas} páginas procesadas
+                      {aud.paginasProcesadas} de {aud.paginas} páginas procesadas
                     </span>
                     <span className="rounded-full bg-slate-100 text-slate-700 px-3 py-1">
-                      {estado.auditoria.conteos.dentroCompetencia} mencionan materia del cargo
+                      {aud.conteos.dentroCompetencia} mencionan materia del cargo
                     </span>
                     <span className="rounded-full bg-slate-100 text-slate-700 px-3 py-1">
-                      {estado.auditoria.conteos.requiereCoordinacion} mencionan coordinación
+                      {aud.conteos.requiereCoordinacion} mencionan coordinación
                     </span>
                     <span className="rounded-full bg-slate-100 text-slate-700 px-3 py-1">
-                      {estado.auditoria.conteos.otroNivel} mencionan otro nivel
+                      {aud.conteos.otroNivel} mencionan otro nivel
                     </span>
                   </div>
-                  <p className="text-sm text-slate-700 leading-relaxed">{estado.auditoria.resumen}</p>
+                  <p className="text-sm text-slate-700 leading-relaxed">{resumenMostrar}</p>
                   <ul className="space-y-2">
-                    {estado.auditoria.promesas.map((promesa) => (
+                    {aud.promesas.map((promesa) => (
                       <li key={`${promesa.pagina}-${promesa.promesa}`} className="text-sm border border-slate-100 rounded-2xl p-3">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <span className={`inline-flex text-[11px] font-black px-2 py-0.5 rounded-full border ${colorViable(promesa.viable)}`}>
@@ -390,9 +409,10 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
                       </li>
                     ))}
                   </ul>
-                  <p className="text-[11px] text-slate-400">{estado.auditoria.aviso}</p>
+                  <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">{avisoMostrar}</p>
                 </div>
-              )}
+                );
+              })()}
 
               <div className="flex flex-wrap gap-2 mt-auto">
                 {estado.estado === 'idle' && (
