@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Search, X, ChevronRight, MapPin, UserRound } from 'lucide-react';
-import { Sugerencia, buscarCatalogo, cargarCatalogo, type FilaPlan } from '../utils/catalogoPlanes';
+import { Sugerencia, buscarCatalogo, cargarIndiceBusqueda, type FilaPlan } from '../utils/catalogoPlanes';
 
 interface GlobalSearchBarProps {
   onExplore: (item: Sugerencia) => void;
@@ -24,7 +24,7 @@ export default function GlobalSearchBar({
   const asegurar = () => {
     if (filas || cargando) return;
     setCargando(true);
-    cargarCatalogo()
+    cargarIndiceBusqueda()
       .then((rows) => {
         setFilas(rows);
         setError('');

@@ -1,11 +1,17 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Loader2, AlertCircle, Building2 } from 'lucide-react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
-import { Sugerencia, cargarCatalogo, sugerenciaDesdeMapa, type FilaPlan } from '../utils/catalogoPlanes';
+import {
+  Sugerencia,
+  cargarCatalogoProvincia,
+  sugerenciaDesdeMapa,
+  type FilaPlan,
+} from '../utils/catalogoPlanes';
 import ExplorarPlanes from './ExplorarPlanes';
 import Header from './Header';
 import MapExplorer from './MapExplorer';
 import DisclaimerModal from './DisclaimerModal';
+import OrganizacionesModal from './OrganizacionesModal';
 
 const COLOR_PALETTE = [
   '#38bdf8', '#34d399', '#a78bfa', '#fb923c', '#4ade80',
@@ -33,6 +39,9 @@ export default function Dashboard() {
     window.matchMedia('(max-width: 767px)').matches ? 'lista' : 'mapa'
   );
   const [catalogo, setCatalogo] = useState<FilaPlan[]>([]);
+  const [cargandoCatalogo, setCargandoCatalogo] = useState(false);
+  const [errorCatalogo, setErrorCatalogo] = useState('');
+  const [showOrgsModal, setShowOrgsModal] = useState(false);
   const [activeProvGeo, setActiveProvGeo] = useState<any>(null);
   const [loadingMap, setLoadingMap] = useState(false);
   const [hoveredEntity, setHoveredEntity] = useState<{
@@ -111,18 +120,85 @@ export default function Dashboard() {
       });
   }, [provincia]);
 
+  const abrirExploracion = useCallback((item: Sugerencia) => {
+    setErrorCatalogo('');
+    setCargandoCatalogo(true);
+    setExploracion(item);
+    setHoveredEntity(null);
+    cargarCatalogoProvincia(item.provincia)
+      .then((rows) => {
+        setCatalogo(rows);
+      })
+      .catch(() => {
+        setCatalogo([]);
+        setErrorCatalogo('No se pudo cargar el listado de candidatos. Revisa tu conexión e intenta de nuevo.');
+      })
+      .finally(() => setCargandoCatalogo(false));
+  }, []);
+
+  const abrirDesdeMapa = useCallback((provinciaNombre: string, cantonNombre?: string, actualizarUrl = true) => {
+    setHoveredEntity(null);
+    setErrorCatalogo('');
+    setCargandoCatalogo(true);
+
+    const cargarConFallback = async () => {
+      let rows = await cargarCatalogoProvincia(provinciaNombre);
+      let sugerencia = sugerenciaDesdeMapa(rows, provinciaNombre, cantonNombre);
+      if (!sugerencia && cantonNombre && normStr(cantonNombre) === 'la concordia') {
+        rows = await cargarCatalogoProvincia('santo domingo de los tsachilas');
+        sugerencia = sugerenciaDesdeMapa(rows, 'santo domingo de los tsachilas', cantonNombre);
+      }
+      return { rows, sugerencia };
+    };
+
+    cargarConFallback()
+      .then(({ rows, sugerencia }) => {
+        setCatalogo(rows);
+        if (sugerencia) {
+          setExploracion(sugerencia);
+          if (actualizarUrl) {
+            const provSlug = provToFile(provinciaNombre);
+            const cantonHash = cantonNombre ? `/canton-${provToFile(cantonNombre)}` : '/prefectura';
+            window.history.pushState(
+              { navLevel: 'planes', provincia: provinciaNombre, canton: cantonNombre },
+              '',
+              `#provincia-${provSlug}${cantonHash}`
+            );
+          }
+        } else {
+          setErrorCatalogo('No se encontraron candidaturas registradas para este lugar.');
+        }
+      })
+      .catch(() => {
+        setErrorCatalogo('No se pudo descargar el catálogo de esta provincia. Intenta nuevamente.');
+      })
+      .finally(() => setCargandoCatalogo(false));
+  }, []);
+
   useEffect(() => {
     const parseHash = () => {
       const hash = window.location.hash || '';
       if (hash.startsWith('#provincia-')) {
-        const slug = hash.replace('#provincia-', '');
-        const match = provinciasList.find((item) => item !== 'TODAS' && provToFile(item) === slug);
+        const resto = hash.replace('#provincia-', '');
+        const [provSlug, sub] = resto.split('/');
+        const match = provinciasList.find((item) => item !== 'TODAS' && provToFile(item) === provSlug);
         if (match) {
           setProvincia(match);
           setCanton('TODOS');
-          setNavLevel('provincia');
+          if (sub === 'prefectura') {
+            setNavLevel('provincia');
+            abrirDesdeMapa(match, undefined, false);
+          } else if (sub && sub.startsWith('canton-')) {
+            const cantonSlug = sub.replace('canton-', '').replace(/_/g, ' ');
+            setNavLevel('provincia');
+            abrirDesdeMapa(match, cantonSlug, false);
+          } else {
+            setExploracion(null);
+            setNavLevel('provincia');
+          }
         }
       } else if (hash === '#planes' || hash === '#ecuador' || hash === '') {
+        setExploracion(null);
         setProvincia('TODAS');
         setCanton('TODOS');
         setNavLevel('ecuador');
@@ -134,7 +210,7 @@ export default function Dashboard() {
     parseHash();
     window.addEventListener('hashchange', parseHash);
     return () => window.removeEventListener('hashchange', parseHash);
-  }, [provinciasList]);
+  }, [provinciasList, abrirDesdeMapa]);
 
   const svgViewBox = useMemo(() => {
     if (!activeProvGeo?.bbox) return '0 0 800 600';
@@ -161,21 +237,6 @@ export default function Dashboard() {
     window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${provToFile(provName)}`);
   };
 
-  const abrirExploracion = useCallback((item: Sugerencia) => {
-    setExploracion(item);
-    setHoveredEntity(null);
-    cargarCatalogo().then(setCatalogo).catch(() => setCatalogo([]));
-  }, []);
-
-  const abrirDesdeMapa = useCallback((provinciaNombre: string, cantonNombre?: string) => {
-    setHoveredEntity(null);
-    cargarCatalogo().then((rows) => {
-      setCatalogo(rows);
-      const sugerencia = sugerenciaDesdeMapa(rows, provinciaNombre, cantonNombre);
-      if (sugerencia) setExploracion(sugerencia);
-    });
-  }, []);
-
   const goHome = useCallback(() => {
     setExploracion(null);
     setHoveredEntity(null);
@@ -195,6 +256,9 @@ export default function Dashboard() {
         onBackToMap={() => {
           if (exploracion) {
             setExploracion(null);
+            if (provincia !== 'TODAS') {
+              window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${provToFile(provincia)}`);
+            }
             return;
           }
           setHoveredEntity(null);
@@ -205,25 +269,64 @@ export default function Dashboard() {
       />
 
       <main className="w-full max-w-[1600px] mx-auto px-3 sm:px-4 md:px-8 mt-4 sm:mt-6 pb-[env(safe-area-inset-bottom)]">
+        {cargandoCatalogo && (
+          <div className="mb-4 bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3 flex items-center gap-3 text-sm font-bold text-blue-800 shadow-xs">
+            <Loader2 className="h-4 w-4 animate-spin shrink-0 text-blue-700" />
+            <span>Cargando candidaturas y planes…</span>
+          </div>
+        )}
+        {errorCatalogo && !cargandoCatalogo && (
+          <div className="mb-4 bg-rose-50 border border-rose-200 rounded-2xl px-4 py-3 flex items-center justify-between gap-3 text-sm font-semibold text-rose-800">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
+              <span>{errorCatalogo}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setErrorCatalogo('')}
+              className="text-xs font-bold underline shrink-0 cursor-pointer"
+            >
+              Cerrar
+            </button>
+          </div>
+        )}
         {exploracion ? (
-          <ExplorarPlanes filas={catalogo} sugerencia={exploracion} onVolver={() => setExploracion(null)} />
+          <ExplorarPlanes
+            filas={catalogo}
+            sugerencia={exploracion}
+            cargando={cargandoCatalogo}
+            onVolver={() => {
+              setExploracion(null);
+              if (provincia !== 'TODAS') {
+                window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${provToFile(provincia)}`);
+              }
+            }}
+          />
         ) : (
           <>
             <div className="mb-4 bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 shadow-sm">
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setVista('mapa')}
-                  className={`min-h-12 rounded-2xl text-sm font-bold border ${vista === 'mapa' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-300'}`}
+                  className={`min-h-12 rounded-2xl text-sm sm:text-base font-bold border transition cursor-pointer ${vista === 'mapa' ? 'bg-blue-700 text-white border-blue-700 shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400'}`}
                 >
                   Mapa
                 </button>
                 <button
                   type="button"
                   onClick={() => setVista('lista')}
-                  className={`min-h-12 rounded-2xl text-sm font-bold border ${vista === 'lista' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-300'}`}
+                  className={`min-h-12 rounded-2xl text-sm sm:text-base font-bold border transition cursor-pointer ${vista === 'lista' ? 'bg-blue-700 text-white border-blue-700 shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400'}`}
                 >
                   Elegir lugar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowOrgsModal(true)}
+                  className="col-span-2 sm:col-span-1 min-h-12 rounded-2xl text-sm sm:text-base font-bold border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 transition cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Building2 className="h-4 w-4 text-blue-700 shrink-0" />
+                  <span>Partidos y listas</span>
                 </button>
               </div>
               <p className="text-sm text-slate-600 mt-3">
@@ -256,7 +359,7 @@ export default function Dashboard() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2.5 max-h-[60vh] overflow-y-auto pr-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2.5 max-h-[60vh] overflow-y-auto pr-1">
                       {provinciasFiltradas.map((item) => (
                         <button
                           key={item.id}
@@ -265,14 +368,14 @@ export default function Dashboard() {
                             setFiltroTexto('');
                             goToProvincia(item.name);
                           }}
-                          className="p-3 sm:p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-left transition group shadow-2xs flex flex-col justify-between cursor-pointer"
+                          className="p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-left transition group shadow-2xs flex flex-col justify-between cursor-pointer"
                         >
-                          <span className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-blue-600 line-clamp-1">
+                          <span className="text-sm font-bold text-slate-800 group-hover:text-blue-700 leading-snug">
                             {item.displayName}
                           </span>
-                          <span className="text-[10px] sm:text-[11px] text-slate-400 mt-2 font-semibold flex items-center justify-between">
+                          <span className="text-xs text-slate-600 mt-1.5 font-semibold flex items-center justify-between">
                             <span>Ver cantones</span>
-                            <ChevronRight className="h-3.5 w-3.5 text-slate-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition" />
+                            <ChevronRight className="h-4 w-4 text-slate-500 group-hover:text-blue-600 group-hover:translate-x-0.5 transition" />
                           </span>
                         </button>
                       ))}
@@ -331,10 +434,10 @@ export default function Dashboard() {
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between px-1">
                         <div>
-                          <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700">
+                          <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800">
                             Cantones de {nombreProvincia} ({cantonesVisibles.length})
                           </h4>
-                          <p className="text-[11px] text-slate-400">
+                          <p className="text-xs text-slate-600">
                             Planes para Alcaldes, concejales y juntas parroquiales
                           </p>
                         </div>
@@ -354,7 +457,7 @@ export default function Dashboard() {
                       )}
 
                       {loadingMap && (
-                        <p className="px-2 py-4 text-xs font-bold text-slate-400 text-center animate-pulse">
+                        <p className="px-2 py-4 text-xs font-bold text-slate-600 text-center animate-pulse">
                           Cargando cantones de {nombreProvincia}…
                         </p>
                       )}
@@ -364,17 +467,18 @@ export default function Dashboard() {
                           <button
                             key={nombre}
                             type="button"
+                            disabled={cargandoCatalogo}
                             onClick={() => abrirDesdeMapa(provincia, nombre)}
-                            className="px-3.5 py-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-left font-bold text-slate-800 text-xs sm:text-sm flex items-center justify-between group transition cursor-pointer"
+                            className="px-3.5 py-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-left font-bold text-slate-800 text-sm flex items-center justify-between group transition cursor-pointer disabled:opacity-60"
                           >
-                            <span className="truncate">{nombre}</span>
-                            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition shrink-0 ml-1" />
+                            <span className="leading-snug">{nombre}</span>
+                            <ChevronRight className="h-4 w-4 text-slate-500 group-hover:text-blue-600 group-hover:translate-x-0.5 transition shrink-0 ml-2" />
                           </button>
                         ))}
                       </div>
 
                       {cantonesFiltrados.length === 0 && !loadingMap && (
-                        <p className="text-center py-6 text-xs text-slate-400">
+                        <p className="text-center py-6 text-xs text-slate-600">
                           No se encontraron cantones con el filtro "{filtroTexto}".
                         </p>
                       )}
@@ -415,7 +519,7 @@ export default function Dashboard() {
         >
           <div className="flex items-baseline justify-between border-b border-slate-100 pb-2 mb-2.5 gap-3">
             <h4 className="font-extrabold text-base text-slate-900">{hoveredEntity.title}</h4>
-            <span className="text-[11px] font-semibold text-slate-400 text-right">{hoveredEntity.subtitle}</span>
+            <span className="text-xs font-semibold text-slate-600 text-right">{hoveredEntity.subtitle}</span>
           </div>
           {hoveredEntity.candidatosStats && (
             <div className="space-y-1.5 text-sm pb-2.5 border-b border-slate-100">
@@ -461,6 +565,11 @@ export default function Dashboard() {
           )}
         </div>
       )}
+      <OrganizacionesModal
+        open={showOrgsModal}
+        onClose={() => setShowOrgsModal(false)}
+        onSelectSugerencia={abrirExploracion}
+      />
     </div>
   );
 }

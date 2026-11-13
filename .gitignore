@@ -120,3 +120,6 @@ __pycache__/
 dist/
 dist-ssr/
 *.local
+
+# Caché local del precalculador de auditorías (>25 MiB, solo se despliegan las particiones por provincia)
+src/data/cne_cache/

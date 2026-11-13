@@ -1,4 +1,5 @@
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { slugProvincia } from './catalogoPlanes';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 GlobalWorkerOptions.workerSrc = workerUrl;
@@ -586,16 +587,21 @@ const colaDescargas: Array<() => void> = [];
 
 let precalculadasPromise: Promise<Record<string, AuditoriaPlan>> | null = null;
 
-function cargarPrecalculadas(): Promise<Record<string, AuditoriaPlan>> {
-  if (!precalculadasPromise) {
-    precalculadasPromise = fetch('/data/cne/auditorias_precalculadas.json')
-      .then((res) => {
-        if (!res.ok) return {};
-        return res.json() as Promise<Record<string, AuditoriaPlan>>;
-      })
-      .catch(() => ({}));
-  }
-  return precalculadasPromise;
+const precalculadasProvCache = new Map<string, Promise<Record<string, AuditoriaPlan>>>();
+
+function cargarPrecalculadas(provincia?: string): Promise<Record<string, AuditoriaPlan>> {
+  if (!provincia) return Promise.resolve({});
+  const slug = slugProvincia(provincia);
+  const existente = precalculadasProvCache.get(slug);
+  if (existente) return existente;
+  const prom = fetch(`/data/cne/auditorias_provincias/${slug}.json`)
+    .then((res) => {
+      if (!res.ok) return {};
+      return res.json() as Promise<Record<string, AuditoriaPlan>>;
+    })
+    .catch(() => ({}));
+  precalculadasProvCache.set(slug, prom);
+  return prom;
 }
 
 function conCupo<T>(tarea: () => Promise<T>): Promise<T> {
@@ -620,7 +626,8 @@ export async function auditarPlanCne(
   codFormulario: number,
   codPlan: number,
   dignidad: string,
-  proceso = 140
+  proceso = 140,
+  provincia?: string
 ): Promise<AuditoriaPlan> {
   if (!idSeguro(proceso) || !idSeguro(codFormulario) || !idSeguro(codPlan)) {
     return Promise.reject(new Error('El identificador del plan no es válido.'));
@@ -629,9 +636,9 @@ export async function auditarPlanCne(
   const guardada = cache.get(clave);
   if (guardada) return guardada;
 
-  // 1. Revisar si ya está precalculado estáticamente en auditorias_precalculadas.json (0 ms, 0 peticiones al CNE)
+  // 1. Revisar si ya está precalculado estáticamente (0 ms, 0 peticiones al CNE)
   try {
-    const precalculadas = await cargarPrecalculadas();
+    const precalculadas = await cargarPrecalculadas(provincia);
     const claveCorta = `${proceso}-${codFormulario}-${codPlan}`;
     const pre = precalculadas[clave] || precalculadas[claveCorta] || precalculadas[String(codFormulario)];
     if (pre) {

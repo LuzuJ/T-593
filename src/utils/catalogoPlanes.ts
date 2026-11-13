@@ -196,6 +196,60 @@ export function etiquetaSubtipo(subtipo: string): string {
   }
 }
 
+const PROVINCIA_SLUG: Record<string, string> = {
+  'sto dgo tsachilas': 'santo_domingo_de_los_tsachilas',
+  'sto domingo': 'santo_domingo_de_los_tsachilas',
+  'santo domingo': 'santo_domingo_de_los_tsachilas',
+  'santo domingo de los tsachilas': 'santo_domingo_de_los_tsachilas',
+  'sta elena': 'santa_elena',
+  'santa elena': 'santa_elena',
+  'zamora ch': 'zamora_chinchipe',
+  'zamora chinchipe': 'zamora_chinchipe',
+};
+
+export function slugProvincia(nombre: string): string {
+  const limpio = norm(nombre);
+  return PROVINCIA_SLUG[limpio] || limpio.replace(/\s+/g, '_');
+}
+
+const provinciasCache = new Map<string, Promise<FilaPlan[]>>();
+let busquedaPromise: Promise<FilaPlan[]> | null = null;
+
+export function cargarCatalogoProvincia(provincia: string): Promise<FilaPlan[]> {
+  const slug = slugProvincia(provincia);
+  if (!slug) return cargarCatalogo();
+  const existente = provinciasCache.get(slug);
+  if (existente) return existente;
+
+  const prom = fetch(`/data/cne/provincias/${slug}.json`)
+    .then((res) => {
+      if (!res.ok) throw new Error('No se pudo cargar la provincia');
+      return res.json() as Promise<FilaPlan[]>;
+    })
+    .catch((error) => {
+      provinciasCache.delete(slug);
+      throw error;
+    });
+
+  provinciasCache.set(slug, prom);
+  return prom;
+}
+
+export function cargarIndiceBusqueda(): Promise<FilaPlan[]> {
+  if (!busquedaPromise) {
+    busquedaPromise = fetch('/data/cne/indice_busqueda.json')
+      .then((res) => {
+        if (!res.ok) throw new Error('No se pudo cargar el índice de búsqueda');
+        return res.json() as Promise<FilaPlan[]>;
+      })
+      .catch(() => {
+        busquedaPromise = null;
+        return cargarCatalogo();
+      });
+  }
+  return busquedaPromise;
+}
+
 export function cargarCatalogo(): Promise<FilaPlan[]> {
   if (!catalogoPromise) {
     catalogoPromise = fetch('/data/cne/indice_planes_api.jsonl')

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Compass, ArrowLeft, Info, Calendar, X, Scale, Search } from 'lucide-react';
 import GlobalSearchBar from './GlobalSearchBar';
@@ -22,33 +22,22 @@ export default function Header({
   const [showCicloInfo, setShowCicloInfo] = useState(false);
   const [compacto, setCompacto] = useState(false);
   const [buscandoMobile, setBuscandoMobile] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setCompacto(true);
-      setBuscandoMobile(false);
-    }, 5000);
-  }, []);
 
   useEffect(() => {
-    // Al cargar o cambiar de vista, iniciar conteo de 5 segundos
-    resetTimer();
+    setCompacto(false);
+    setBuscandoMobile(false);
 
     const handleScroll = () => {
       if (window.scrollY > 40) {
         setCompacto(true);
         setBuscandoMobile(false);
+      } else {
+        setCompacto(false);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [resetTimer, explorando, navLevel]);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [explorando, navLevel]);
 
   const handleHomeClick = () => {
     if (onHome) {
@@ -61,7 +50,6 @@ export default function Header({
   const handleActivarBuscador = () => {
     setBuscandoMobile(true);
     setCompacto(false);
-    resetTimer();
   };
 
   return (
@@ -153,10 +141,10 @@ export default function Header({
           </div>
         </div>
 
-        {/* Fila secundaria en celular: Buscador expandible (Se oculta tras 5 segundos para liberar pantalla) */}
+        {/* Fila secundaria en celular: Buscador expandible (se compacta solo al hacer scroll) */}
         {onExplore && (!compacto || buscandoMobile) && (
           <div className="md:hidden pt-2 mt-2 border-t border-slate-100 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
-            <div className="flex-1 min-w-0" onClick={resetTimer}>
+            <div className="flex-1 min-w-0">
               <GlobalSearchBar onExplore={onExplore} />
             </div>
             <button

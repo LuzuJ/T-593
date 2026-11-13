@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShieldAlert, CheckCircle2, XCircle, FileText, AlertTriangle, Scale, Lock } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, FileText, AlertTriangle, Scale } from 'lucide-react';
 
 interface DisclaimerModalProps {
   onAccept: () => void;
@@ -8,75 +8,70 @@ interface DisclaimerModalProps {
 const STORAGE_KEY = 'hackaton_electoral_disclaimer_accepted_v1';
 
 export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
+  const [bannerVisible, setBannerVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [hasRejected, setHasRejected] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem(STORAGE_KEY);
     if (!accepted) {
-      setIsOpen(true);
-    } else {
-      onAccept();
+      setBannerVisible(true);
     }
+    onAccept();
   }, [onAccept]);
 
   const handleAccept = () => {
     localStorage.setItem(STORAGE_KEY, 'true');
+    setBannerVisible(false);
     setIsOpen(false);
-    setHasRejected(false);
     onAccept();
   };
 
-  const handleReject = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setIsOpen(false);
-    setHasRejected(true);
-  };
-
-  const handleReopen = () => {
-    setHasRejected(false);
+  const handleOpenModal = () => {
     setIsOpen(true);
   };
 
-  // Si rechazó, pantalla bloqueante clara y legible
-  if (hasRejected) {
-    return (
-      <div className="fixed inset-0 z-[9999] bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4">
-        <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 max-w-lg w-full text-center shadow-2xl text-slate-800 space-y-6 animate-in fade-in zoom-in-95 duration-200">
-          <div className="h-20 w-20 bg-rose-50 text-rose-600 rounded-3xl mx-auto flex items-center justify-center border border-rose-200 shadow-sm">
-            <Lock className="h-10 w-10" />
-          </div>
+  if (!isOpen && !bannerVisible) return null;
 
-          <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Acceso Restringido</h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Para navegar y consultar el análisis de planes de trabajo electorales, es requisito obligatorio aceptar el descargo de responsabilidad legal.
+  if (!isOpen && bannerVisible) {
+    return (
+      <div className="bg-slate-900 text-white border-b border-slate-800 px-3 sm:px-6 py-2.5">
+        <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs sm:text-sm">
+          <div className="flex items-start sm:items-center gap-2">
+            <Scale className="h-4 w-4 text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+            <p className="text-slate-100 leading-snug">
+              <strong className="font-bold text-white">Herramienta cívica independiente:</strong> los planes provienen del repositorio público del CNE y el análisis es automatizado.
             </p>
           </div>
-
-          <div className="pt-2">
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
             <button
-              onClick={handleReopen}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all transform active:scale-95 cursor-pointer"
+              type="button"
+              onClick={handleOpenModal}
+              className="px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 text-slate-200 text-xs font-bold transition cursor-pointer"
             >
-              Revisar y Aceptar Términos de Uso
+              Aviso legal
+            </button>
+            <button
+              type="button"
+              onClick={handleAccept}
+              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition cursor-pointer"
+            >
+              Entendido
             </button>
           </div>
-
-          <p className="text-xs text-slate-400 font-medium">
-            Plataforma de Análisis Cívico y Legal Electoral Ecuador
-          </p>
         </div>
       </div>
     );
   }
 
-  // Si no está abierto (ya aceptó), no renderizar nada
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white border border-slate-200 rounded-3xl shadow-2xl max-w-2xl w-full text-slate-800 overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      onClick={() => setIsOpen(false)}
+    >
+      <div
+        className="bg-white border border-slate-200 rounded-3xl shadow-2xl max-w-2xl w-full text-slate-800 overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Cabecera Clara */}
         <div className="bg-slate-50 p-6 sm:p-7 border-b border-slate-200 flex items-center gap-4 shrink-0">
           <div className="h-14 w-14 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center shrink-0 shadow-xs">
@@ -165,19 +160,20 @@ export default function DisclaimerModal({ onAccept }: DisclaimerModalProps) {
         <div className="bg-slate-50 p-5 sm:p-6 border-t border-slate-200 flex flex-col sm:flex-row gap-3 justify-end items-center shrink-0">
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <button
-              onClick={handleReject}
+              type="button"
+              onClick={() => setIsOpen(false)}
               className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
             >
-              <XCircle className="h-4 w-4 text-slate-500" />
-              Rechazar y Salir
+              Cerrar
             </button>
 
             <button
+              type="button"
               onClick={handleAccept}
               className="w-full sm:w-auto px-7 py-3 rounded-xl text-sm font-extrabold transition flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md cursor-pointer transform active:scale-95"
             >
               <CheckCircle2 className="h-4 w-4" />
-              Aceptar y Continuar
+              Entendido y Continuar
             </button>
           </div>
         </div>

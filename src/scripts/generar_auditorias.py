@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import sys
+import threading
 import time
 import unicodedata
 from pathlib import Path
@@ -20,6 +21,44 @@ import urllib.request
 import ssl
 
 import pymupdf
+
+try:
+    pymupdf.TOOLS.mupdf_display_errors(False)
+except Exception:
+    pass
+
+try:
+    from rapidocr_onnxruntime import RapidOCR
+except ImportError:
+    RapidOCR = None  # type: ignore
+
+_OCR_LOCAL = threading.local()
+
+
+def _get_ocr():
+    if RapidOCR is None:
+        return None
+    engine = getattr(_OCR_LOCAL, "engine", None)
+    if engine is None:
+        engine = RapidOCR(
+            use_angle_cls=False,
+            intra_op_num_threads=2,
+            inter_op_num_threads=1,
+        )
+        _OCR_LOCAL.engine = engine
+    return engine
+
+
+def ocr_pagina(page: Any) -> str:
+    engine = _get_ocr()
+    if engine is None:
+        return ""
+    pix = page.get_pixmap(dpi=96)
+    img_bytes = pix.tobytes("png")
+    res, _ = engine(img_bytes)
+    if not res:
+        return ""
+    return "\n".join(item[1] for item in res if len(item) >= 2 and item[1])
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +69,7 @@ logger = logging.getLogger("GeneradorAuditorias")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 INDICE_PATH = BASE_DIR / "public" / "data" / "cne" / "indice_planes_api.jsonl"
-OUTPUT_PATH = BASE_DIR / "public" / "data" / "cne" / "auditorias_precalculadas.json"
+OUTPUT_PATH = BASE_DIR / "src" / "data" / "cne_cache" / "auditorias_precalculadas.json"
 
 # ==========================================
 # REGLAS NORMATIVAS Y LEXICAS COOTAD
@@ -517,7 +556,12 @@ def auditar_documento(paginas_texto: List[Tuple[int, str]], dignidad: str) -> Di
 # DESCARGA Y EXTRACCIÓN
 # ==========================================
 
-def descargar_y_auditar_plan(fila: Dict[str, Any], timeout: int = 25) -> Optional[Dict[str, Any]]:
+def descargar_y_auditar_plan(
+    fila: Dict[str, Any],
+    timeout: int = 25,
+    usar_ocr: bool = True,
+    max_ocr_paginas: int = 8,
+) -> Optional[Dict[str, Any]]:
     proceso = fila.get("proceso", 140)
     cod_formulario = fila.get("cod_formulario")
     cod_plan = fila.get("cod_plan")
@@ -557,10 +601,23 @@ def descargar_y_auditar_plan(fila: Dict[str, Any], timeout: int = 25) -> Optiona
 
     try:
         doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+        total_pags = len(doc)
         paginas_texto = []
-        for i in range(len(doc)):
+        paginas_ocr = 0
+        chars_ocr = 0
+        for i in range(total_pags):
             page = doc[i]
             txt = page.get_text() or ""
+            # Saltar portada (página 1) en documentos de >= 4 páginas para acelerar OCR
+            if usar_ocr and len(txt.strip()) < 40 and paginas_ocr < max_ocr_paginas and not (i == 0 and total_pags >= 4):
+                if paginas_ocr >= 4 and chars_ocr >= 3000:
+                    paginas_texto.append((i + 1, txt))
+                    continue
+                paginas_ocr += 1
+                txt_ocr = ocr_pagina(page)
+                if len(txt_ocr.strip()) > len(txt.strip()):
+                    txt = txt_ocr
+                    chars_ocr += len(txt)
             paginas_texto.append((i + 1, txt))
         doc.close()
 
@@ -570,6 +627,22 @@ def descargar_y_auditar_plan(fila: Dict[str, Any], timeout: int = 25) -> Optiona
         return None
 
 
+def _prioridad_dignidad(fila: Dict[str, Any]) -> int:
+    sub = norm(fila.get("subtipo") or fila.get("dignidad") or "")
+    if "prefect" in sub:
+        return 0
+    if "alcald" in sub:
+        return 1
+    if "concejal" in sub or "circunscripcion" in sub:
+        return 2
+    return 3
+
+
+def _procesar_fila_worker(args: Tuple[Dict[str, Any], int, bool, int]) -> Optional[Dict[str, Any]]:
+    fila, timeout, usar_ocr, max_ocr_paginas = args
+    return descargar_y_auditar_plan(fila, timeout, usar_ocr, max_ocr_paginas)
+
+
 # ==========================================
 # PROCESAMIENTO POR LOTES
 # ==========================================
@@ -577,14 +650,17 @@ def descargar_y_auditar_plan(fila: Dict[str, Any], timeout: int = 25) -> Optiona
 def procesar_lote(
     filas: List[Dict[str, Any]],
     salida_path: Path,
-    max_workers: int = 6,
+    max_workers: int = 8,
+    usar_ocr: bool = True,
+    reprocesar_escaneados: bool = False,
+    max_ocr_paginas: int = 8,
 ) -> None:
     auditorias: Dict[str, Any] = {}
     if salida_path.exists():
         try:
             with open(salida_path, "r", encoding="utf-8") as f:
                 auditorias = json.load(f)
-            logger.info(f"Caché previa cargada con {len(auditorias)} planes precalculados.")
+            logger.info(f"Caché previa cargada con {len(auditorias)} entradas precalculadas.")
         except Exception:
             auditorias = {}
 
@@ -595,19 +671,27 @@ def procesar_lote(
         c_plan = f.get("cod_plan")
         clave = f"{proceso}-{c_form}-{c_plan}"
         clave_alt = str(c_form)
-        if clave not in auditorias and clave_alt not in auditorias:
+        existente = auditorias.get(clave) or auditorias.get(clave_alt)
+        if not existente or (reprocesar_escaneados and existente.get("sinTexto")):
             pendientes.append(f)
 
-    logger.info(f"Total a procesar: {len(pendientes)} de {len(filas)} candidaturas.")
+    # Priorizar Prefectos y Alcaldes primero
+    pendientes.sort(key=_prioridad_dignidad)
+
+    logger.info(f"Total a procesar: {len(pendientes)} de {len(filas)} candidaturas (OCR={'ON' if usar_ocr and RapidOCR else 'OFF'}, workers={max_workers}).")
     if not pendientes:
         logger.info("Todos los planes seleccionados ya se encuentran precalculados.")
         return
 
     completados = 0
     guardados_recientes = 0
+    ultimo_guardado = 0
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futuros = {executor.submit(descargar_y_auditar_plan, fila): fila for fila in pendientes}
+    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futuros = {
+            executor.submit(_procesar_fila_worker, (fila, 25, usar_ocr, max_ocr_paginas)): fila
+            for fila in pendientes
+        }
         for fut in concurrent.futures.as_completed(futuros):
             fila = futuros[fut]
             proceso = fila.get("proceso", 140)
@@ -619,32 +703,41 @@ def procesar_lote(
                 resultado = fut.result()
                 if resultado:
                     auditorias[clave] = resultado
-                    auditorias[str(c_form)] = resultado  # Acceso directo por código de formulario
+                    auditorias[str(c_form)] = resultado
                     guardados_recientes += 1
             except Exception as e:
                 logger.warning(f"Error procesando {fila.get('candidato')}: {e}")
 
             completados += 1
-            if completados % 10 == 0 or completados == len(pendientes):
+            if completados % 2 == 0 or completados == len(pendientes):
                 logger.info(f"Progreso: {completados}/{len(pendientes)} ({guardados_recientes} exitosos)")
-                # Guardar checkpoint intermedio cada 25 items
-                if guardados_recientes % 25 == 0:
+                if guardados_recientes - ultimo_guardado >= 10:
+                    ultimo_guardado = guardados_recientes
                     with open(salida_path, "w", encoding="utf-8") as out:
                         json.dump(auditorias, out, ensure_ascii=False, indent=2)
 
     with open(salida_path, "w", encoding="utf-8") as out:
         json.dump(auditorias, out, ensure_ascii=False, indent=2)
 
-    logger.info(f"Finalizado. Guardadas {len(auditorias)} auditorías en {salida_path}")
+    logger.info(f"Finalizado. Guardadas {len(auditorias)} entradas en {salida_path}")
+    try:
+        import particionar_cne_frontend
+        particionar_cne_frontend.main()
+    except Exception as e:
+        logger.warning(f"No se pudo re-particionar automáticamente: {e}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Precalculador estático de auditorías CNE")
     parser.add_argument("--solo-prefecturas", action="store_true", help="Auditar únicamente prefecturas (24 provincias)")
+    parser.add_argument("--solo-ejecutivo", action="store_true", help="Auditar únicamente Prefecturas y Alcaldías")
     parser.add_argument("--canton", type=str, default=None, help="Filtrar por nombre de cantón (ej: Quito, Guayaquil)")
     parser.add_argument("--provincia", type=str, default=None, help="Filtrar por provincia")
     parser.add_argument("--limite", type=int, default=None, help="Límite máximo de planes a auditar")
-    parser.add_argument("--workers", type=int, default=6, help="Hilos concurrentes para descarga")
+    parser.add_argument("--workers", type=int, default=8, help="Procesos concurrentes (default: 8)")
+    parser.add_argument("--sin-ocr", action="store_true", help="Deshabilitar OCR en PDFs escaneados")
+    parser.add_argument("--reprocesar-escaneados", action="store_true", help="Reprocesar con OCR los planes guardados con sinTexto=True")
+    parser.add_argument("--max-ocr-paginas", type=int, default=8, help="Máximo de páginas escaneadas a procesar con OCR por PDF (default: 8)")
     args = parser.parse_args()
 
     if not INDICE_PATH.exists():
@@ -663,6 +756,12 @@ def main():
 
     if args.solo_prefecturas:
         filtradas = [f for f in filtradas if "prefect" in norm(f.get("dignidad", "")) or "prefect" in norm(f.get("subtipo", ""))]
+    elif args.solo_ejecutivo:
+        filtradas = [
+            f for f in filtradas
+            if "prefect" in norm(f.get("dignidad", "")) or "prefect" in norm(f.get("subtipo", ""))
+            or "alcald" in norm(f.get("dignidad", "")) or "alcald" in norm(f.get("subtipo", ""))
+        ]
     elif args.canton:
         nc = norm(args.canton)
         filtradas = [f for f in filtradas if norm(f.get("canton", "")) == nc]
@@ -674,7 +773,14 @@ def main():
         filtradas = filtradas[:args.limite]
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    procesar_lote(filtradas, OUTPUT_PATH, max_workers=args.workers)
+    procesar_lote(
+        filtradas,
+        OUTPUT_PATH,
+        max_workers=args.workers,
+        usar_ocr=not args.sin_ocr,
+        reprocesar_escaneados=args.reprocesar_escaneados,
+        max_ocr_paginas=args.max_ocr_paginas,
+    )
 
 
 if __name__ == "__main__":
