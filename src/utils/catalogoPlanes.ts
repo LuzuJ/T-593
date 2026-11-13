@@ -64,9 +64,30 @@ const PROVINCIA_ALIAS: Record<string, string> = {
   'zamora ch': 'zamora chinchipe',
 };
 
+const CANTON_ALIAS: Record<string, string> = {
+  'rioverde': 'rio verde',
+  'alfredo baquerizo moreno': 'a baquerizo moreno',
+  'crnel marcelino mariduena': 'crnl marcelino mariduenas',
+  'gnral antonio elizalde': 'gral a elizalde',
+  'san jacinto de yaguachi': 'yaguachi',
+  'san miguel de urcuqui': 'urcuqui',
+  'puebloviejo': 'pueblo viejo',
+  'carlos julio arosemena tola': 'c j arosemena tola',
+  'la joya de los sachas': 'joya de los sachas',
+  'banos de agua santa': 'banos',
+  'san pedro de pelileo': 'pelileo',
+  'santiago de pillaro': 'pillaro',
+  'yantzaza': 'yanzatza',
+};
+
 function claveProvincia(nombre: string): string {
   const limpio = norm(nombre);
   return PROVINCIA_ALIAS[limpio] || limpio;
+}
+
+function claveCanton(nombre: string): string {
+  const limpio = norm(nombre);
+  return CANTON_ALIAS[limpio] || limpio;
 }
 
 const NOMBRES_VACIOS = new Set([
@@ -135,9 +156,13 @@ export function sugerenciaDesdeMapa(filas: FilaPlan[], provincia: string, canton
     return lugarDe(base, 'Prefecto y viceprefecto', prefectos.length || enProvincia.length);
   }
 
-  const buscado = norm(canton);
+  const buscado = claveCanton(canton);
   const exactos = enProvincia.filter((row) => norm(row.canton) === buscado);
-  const usados = exactos.length > 0 ? exactos : enProvincia.filter((row) => norm(row.canton).includes(buscado));
+  let usados = exactos.length > 0 ? exactos : enProvincia.filter((row) => norm(row.canton).includes(buscado));
+  if (usados.length === 0) {
+    // Fallback nacional para cantones reasignados entre provincias (ej. La Concordia)
+    usados = filas.filter((row) => norm(row.canton) === buscado);
+  }
   if (usados.length === 0) return null;
   const cabecera = usados.find((row) => !row.cod_parroquia) || usados[0];
   return lugarDe(cabecera, 'Alcalde', usados.length);
