@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Check, ExternalLink, GitCompareArrows, Loader2, MapPin, Search, Share2 } from 'lucide-react';
 import ComparadorPlanes from './ComparadorPlanes';
 import {
@@ -10,7 +10,7 @@ import {
   norm,
   titulo,
 } from '../utils/catalogoPlanes';
-import { AuditoriaPlan, auditarPlanCne } from '../utils/auditarPlan';
+import { AuditoriaPlan, auditarPlanCne, buscarPrecalculada, cargarPrecalculadas } from '../utils/auditarPlan';
 import VisorPlan from './VisorPlan';
 
 interface ExplorarPlanesProps {
@@ -32,6 +32,50 @@ function colorViable(viable: string): string {
   if (viable === 'Sí') return 'bg-emerald-100 text-emerald-900 border-emerald-300';
   if (viable === 'Parcial') return 'bg-amber-100 text-amber-950 border-amber-300';
   return 'bg-rose-100 text-rose-900 border-rose-300';
+}
+
+function resumenNeutral(fila: FilaPlan, pre?: AuditoriaPlan): { ambito: string; escanos: string; documento: string } {
+  const territorio = [titulo(fila.parroquia), titulo(fila.canton), titulo(fila.provincia)].filter(Boolean).join(' · ');
+  const ambito = fila.circunscripcion ? `${territorio} (${titulo(fila.circunscripcion)})` : territorio;
+  const partesEscano: string[] = [];
+  if (fila.n_principales > 0) {
+    partesEscano.push(`${fila.n_principales} ${fila.n_principales === 1 ? 'principal' : 'principales'}`);
+  }
+  if (fila.n_suplentes > 0) {
+    partesEscano.push(`${fila.n_suplentes} ${fila.n_suplentes === 1 ? 'suplente' : 'suplentes'}`);
+  }
+  const escanos = partesEscano.join(' · ') || 'Candidatura unipersonal';
+
+  if (!fila.tiene_plan || fila.cod_plan <= 0) {
+    return { ambito, escanos, documento: 'Esta lista no registra un PDF descargable en el portal del CNE.' };
+  }
+  if (!pre) {
+    return {
+      ambito,
+      escanos,
+      documento: 'Plan oficial registrado ante el CNE. Pulsa "Leer análisis" para extraer citas con número de página.',
+    };
+  }
+  if (pre.sinTexto) {
+    return {
+      ambito,
+      escanos,
+      documento: `Documento de ${pre.paginas} págs. en formato imagen escaneada. Puedes consultarlo en "Ver el plan".`,
+    };
+  }
+  const temas = [...new Set(pre.promesas.map((p) => p.tema).filter((t) => t !== 'Varios temas' && t !== 'Otra oferta'))].slice(0, 3);
+  if (temas.length > 0) {
+    return {
+      ambito,
+      escanos,
+      documento: `Documento de ${pre.paginas} págs. · Ejes mencionados: ${temas.join(', ')}.`,
+    };
+  }
+  return {
+    ambito,
+    escanos,
+    documento: `Documento de ${pre.paginas} págs. · Pulsa "Leer análisis" o "Ver el plan" para revisarlo.`,
+  };
 }
 
 export default function ExplorarPlanes({ filas, sugerencia, cargando = false, onVolver }: ExplorarPlanesProps) {
@@ -57,6 +101,9 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
 
   const [subtipoActivo, setSubtipoActivo] = useState(sugerencia.subtipo || subtipos[0] || '');
   const [estados, setEstados] = useState<Record<number, EstadoPlan>>({});
+  const [expandidos, setExpandidos] = useState<Record<number, boolean>>({});
+  const [precalculadas, setPrecalculadas] = useState<Record<string, AuditoriaPlan>>({});
+  const enVueloRef = useRef<Set<number>>(new Set());
   const [planAbierto, setPlanAbierto] = useState<{ fila: FilaPlan; pagina?: number } | null>(null);
   const [modo, setModo] = useState<'analisis' | 'comparar'>('analisis');
   const [ladoA, setLadoA] = useState<number | null>(null);
@@ -69,17 +116,21 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
     setFiltroLocal('');
   }, [sugerencia, subtipos]);
 
-  const visibles = useMemo(() => {
-    const base =
+  const filasSubtipo = useMemo(
+    () =>
       subtipoActivo === 'Prefecto y viceprefecto' && !delLugar.some((f) => f.subtipo === subtipoActivo)
         ? filasPrefectura
-        : delLugar.filter((fila) => fila.subtipo === subtipoActivo);
+        : delLugar.filter((fila) => fila.subtipo === subtipoActivo),
+    [delLugar, subtipoActivo, filasPrefectura]
+  );
+
+  const visibles = useMemo(() => {
     const q = norm(filtroLocal);
-    if (!q) return base;
-    return base.filter((fila) =>
+    if (!q) return filasSubtipo;
+    return filasSubtipo.filter((fila) =>
       norm(`${fila.candidato} ${fila.alterno} ${fila.organizacion} ${fila.lista}`).includes(q)
     );
-  }, [delLugar, subtipoActivo, filasPrefectura, filtroLocal]);
+  }, [filasSubtipo, filtroLocal]);
 
   useEffect(() => {
     const conPlan = visibles.filter((fila) => fila.tiene_plan && fila.cod_plan > 0);
@@ -95,7 +146,7 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
     setModo('comparar');
   };
 
-  const leer = (fila: FilaPlan) => {
+  const leer = useCallback(async (fila: FilaPlan): Promise<void> => {
     if (!fila.tiene_plan || !fila.cod_plan) {
       setEstados((prev) => ({
         ...prev,
@@ -103,48 +154,59 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
       }));
       return;
     }
+    if (enVueloRef.current.has(fila.cod_formulario)) return;
+    enVueloRef.current.add(fila.cod_formulario);
     setEstados((prev) => ({ ...prev, [fila.cod_formulario]: { estado: 'leyendo' } }));
-    auditarPlanCne(fila.cod_formulario, fila.cod_plan, fila.dignidad, fila.proceso, fila.provincia)
-      .then((auditoria) => {
-        setEstados((prev) => ({ ...prev, [fila.cod_formulario]: { estado: 'listo', auditoria } }));
-      })
-      .catch((err) => {
-        console.warn('Error al auditar plan:', err);
-        setEstados((prev) => ({
-          ...prev,
-          [fila.cod_formulario]: {
-            estado: 'error',
-            mensaje: 'No se pudo procesar el plan en este momento. Puedes abrir el PDF oficial con el botón.',
-          },
-        }));
-      });
-  };
-
-  // Carga secuencial respetuosa para no saturar memoria ni red en dispositivos móviles
-  useEffect(() => {
-    if (visibles.length === 0) return;
-    let activo = true;
-
-    const procesarLigeramente = async () => {
-      // Priorizar hasta 3 listas que tengan plan y no hayan sido procesadas
-      const pendientes = visibles.filter(
-        (fila) => fila.tiene_plan && fila.cod_plan > 0 && !estados[fila.cod_formulario]
+    try {
+      const auditoria = await auditarPlanCne(
+        fila.cod_formulario,
+        fila.cod_plan,
+        fila.dignidad,
+        fila.proceso,
+        fila.provincia
       );
-      for (const fila of pendientes.slice(0, 3)) {
-        if (!activo) break;
-        leer(fila);
-        // Pausa de 400ms para no bloquear sockets de red móvil
-        await new Promise((resolve) => setTimeout(resolve, 400));
-      }
-    };
+      setEstados((prev) => ({ ...prev, [fila.cod_formulario]: { estado: 'listo', auditoria } }));
+    } catch (err) {
+      console.warn('Error al auditar plan:', err);
+      setEstados((prev) => ({
+        ...prev,
+        [fila.cod_formulario]: {
+          estado: 'error',
+          mensaje: 'No se pudo procesar el plan en este momento. Puedes abrir el PDF oficial con el botón.',
+        },
+      }));
+    } finally {
+      enVueloRef.current.delete(fila.cod_formulario);
+    }
+  }, []);
 
-    procesarLigeramente();
-
+  // Cargar únicamente el índice estático precalculado (0 descargas al CNE, sin expandir tarjetas)
+  useEffect(() => {
+    let activo = true;
+    cargarPrecalculadas(sugerencia.provincia).then((mapa) => {
+      if (activo) setPrecalculadas(mapa);
+    });
     return () => {
       activo = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subtipoActivo, sugerencia.id, visibles.length]);
+  }, [sugerencia.provincia]);
+
+  useEffect(() => {
+    setExpandidos({});
+  }, [subtipoActivo, sugerencia.id]);
+
+  const toggleAnalisis = (fila: FilaPlan) => {
+    const abierto = Boolean(expandidos[fila.cod_formulario]);
+    if (abierto) {
+      setExpandidos((prev) => ({ ...prev, [fila.cod_formulario]: false }));
+      return;
+    }
+    setExpandidos((prev) => ({ ...prev, [fila.cod_formulario]: true }));
+    const actual = estados[fila.cod_formulario];
+    if (!actual || actual.estado === 'idle' || actual.estado === 'error') {
+      leer(fila);
+    }
+  };
 
   const lugar = [titulo(sugerencia.parroquia), titulo(sugerencia.canton), titulo(sugerencia.provincia)]
     .filter(Boolean)
@@ -292,6 +354,15 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {visibles.map((fila) => {
           const estado = estados[fila.cod_formulario] || { estado: 'idle' as const };
+          const abierto = Boolean(expandidos[fila.cod_formulario]);
+          const pre = buscarPrecalculada(
+            precalculadas,
+            fila.proceso,
+            fila.cod_formulario,
+            fila.cod_plan,
+            fila.dignidad
+          );
+          const ficha = resumenNeutral(fila, pre);
           const destacada = sugerencia.cod_formulario === fila.cod_formulario;
           return (
             <article
@@ -322,7 +393,7 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
                   )}
                   <p className="text-sm font-semibold text-slate-700 mt-2">{titulo(fila.organizacion)}</p>
                 </div>
-                {estado.estado === 'listo' && !estado.auditoria.sinTexto && (
+                {abierto && estado.estado === 'listo' && !estado.auditoria.sinTexto && (
                   <div className="text-right shrink-0 max-w-[140px]">
                     <div className="text-xs font-bold text-slate-600 uppercase">Muestra, no puntaje</div>
                     <div className="text-xs text-slate-600 mt-1">{estado.auditoria.conteos.totalOfertas} frases citadas</div>
@@ -330,14 +401,22 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
                 )}
               </div>
 
-              {estado.estado === 'leyendo' && (
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs text-slate-700 space-y-1">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-slate-600 font-semibold">
+                  <span>{ficha.ambito}</span>
+                  <span>{ficha.escanos}</span>
+                </div>
+                <p className="text-slate-700 leading-relaxed">{ficha.documento}</p>
+              </div>
+
+              {abierto && estado.estado === 'leyendo' && (
                 <div className="flex items-center gap-2 text-sm font-semibold text-blue-700 bg-blue-50 border border-blue-100 rounded-2xl px-4 py-3">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Leyendo el documento oficial completo, página por página…
                 </div>
               )}
 
-              {estado.estado === 'error' && (
+              {abierto && estado.estado === 'error' && (
                 <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <p className="text-xs sm:text-sm text-rose-800 leading-relaxed font-medium">
                     {estado.mensaje}
@@ -352,7 +431,7 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
                 </div>
               )}
 
-              {estado.estado === 'listo' && (() => {
+              {abierto && estado.estado === 'listo' && (() => {
                 const aud = estado.auditoria;
                 const esTextoAntiguoVacio =
                   aud.promesas.length === 0 &&
@@ -415,13 +494,17 @@ export default function ExplorarPlanes({ filas, sugerencia, cargando = false, on
               })()}
 
               <div className="flex flex-wrap gap-2 mt-auto">
-                {estado.estado === 'idle' && (
+                {fila.tiene_plan && fila.cod_plan > 0 && (
                   <button
                     type="button"
-                    onClick={() => leer(fila)}
-                    className="min-h-11 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold"
+                    onClick={() => toggleAnalisis(fila)}
+                    className={`min-h-11 px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition ${
+                      abierto
+                        ? 'bg-slate-200 hover:bg-slate-300 text-slate-800'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
                   >
-                    Leer análisis
+                    {abierto ? 'Ocultar análisis' : 'Leer análisis'}
                   </button>
                 )}
                 {fila.tiene_plan && fila.cod_plan > 0 && (

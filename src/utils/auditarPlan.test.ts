@@ -90,7 +90,7 @@ describe('auditoría ciudadana con evidencia', () => {
     expect(resultado.promesas.some((item) => item.promesa.includes('[dato reservado]'))).toBe(true);
   });
 
-  it('no archiva bajo un solo tema una frase que mezcla dos materias', () => {
+  it('conserva la viabilidad y conteo de una frase transversal con más de una materia', () => {
     const resultado = auditarPaginas(
       [
         {
@@ -107,7 +107,49 @@ describe('auditoría ciudadana con evidencia', () => {
 
     expect(resultado.promesas).toHaveLength(1);
     expect(resultado.promesas[0].tema).toBe('Varios temas');
-    expect(resultado.conteos.dentroCompetencia).toBe(0);
+    expect(resultado.promesas[0].viable).toBe('Sí');
+    expect(resultado.conteos.dentroCompetencia).toBe(1);
     expect(resultado.conteos.requiereCoordinacion).toBe(0);
+  });
+
+  it('captura propuestas nominales o viñetas cortas dentro de la sección de propuestas', () => {
+    const resultado = auditarPaginas(
+      [
+        {
+          pagina: 3,
+          tipo: 'propuestas',
+          tieneTexto: true,
+          texto: 'PROPUESTAS\nAgua potable y alcantarillado rural.',
+        },
+      ],
+      'Alcalde',
+      3
+    );
+
+    expect(resultado.promesas).toHaveLength(1);
+    expect(resultado.promesas[0].viable).toBe('Sí');
+    expect(resultado.promesas[0].tema).toBe('Agua y saneamiento');
+  });
+
+  it('distribuye la muestra por rondas entre temas antes de repetir', () => {
+    const lineas = [
+      'PLAN DE ACCIÓN',
+      'Construir sistema de agua potable para la zona norte.',
+      'Ampliar la red de agua potable en barrios del sur.',
+      'Mejorar el alcantarillado sanitario de la cabecera.',
+      'Implementar el catastro urbano digital del cantón.',
+      'Construir un nuevo mercado municipal de abastos.',
+    ];
+    const resultado = auditarPaginas(
+      [{ pagina: 5, tipo: 'propuestas', tieneTexto: true, texto: lineas.join('\n') }],
+      'Alcalde',
+      5
+    );
+
+    expect(resultado.promesas.slice(0, 3).map((p) => p.tema)).toEqual([
+      'Agua y saneamiento',
+      'Territorio y suelo',
+      'Mercados y faenamiento',
+    ]);
   });
 });

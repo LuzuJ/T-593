@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ZoomIn, Loader, MapPin } from 'lucide-react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
 import conteos140 from '../data/conteos_proceso_140.json';
+import { claveCanton, claveProvincia, norm } from '../utils/catalogoPlanes';
 
 // Colores por región natural del Ecuador
 const REGION_STYLES: Record<string, { fill: string; label: string }> = {
@@ -11,16 +12,8 @@ const REGION_STYLES: Record<string, { fill: string; label: string }> = {
   insular: { fill: '#38bdf8', label: 'Insular' },
 };
 
-function normStr(str: string): string {
-  return (str || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
 function getProvRegion(name: string): 'costa' | 'sierra' | 'oriente' | 'insular' {
-  const n = normStr(name);
+  const n = norm(name);
   if (['guayas', 'el oro', 'esmeraldas', 'los rios', 'manabi', 'santa elena', 'santo domingo'].some(c => n.includes(c))) return 'costa';
   if (['azuay', 'bolivar', 'canar', 'carchi', 'chimborazo', 'cotopaxi', 'imbabura', 'loja', 'pichincha', 'tungurahua'].some(c => n.includes(c))) return 'sierra';
   if (['morona santiago', 'napo', 'orellana', 'pastaza', 'sucumbios', 'zamora chinchipe'].some(c => n.includes(c))) return 'oriente';
@@ -44,19 +37,19 @@ export interface PartidoPoliticoInfo {
   canton?: string;
 }
 
-function claveLugar(nombre: string): string {
-  const limpio = normStr(nombre).toUpperCase();
-  if (limpio === 'SANTO DOMINGO' || limpio === 'SANTO DOMINGO DE LOS TSACHILAS') return 'STO DGO TSACHILAS';
-  return limpio;
-}
-
 function lookupProvStats(provName: string): CandidatosStatsData | undefined {
-  return (conteos140.provincias as Record<string, CandidatosStatsData & { cantones?: Record<string, CandidatosStatsData> }>)[claveLugar(provName)];
+  const provincias = conteos140.provincias as Record<string, CandidatosStatsData & { cantones?: Record<string, CandidatosStatsData> }>;
+  const directa = provincias[norm(provName).toUpperCase()];
+  if (directa) return directa;
+  return provincias[claveProvincia(provName).toUpperCase()];
 }
 
 function lookupCantonStats(provName: string, cantonName: string): CandidatosStatsData | undefined {
   const provincia = lookupProvStats(provName) as (CandidatosStatsData & { cantones?: Record<string, CandidatosStatsData> }) | undefined;
-  return provincia?.cantones?.[claveLugar(cantonName)];
+  if (!provincia?.cantones) return undefined;
+  const directo = provincia.cantones[norm(cantonName).toUpperCase()];
+  if (directo) return directo;
+  return provincia.cantones[claveCanton(cantonName).toUpperCase()];
 }
 
 interface BoundingBox {
@@ -185,7 +178,7 @@ export default function MapExplorer({
   // Parroquias del cantón activo (para Nivel 3)
   const cantonParishes = useMemo(() => {
     if (!activeProvGeo || !activeProvGeo.parishes || canton === 'TODOS') return [];
-    return activeProvGeo.parishes.filter((p: any) => normStr(p.canton) === normStr(canton));
+    return activeProvGeo.parishes.filter((p: any) => norm(p.canton) === norm(canton));
   }, [activeProvGeo, canton]);
 
   // ViewBox dinámico y tamaño de tipografía del cantón (Nivel 3)
@@ -272,7 +265,7 @@ export default function MapExplorer({
 
   // Asignar color por cantón
   const getCantonColor = (cantName: string) => {
-    const idx = cantonList.findIndex((c) => normStr(c) === normStr(cantName));
+    const idx = cantonList.findIndex((c) => norm(c) === norm(cantName));
     return COLOR_PALETTE[(idx >= 0 ? idx : 0) % COLOR_PALETTE.length];
   };
 

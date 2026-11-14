@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Search, X, ChevronRight, MapPin, UserRound } from 'lucide-react';
 import { Sugerencia, buscarCatalogo, cargarIndiceBusqueda, type FilaPlan } from '../utils/catalogoPlanes';
 
@@ -43,7 +43,10 @@ export default function GlobalSearchBar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const results = filas ? buscarCatalogo(filas, query).slice(0, 8) : [];
+  const results = useMemo(
+    () => (filas ? buscarCatalogo(filas, query).slice(0, 8) : []),
+    [filas, query]
+  );
 
   const elegir = (item: Sugerencia) => {
     setIsOpen(false);

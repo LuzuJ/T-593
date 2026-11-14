@@ -4,5 +4,15 @@
       "source": "/cne-plan/:proceso/:formulario/:plan",
       "destination": "https://backend-apps.cne.gob.ec/vi/api/Catalogos/PlanTrabajo/:proceso/:formulario/:plan"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
   ]
 }

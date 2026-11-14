@@ -1,8 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { X, ExternalLink, ChevronLeft, ChevronRight, Download, Loader2, AlertCircle } from 'lucide-react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { FilaPlan, titulo } from '../utils/catalogoPlanes';
+import {
+  buildCnePlanDirectUrl,
+  buildCnePlanProxyUrl,
+  getLocalPlanUrl,
+  getPdfCandidateSources,
+} from '../utils/cnePlanUrl';
 
 GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -12,38 +18,22 @@ interface VisorPlanProps {
   onCerrar: () => void;
 }
 
-function urlProxy(fila: FilaPlan): string | null {
-  const proceso = Number(fila.proceso);
-  const formulario = Number(fila.cod_formulario);
-  const plan = Number(fila.cod_plan);
-  if ([proceso, formulario, plan].every((valor) => Number.isInteger(valor) && valor > 0)) {
-    return `/cne-plan/${proceso}/${formulario}/${plan}`;
-  }
-  if (/^\/planes\/[A-Za-z0-9._ -]+\.pdf$/.test(fila.url_plan)) return fila.url_plan;
-  return null;
-}
-
 function urlOficialCne(fila: FilaPlan): string {
-  if (fila.url_plan && fila.url_plan.startsWith('http')) return fila.url_plan;
-  const proceso = Number(fila.proceso);
-  const formulario = Number(fila.cod_formulario);
-  const plan = Number(fila.cod_plan);
-  if ([proceso, formulario, plan].every((valor) => Number.isInteger(valor) && valor > 0)) {
-    return `https://backend-apps.cne.gob.ec/vi/api/Catalogos/PlanTrabajo/${proceso}/${formulario}/${plan}`;
-  }
-  return fila.url_plan || '';
+  if (fila.url_plan && /^https:\/\//i.test(fila.url_plan)) return fila.url_plan;
+  return (
+    buildCnePlanDirectUrl(Number(fila.proceso), Number(fila.cod_formulario), Number(fila.cod_plan)) ||
+    getLocalPlanUrl(fila.url_plan) ||
+    ''
+  );
 }
 
 function srcOficial(fila: FilaPlan, paginaInicial?: number): string | null {
-  const proceso = Number(fila.proceso);
-  const formulario = Number(fila.cod_formulario);
-  const plan = Number(fila.cod_plan);
   const pagina = Number(paginaInicial);
   const ancla = Number.isInteger(pagina) && pagina > 0 && pagina < 500 ? `#page=${pagina}&zoom=page-width` : '#zoom=page-width';
-  if ([proceso, formulario, plan].every((valor) => Number.isInteger(valor) && valor > 0)) {
-    return `/cne-plan/${proceso}/${formulario}/${plan}${ancla}`;
-  }
-  if (/^\/planes\/[A-Za-z0-9._ -]+\.pdf$/.test(fila.url_plan)) return `${fila.url_plan}${ancla}`;
+  const proxy = buildCnePlanProxyUrl(Number(fila.proceso), Number(fila.cod_formulario), Number(fila.cod_plan));
+  if (proxy) return `${proxy}${ancla}`;
+  const local = getLocalPlanUrl(fila.url_plan);
+  if (local) return `${local}${ancla}`;
   return null;
 }
 
@@ -141,7 +131,10 @@ function PaginaPdf({
 }
 
 export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPlanProps) {
-  const proxySrc = urlProxy(fila);
+  const fuentesPdf = useMemo(
+    () => getPdfCandidateSources(fila),
+    [fila.proceso, fila.cod_formulario, fila.cod_plan, fila.url_plan]
+  );
   const cneUrl = urlOficialCne(fila);
   const iframeSrc = srcOficial(fila, paginaInicial);
 
@@ -175,31 +168,35 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
     setCargandoPdf(true);
     setErrorPdf(null);
 
-    const fuente = proxySrc || cneUrl;
-    if (!fuente) {
+    if (fuentesPdf.length === 0) {
       setErrorPdf('No se encontró la dirección del PDF para este candidato.');
       setCargandoPdf(false);
       return;
     }
 
     const cargar = async () => {
-      try {
-        const loadingTask = getDocument({
-          url: fuente,
-          withCredentials: false,
-        });
-        const doc = await loadingTask.promise;
-        if (cancelado) return;
-        setPdfDoc(doc);
-        setNumPages(doc.numPages);
-        setPaginaActual(Math.min(Math.max(1, paginaInicial || 1), doc.numPages));
-        setCargandoPdf(false);
-      } catch (err: any) {
-        if (cancelado) return;
-        console.warn('Fallo renderizado canvas de PDF:', err);
-        setErrorPdf('No se pudo previsualizar el PDF en este modo. Puedes abrirlo directamente con el botón oficial.');
-        setCargandoPdf(false);
+      let ultimoError: unknown = null;
+      for (const fuente of fuentesPdf) {
+        try {
+          const loadingTask = getDocument({
+            url: fuente,
+            withCredentials: false,
+          });
+          const doc = await loadingTask.promise;
+          if (cancelado) return;
+          setPdfDoc(doc);
+          setNumPages(doc.numPages);
+          setPaginaActual(Math.min(Math.max(1, paginaInicial || 1), doc.numPages));
+          setCargandoPdf(false);
+          return;
+        } catch (err) {
+          ultimoError = err;
+          if (cancelado) return;
+        }
       }
+      console.warn('Fallo renderizado canvas de PDF:', ultimoError);
+      setErrorPdf('No se pudo previsualizar el PDF en este modo. Puedes abrirlo directamente con el botón oficial.');
+      setCargandoPdf(false);
     };
 
     cargar();
@@ -207,7 +204,7 @@ export default function VisorPlan({ fila, paginaInicial = 1, onCerrar }: VisorPl
     return () => {
       cancelado = true;
     };
-  }, [proxySrc, cneUrl, paginaInicial, debeUsarCanvas]);
+  }, [fuentesPdf, paginaInicial, debeUsarCanvas]);
 
   // Renderizar la página actual en el Canvas
   useEffect(() => {

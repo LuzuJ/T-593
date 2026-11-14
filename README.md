@@ -1,7 +1,7 @@
-# 🗳️ Plataforma de Análisis Cívico y Viabilidad Legal COOTAD de Planes de Trabajo Electorales (Ecuador)
+# 🗳️ Plataforma de Análisis Cívico y Viabilidad Competencial COOTAD (Ecuador)
 
 > **Proyecto desarrollado para el Hackatón Social**  
-> Herramienta cívica, interactiva y de datos abiertos para la fiscalización ciudadana, evaluación de viabilidad legal bajo el **COOTAD** y comparación algorítmica de planes de gobierno inscritos ante el **Consejo Nacional Electoral (CNE)** de la República del Ecuador.
+> Herramienta cívica, interactiva y de datos abiertos para consultar los planes de trabajo inscritos ante el **Consejo Nacional Electoral (CNE)** del Ecuador (Proceso Electoral `140` — Seccionales 2027–2031), evaluar de forma determinista su alineación competencial bajo el **COOTAD** y comparar propuestas entre listas.
 
 ---
 
@@ -11,35 +11,35 @@
 2. [Características Principales](#-características-principales)
 3. [Fuente de Datos Oficiales (CNE — Proceso 140)](#-fuente-de-datos-oficiales-cne--proceso-140)
 4. [Diferenciación de Dignidades Electorales](#-diferenciación-de-dignidades-electorales)
-5. [Evaluación de Viabilidad Legal (COOTAD)](#-evaluación-de-viabilidad-legal-cootad)
-6. [Arquitectura y Pipeline de Inteligencia Artificial](#-arquitectura-y-pipeline-de-inteligencia-artificial)
+5. [Motor de Evaluación Competencial (COOTAD)](#-motor-de-evaluación-competencial-cootad)
+6. [Arquitectura y Pipeline de Datos](#-arquitectura-y-pipeline-de-datos)
 7. [Stack Tecnológico](#-stack-tecnológico)
 8. [Estructura del Proyecto](#-estructura-del-proyecto)
 9. [Instalación y Ejecución Local](#-instalación-y-ejecución-local)
-10. [Descargo de Responsabilidad y Aviso Legal](#-descargo-de-responsabilidad-y-aviso-legal)
-11. [Licencia](#-licencia)
+10. [Despliegue y Proxy de PDFs (`/cne-plan`)](#-despliegue-y-proxy-de-pdfs-cne-plan)
+11. [Descargo de Responsabilidad y Aviso Legal](#-descargo-de-responsabilidad-y-aviso-legal)
+12. [Licencia](#-licencia)
 
 ---
 
 ## 🎯 Objetivo del Proyecto
 
-Democratizar el acceso y la comprensión técnica de los **planes de trabajo de campaña presentados por candidatos a elecciones seccionales en Ecuador**, permitiendo a cualquier ciudadano:
-* Auditar si las promesas de campaña están dentro de las **competencias legales exclusivas o concurrentes** del cargo según el Código Orgánico de Organización Territorial, Autonomía y Descentralización (**COOTAD**).
-* Identificar propuestas inviables o fuera de competencia (ej. promesas sobre tributos nacionales o mando militar).
-* Comparar el grado de similitud y diferencias programáticas entre candidatos de una misma circunscripción territorial.
-* Descargar el documento PDF original registrado oficialmente ante el CNE.
+Facilitar la lectura técnica y el acceso ciudadano a los **7,694 registros de listas** (7,690 con plan de trabajo en PDF) inscritos ante el CNE para las elecciones seccionales de Ecuador, permitiendo:
+* Navegar por provincia y cantón para ubicar a los candidatos de cada dignidad.
+* Extraer citas verificables con **número de página** y contrastarlas contra las competencias legales exclusivas o concurrentes del cargo según la **Constitución** y el **COOTAD**.
+* Abrir cualquier PDF oficial en el visor integrado (modo continuo o paginado en canvas móvil) y saltar directo a la página de cada cita.
+* Comparar tema por tema dos listas de una misma circunscripción, suspendiendo la comparación si alguno de los archivos carece de texto extraíble.
 
 ---
 
 ## ✨ Características Principales
 
-* 🗺️ **Explorador Territorial Interactivo:** Mapas vectoriales (SVG/GeoJSON) navegables de Ecuador a nivel Nacional, Provincial, Cantonal y Parroquial.
-* ⚖️ **Evaluación Jurídica Automatizada:** Clasificación rigurosa de cada propuesta con fundamentación en los artículos competenciales del COOTAD.
-* 🏷️ **Ejes Temáticos y Tags Normalizados:** Filtrado dinámico por tópicos de campaña (*Movilidad, Seguridad Ciudadana, Desarrollo Sostenible, Infraestructura, Salud, Educación, Gestión de Residuos*).
-* 📥 **Descarga Directa de Planes en PDF:** Botón de descarga en cada tarjeta y ficha técnica para consultar el documento fuente oficial.
-* 📊 **Matriz de Similitud y Candidato Ancla:** Comparador entre planes para detectar coincidencias textuales y divergencias de enfoque político.
-* 🛡️ **Seguridad Zero-Trust en Ingesta:** Sanitización contra Prompt Injection y validación estricta de esquemas mediante Pydantic.
-* ⚖️ **Descargo de Responsabilidad Legal:** Pantalla inicial de aceptación de términos de uso de información de acceso público.
+* 🗺️ **Explorador Territorial Interactivo:** Mapas vectoriales de Ecuador a nivel Nacional y Provincial con búsqueda global por lugar o candidato (`GlobalSearchBar`).
+* ⚖️ **Auditoría Determinista por Reglas (`reglas_cootad.json`):** Clasificación transparente y reproducible de frases de propuestas sin alucinaciones de LLM ni puntajes opacos.
+* 🔍 **Trazabilidad por Página y Visor PDF (`pdfjs-dist`):** Cada frase citada enlaza a su página en `VisorPlan.tsx`, con renderizado en canvas bajo demanda para móviles.
+* 📊 **Comparador Tema por Tema (`ComparadorPlanes.tsx`):** Contraste lado a lado con muestreo equilibrado (*round-robin* hasta 24 frases) entre listas del mismo cargo.
+* ⚡ **Cero Latencia en Catálogos:** Datos precalculados y particionados por provincia (`public/data/cne/provincias/` y `public/data/cne/auditorias_provincias/`), con fallback dinámico en cliente si falta una auditoría estática.
+* ⚖️ **Descargo de Responsabilidad Legal:** Aviso inicial (`DisclaimerModal.tsx`) sobre el carácter informativo y no vinculante de las muestras automáticas.
 
 ---
 
@@ -57,118 +57,113 @@ Todos los catálogos de candidaturas, organizaciones políticas y planes de trab
 
 ### Catálogo de Dignidades y Subtipos (`PROCESO = 140`)
 
-| Código (`cod_dignidad`) | Dignidad | Subtipo Oficial CNE | Ámbito Territorial |
-| :---: | :--- | :--- | :--- |
-| `2` | **Prefecto** | Prefecto y viceprefecto | `provincia` |
-| `4` | **Alcalde** | Alcalde | `provincia`, `canton` |
-| `3` | **Concejal** | Concejales rurales | `provincia`, `canton` |
-| `5` | **Concejal** | Concejales urbanos | `provincia`, `canton` |
-| `12` | **Concejal** | Concejales urbanos por circunscripción | `provincia`, `canton`, `circunscripcion` |
-| `6` | **Vocal Junta Parroquial** | Vocales de junta parroquial rural | `provincia`, `canton`, `parroquia` |
+| Código (`cod_dignidad`) | Dignidad | Subtipo Oficial CNE | Ámbito Territorial | Total Listas |
+| :---: | :--- | :--- | :--- | :---: |
+| `2` | **Prefecto** | Prefecto y viceprefecto | `provincia` | 147 |
+| `4` | **Alcalde** | Alcalde | `provincia`, `canton` | 1,353 |
+| `5` | **Concejal** | Concejales urbanos | `provincia`, `canton` | 1,094 |
+| `3` | **Concejal** | Concejales rurales | `provincia`, `canton` | 936 |
+| `12` | **Concejal** | Concejales urbanos por circunscripción | `provincia`, `canton`, `circunscripcion` | 334 |
+| `6` | **Vocal Junta Parroquial** | Vocales de junta parroquial rural | `provincia`, `canton`, `parroquia` | 3,830 |
 
 ---
 
 ## 👥 Diferenciación de Dignidades Electorales
 
-La plataforma clasifica y diferencia visual y competencialmente a los candidatos según el cargo al que postulan:
-
-| Dignidad | Ámbito Territorial | Rol Principal | Insignia Visual |
-| :--- | :--- | :--- | :--- |
-| 🏛️ **Alcaldesa / Alcalde** | Cantonal | Ejecutivo del GAD Municipal; rector del desarrollo urbano, servicios básicos y movilidad. | `Indigo / Morado` |
-| 🏛️ **Prefecta / Prefecto** | Provincial | Ejecutivo del GAD Provincial; vialidad rural, cuencas hídricas y fomento productivo agropecuario. | `Esmeralda / Verde` |
-| 🏛️ **Concejala / Concejal** | Cantonal (Urbano / Rural) | Legislación y fiscalización cantonal a través de ordenanzas municipales. | `Cielo / Azul` |
-| 🏛️ **Vocal Junta Parroquial** | Parroquial Rural | Planificación parroquial, infraestructura comunitaria y coordinación interinstitucional. | `Ámbar / Naranja` |
+| Dignidad | Ámbito Territorial | Base Normativa Aplicada |
+| :--- | :--- | :--- |
+| 🏛️ **Prefecta / Prefecto** | Provincial | COOTAD Art. 42 / Constitución Art. 263 (vialidad rural, riego, cuencas, fomento agropecuario, ambiente). |
+| 🏛️ **Alcaldesa / Alcalde** | Cantonal | COOTAD Art. 55 (agua potable, alcantarillado, residuos, tránsito urbano, uso de suelo, catastro, mercados). |
+| 🏛️ **Concejala / Concejal** | Cantonal (Urbano / Rural / Circunscripción) | COOTAD Arts. 57 y 60 (legislación y fiscalización; distingue ejecución directa que corresponde a la alcaldía). |
+| 🏛️ **Vocal Junta Parroquial** | Parroquial Rural | COOTAD Art. 65 (infraestructura comunitaria, vialidad vecinal, organización parroquial). |
 
 ---
 
-## ⚖️ Evaluación de Viabilidad Legal (COOTAD)
+## ⚖️ Motor de Evaluación Competencial (COOTAD)
 
-Cada promesa extraída es evaluada bajo el marco competencial vigente:
+Las reglas léxicas y normativas viven en un único archivo fuente (**Single Source of Truth**): [`src/data/reglas_cootad.json`](src/data/reglas_cootad.json), consumido tanto por el generador offline en Python como por el motor fallback en TypeScript.
 
-```
-                  ┌────────────────────────────────────────┐
-                  │      Evaluación Legal de Promesas      │
-                  └───────────────────┬────────────────────┘
-                                      │
-        ┌─────────────────────────────┼─────────────────────────────┐
-        ▼                             ▼                             ▼
-🟢 Exclusiva Municipal       🟡 Parcialmente Viable        🔴 Fuera de Competencia
-   (Viable: Sí)                 (Viable: Parcial)             (Viable: No)
-• Agua potable y alcantarillado  • Seguridad ciudadana        • Mando policial / militar
-• Manejo de residuos sólidos    (solo preventiva/cámaras)     • Impuestos nacionales (IVA)
-• Tránsito y transporte cantonal • Apoyo a salud/educación    • Gestión de recursos estratégicos
-• Uso y ocupación del suelo      (rectoría es del Estado)      • Hospitales de especialidades
-• Vialidad urbana               • Fomento productivo          • Política monetaria
-```
+Cada frase extraída de las secciones de propuestas se clasifica en una de tres categorías:
+
+* 🟢 **Competencia del cargo (`Sí`):** Menciona materias propias del nivel de gobierno según el COOTAD.
+* 🟡 **Requiere coordinación o convenio (`Parcial`):** Materias concurrentes o interinstitucionales (salud, educación, seguridad ciudadana preventiva, convenios con ministerios/universidades).
+* 🔴 **Corresponde a otro nivel (`No`):** Materias privativas del Estado central (Constitución Art. 261: Policía Nacional, FF.AA., IVA, política monetaria) o de otro nivel de GAD.
 
 ---
 
-## 🤖 Arquitectura y Pipeline de Inteligencia Artificial
+## 🤖 Arquitectura y Pipeline de Datos
 
-El procesamiento de documentos sigue un flujo robusto en Python:
+El procesamiento es **determinista y precalculado offline** (sin inferencia LLM en tiempo de ejecución):
 
-1. **Extracción Selectiva (`PyMuPDF`):** Extrae texto ignorando portadas y buscando secciones relevantes de propuestas y ejes de acción para optimizar el contexto.
-2. **Defensa Zero-Trust:** Sanitización de caracteres de control y encapsulación del documento dentro de etiquetas XML `<documento_oficial>`.
-3. **Inferencia LLM (`OpenAI SDK` + `NVIDIA NIM`):** Invocación al modelo `meta/llama-3.1-8b-instruct` con `temperature=0.0` y `response_format={"type": "json_object"}`.
-4. **Validación Pydantic:** Verificación del contrato de datos (`Analisis`, `Promesa`, `DocumentoProcesado`).
-5. **Guardado Incremental:** Generación de `src/data/dashboard_data.json` y carga en el catálogo estructurado.
+1. **Indexación CNE (`src/scripts/mapear_planes_cne.py`):** Recorre las APIs públicas del CNE y genera `public/data/cne/indice_planes_api.jsonl` e `indice_planes_api_meta.json`.
+2. **Particionado Territorial (`src/scripts/particionar_cne_frontend.py`):** Divide el padrón e índice por provincia en `public/data/cne/provincias/{slug}.json` y `public/data/cne/auditorias_provincias/{slug}.json`.
+3. **Auditoría Estática + OCR Offline (`src/scripts/generar_auditorias.py`):**
+   * Descarga y extrae texto página por página con `PyMuPDF`.
+   * Si una página está escaneada como imagen, ejecuta OCR local con `RapidOCR` (`rapidocr_onnxruntime`).
+   * Aplica las reglas de `src/data/reglas_cootad.json` con muestreo equilibrado *round-robin* (hasta 24 citas, máximo 3 por tema).
+4. **Fallback en Cliente (`src/utils/auditarPlan.ts`):** Si un plan no tiene auditoría precalculada en `/data/cne/auditorias_provincias/{slug}.json`, el navegador descarga el PDF vía `/cne-plan/...` y ejecuta exactamente las mismas reglas usando `pdfjs-dist`.
 
 ---
 
 ## 🛠️ Stack Tecnológico
 
 ### Frontend
-* **React 19** + **TypeScript**
-* **Vite 6** (Build tool y servidor de desarrollo ultrarrápido)
-* **Tailwind CSS 3** (Diseño moderno, accesible y responsivo)
-* **Lucide React** (Iconografía vectorial institucional)
+* **React 18.3** + **TypeScript 5.2**
+* **Vite 5.3** (dev server, proxy `/cne-plan` y bundler)
+* **Tailwind CSS 3.4**
+* **pdfjs-dist 4.10** (extracción de texto en fallback y renderizado en canvas)
+* **Lucide React** (iconografía)
+* **Vitest 2.1** (pruebas unitarias)
 
-### Backend / Ingesta de Datos
-* **Python 3.10+ / 3.12**
-* **PyMuPDF (`pymupdf`)** (Procesamiento de documentos PDF)
-* **Pydantic v2** (Validación de esquemas y tipos de datos)
-* **NVIDIA NIM API** (`meta/llama-3.1-8b-instruct`)
-* **python-dotenv** (Gestión de variables de entorno seguras)
+### Pipeline Offline (Python)
+* **Python 3.10+**
+* **PyMuPDF (`pymupdf`)**
+* **RapidOCR (`rapidocr_onnxruntime`)** para PDFs escaneados
 
 ---
 
 ## 📁 Estructura del Proyecto
 
-```
+```text
 HACKATON SOCIAL/
 ├── public/
-│   ├── data/                          # Capas vectoriales GeoJSON de provincias y cantones
-│   └── planes/                        # Archivos PDF oficiales para descarga directa
+│   ├── _redirects                      # Proxy /cne-plan para Cloudflare Pages / Netlify
+│   └── data/
+│       ├── provinces/                  # Capas vectoriales de provincias y cantones
+│       └── cne/
+│           ├── provincias/             # Catálogos FilaPlan[] particionados por provincia
+│           └── auditorias_provincias/  # Auditorías precalculadas por provincia
 ├── src/
 │   ├── components/
-│   │   ├── CandidateDetailModal.tsx   # Ficha técnica detallada con desglose de promesas
-│   │   ├── CandidatoCard.tsx          # Tarjeta con monograma, dignidad, viabilidad y PDF
-│   │   ├── CompetenciaBadge.tsx       # Insignias visuales de viabilidad COOTAD
-│   │   ├── Dashboard.tsx              # Componente principal integrador
-│   │   ├── DisclaimerModal.tsx        # Descargo de responsabilidad y términos de uso
-│   │   ├── FiltersSidebar.tsx         # Filtros por dignidad, provincia, cantón y búsqueda
-│   │   ├── Header.tsx                 # Barra superior institucional y navegación
-│   │   ├── MapExplorer.tsx            # Visualizador de mapas vectoriales del Ecuador
-│   │   ├── PlansView.tsx              # Vista de planes, KPIs, tags y comparador
-│   │   └── SimilarityDetailModal.tsx  # Modal de análisis comparativo de propuestas
+│   │   ├── ComparadorPlanes.tsx        # Comparación lado a lado tema por tema
+│   │   ├── Dashboard.tsx               # Contenedor principal y navegación territorial
+│   │   ├── DisclaimerModal.tsx         # Aviso legal inicial
+│   │   ├── ExplorarPlanes.tsx          # Listado por dignidad, precarga y filtros
+│   │   ├── GlobalSearchBar.tsx         # Búsqueda global de lugares y candidatos
+│   │   ├── Header.tsx                  # Barra institucional y acceso a organizaciones
+│   │   ├── MapExplorer.tsx             # Mapa SVG interactivo de Ecuador y provincias
+│   │   ├── OrganizacionesModal.tsx     # Catálogo de organizaciones políticas
+│   │   └── VisorPlan.tsx               # Visor PDF (iframe en desktop / canvas en móvil)
 │   ├── data/
-│   │   ├── mock_candidatos.json       # Datos analizados y estructurados para el Dashboard
-│   │   ├── dashboard_data.json        # Salida del pipeline de procesamiento LLM
-│   │   └── PLANES DE TRABAJO/         # Directorio de PDFs originales del CNE
-│   ├── hooks/
-│   │   └── useElectoralData.ts        # Hook para filtros, desduplicación y estadísticas
+│   │   ├── reglas_cootad.json          # SSOT de reglas competenciales y temas
+│   │   ├── geo_data.ts                 # Metadatos geográficos de provincias
+│   │   └── conteos_proceso_140.json    # Totales oficiales por provincia
 │   ├── scripts/
-│   │   └── procesador_planes.py       # Pipeline de extracción, LLM y validación Pydantic
-│   ├── types/
-│   │   └── electoral.ts               # Interfaces TypeScript del dominio electoral
-│   ├── App.tsx                        # Punto de entrada de la aplicación
-│   └── main.tsx                       # Renderizado raíz de React
-├── .env.example                       # Plantilla de variables de entorno
-├── package.json                       # Dependencias y scripts de Node
-├── requirements.txt                   # Dependencias de Python
-├── tailwind.config.js                 # Configuración de Tailwind CSS
-├── tsconfig.json                      # Configuración de TypeScript
-└── vite.config.ts                     # Configuración de Vite
+│   │   ├── mapear_planes_cne.py        # Indexación del catálogo oficial CNE
+│   │   ├── particionar_cne_frontend.py # Generación de JSONs particionados por provincia
+│   │   ├── generar_auditorias.py       # Auditoría offline + RapidOCR
+│   │   └── generar_indice_nacional.py  # Índice de búsqueda global
+│   ├── utils/
+│   │   ├── auditarPlan.ts              # Motor de auditoría en cliente + fallback PDF
+│   │   ├── catalogoPlanes.ts           # Carga, búsqueda y normalización territorial
+│   │   └── cnePlanUrl.ts               # Resolución de URLs de proxy/local/CNE
+│   ├── App.tsx
+│   └── main.tsx
+├── netlify.toml                        # Configuración de build y proxy /cne-plan para Netlify
+├── vercel.json                         # Rewrites /cne-plan para Vercel
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
 ---
@@ -178,76 +173,51 @@ HACKATON SOCIAL/
 ### Prerrequisitos
 * **Node.js** v18 o superior
 * **npm** v9 o superior
-* **Python** 3.10 o superior (para ejecutar el pipeline de ingesta)
+* **Python** 3.10 o superior (solo si deseas regenerar índices o auditorías offline)
 
-### 1. Clonar el repositorio e instalar dependencias de Frontend
+### 1. Instalar dependencias y levantar el frontend
 
 ```bash
-# Clonar el proyecto
-git clone <URL_DEL_REPOSITORIO>
-cd "HACKATON SOCIAL"
-
-# Instalar dependencias de Node
 npm install
-```
-
-### 2. Iniciar el servidor de desarrollo
-
-```bash
 npm run dev
 ```
-La aplicación estará disponible en `http://localhost:5173`.
+Disponible en `http://localhost:5173`.
+
+### 2. Pruebas y compilación
+
+```bash
+npm test
+npm run build
+```
+
+### 3. (Opcional) Regenerar auditorías estáticas en Python
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install pymupdf rapidocr-onnxruntime
+python src/scripts/generar_auditorias.py --solo-ejecutivo --workers 8
+```
 
 ---
 
-### 3. (Opcional) Ejecutar el Pipeline de Ingesta con IA
+## 🌐 Despliegue y Proxy de PDFs (`/cne-plan`)
 
-Si deseas reprocesar los PDFs con la API de NVIDIA NIM:
-
-```bash
-# 1. Configurar entorno virtual de Python
-python -m venv .venv
-
-# En Windows PowerShell:
-.venv\Scripts\Activate.ps1
-
-# En Linux / macOS:
-source .venv/bin/activate
-
-# 2. Instalar requerimientos
-pip install -r requirements.txt
-
-# 3. Configurar API Key en .env
-# Crear archivo .env basado en .env.example:
-# NVIDIA_API_KEY=nvapi-...
-
-# 4. Ejecutar el procesador
-python src/scripts/procesador_planes.py
-```
+Para evitar bloqueos CORS al abrir o auditar PDFs desde el navegador:
+* **Vercel:** configurado en [`vercel.json`](vercel.json).
+* **Netlify / Cloudflare Pages:** configurado en [`netlify.toml`](netlify.toml) y [`public/_redirects`](public/_redirects).
+* **Hostings puramente estáticos sin rewrites (ej. GitHub Pages / S3):** define `VITE_CNE_PLAN_PROXY_BASE` en `.env` apuntando a un proxy propio (ver [`.env.example`](.env.example)).
 
 ---
 
 ## ⚖️ Descargo de Responsabilidad y Aviso Legal
 
-1. **Fuente de Datos:** Los documentos y propuestas electorales provienen de registros públicos del **Consejo Nacional Electoral (CNE)** del Ecuador.
-2. **Propósito Cívico e Informativo:** Esta plataforma es una iniciativa desarrollada sin fines de lucro en el marco del **Hackatón Social** para promover el voto informado y el análisis ciudadano de datos públicos.
-3. **Naturaleza del Análisis:** Las evaluaciones competenciales y de viabilidad legal constituyen estimaciones analíticas basadas en modelos de inteligencia artificial y el marco normativo del COOTAD. No representan dictámenes vinculantes, auditorías jurídicas oficiales ni posturas políticas partidistas.
-4. **Exención de Responsabilidad:** Los autores y organizadores no asumen responsabilidad civil, legal o política derivada de la interpretación, uso o decisiones adoptadas a partir de los datos visualizados en esta plataforma.
-5. **Responsabilidad sobre Productos Derivados:** Cualquier reporte, gráfico, síntesis, interpretación o producto que el usuario elabore o publique a partir de los datos de esta plataforma es de **responsabilidad única y exclusiva del usuario**.
+1. **Fuente de Datos:** Los documentos y listados provienen de registros públicos del **Consejo Nacional Electoral (CNE)** del Ecuador.
+2. **Propósito Cívico e Informativo:** Iniciativa sin fines de lucro desarrollada en el marco del **Hackatón Social** para promover el voto informado.
+3. **Naturaleza del Análisis:** La extracción y clasificación de frases responde a reglas léxicas automáticas aplicadas de forma uniforme. **No constituye un dictamen jurídico vinculante, una calificación ni una lectura completa del PDF.**
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto y sus contenidos analíticos abiertos se distribuyen bajo la licencia **Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0)**.
-
-```
-Usted es libre de:
-* Compartir: copiar y redistribuir el material en cualquier medio o formato.
-* Adaptar: remezclar, transformar y construir a partir del material.
-
-Bajo los siguientes términos:
-* Atribución: Debe dar crédito de manera adecuada y proporcionar un enlace a la licencia.
-* NoComercial: No puede hacer uso del material con fines comerciales.
-* CompartirIgual: Si remezcla, transforma o crea a partir del material, debe distribuir su contribución bajo la misma licencia.
-```
+Este proyecto se distribuye bajo la licencia **Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0)**.

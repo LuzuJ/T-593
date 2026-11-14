@@ -1,0 +1,1 @@
+/cne-plan/:proceso/:formulario/:plan https://backend-apps.cne.gob.ec/vi/api/Catalogos/PlanTrabajo/:proceso/:formulario/:plan 200

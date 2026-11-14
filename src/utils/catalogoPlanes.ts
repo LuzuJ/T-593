@@ -80,12 +80,12 @@ const CANTON_ALIAS: Record<string, string> = {
   'yantzaza': 'yanzatza',
 };
 
-function claveProvincia(nombre: string): string {
+export function claveProvincia(nombre: string): string {
   const limpio = norm(nombre);
   return PROVINCIA_ALIAS[limpio] || limpio;
 }
 
-function claveCanton(nombre: string): string {
+export function claveCanton(nombre: string): string {
   const limpio = norm(nombre);
   return CANTON_ALIAS[limpio] || limpio;
 }

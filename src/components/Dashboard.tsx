@@ -1,9 +1,11 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Search, Loader2, AlertCircle, Building2 } from 'lucide-react';
 import { PROVINCIAS_DATA } from '../data/geo_data';
 import {
   Sugerencia,
   cargarCatalogoProvincia,
+  norm,
+  slugProvincia,
   sugerenciaDesdeMapa,
   type FilaPlan,
 } from '../utils/catalogoPlanes';
@@ -17,18 +19,6 @@ const COLOR_PALETTE = [
   '#38bdf8', '#34d399', '#a78bfa', '#fb923c', '#4ade80',
   '#f472b6', '#22d3ee', '#818cf8', '#2dd4bf', '#fbbf24',
 ];
-
-function normStr(str: string): string {
-  return (str || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
-function provToFile(name: string): string {
-  return normStr(name).replace(/\s+/g, '_');
-}
 
 export default function Dashboard() {
   const [provincia, setProvincia] = useState('TODAS');
@@ -58,6 +48,7 @@ export default function Dashboard() {
     };
   } | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const exploracionReqRef = useRef(0);
 
   const provinciasList = useMemo(
     () => ['TODAS', ...PROVINCIAS_DATA.map((item) => item.displayName || item.name)],
@@ -81,31 +72,33 @@ export default function Dashboard() {
     if (provincia === 'TODAS') return '';
     return (
       PROVINCIAS_DATA.find(
-        (item) => normStr(item.name) === normStr(provincia) || normStr(item.displayName) === normStr(provincia)
+        (item) => norm(item.name) === norm(provincia) || norm(item.displayName) === norm(provincia)
       )?.displayName || provincia
     );
   }, [provincia]);
 
   const provinciasFiltradas = useMemo(() => {
     if (!filtroTexto.trim()) return PROVINCIAS_DATA;
-    const q = normStr(filtroTexto);
-    return PROVINCIAS_DATA.filter((item) => normStr(item.displayName || item.name).includes(q));
+    const q = norm(filtroTexto);
+    return PROVINCIAS_DATA.filter((item) => norm(item.displayName || item.name).includes(q));
   }, [filtroTexto]);
 
   const cantonesFiltrados = useMemo(() => {
     if (!filtroTexto.trim()) return cantonesVisibles;
-    const q = normStr(filtroTexto);
-    return cantonesVisibles.filter((nombre) => normStr(nombre).includes(q));
+    const q = norm(filtroTexto);
+    return cantonesVisibles.filter((nombre) => norm(nombre).includes(q));
   }, [cantonesVisibles, filtroTexto]);
 
   useEffect(() => {
     if (provincia === 'TODAS') {
       setActiveProvGeo(null);
+      setLoadingMap(false);
       return;
     }
-    const fileSlug = provToFile(provincia);
+    const controller = new AbortController();
+    const fileSlug = slugProvincia(provincia);
     setLoadingMap(true);
-    fetch(`/data/provinces/${fileSlug}.json`)
+    fetch(`/data/provinces/${fileSlug}.json`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error('No se pudo cargar el mapa');
         return res.json();
@@ -114,29 +107,44 @@ export default function Dashboard() {
         setActiveProvGeo(data);
         setLoadingMap(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err?.name === 'AbortError') return;
         setActiveProvGeo(null);
         setLoadingMap(false);
       });
+    return () => controller.abort();
   }, [provincia]);
 
   const abrirExploracion = useCallback((item: Sugerencia) => {
+    const reqId = ++exploracionReqRef.current;
     setErrorCatalogo('');
     setCargandoCatalogo(true);
     setExploracion(item);
     setHoveredEntity(null);
+    const provSlug = slugProvincia(item.provincia);
+    const cantonHash = item.canton ? `/canton-${slugProvincia(item.canton)}` : '/prefectura';
+    window.history.pushState(
+      { navLevel: 'planes', provincia: item.provincia, canton: item.canton },
+      '',
+      `#provincia-${provSlug}${cantonHash}`
+    );
     cargarCatalogoProvincia(item.provincia)
       .then((rows) => {
+        if (reqId !== exploracionReqRef.current) return;
         setCatalogo(rows);
       })
       .catch(() => {
+        if (reqId !== exploracionReqRef.current) return;
         setCatalogo([]);
         setErrorCatalogo('No se pudo cargar el listado de candidatos. Revisa tu conexión e intenta de nuevo.');
       })
-      .finally(() => setCargandoCatalogo(false));
+      .finally(() => {
+        if (reqId === exploracionReqRef.current) setCargandoCatalogo(false);
+      });
   }, []);
 
   const abrirDesdeMapa = useCallback((provinciaNombre: string, cantonNombre?: string, actualizarUrl = true) => {
+    const reqId = ++exploracionReqRef.current;
     setHoveredEntity(null);
     setErrorCatalogo('');
     setCargandoCatalogo(true);
@@ -144,7 +152,7 @@ export default function Dashboard() {
     const cargarConFallback = async () => {
       let rows = await cargarCatalogoProvincia(provinciaNombre);
       let sugerencia = sugerenciaDesdeMapa(rows, provinciaNombre, cantonNombre);
-      if (!sugerencia && cantonNombre && normStr(cantonNombre) === 'la concordia') {
+      if (!sugerencia && cantonNombre && norm(cantonNombre) === 'la concordia') {
         rows = await cargarCatalogoProvincia('santo domingo de los tsachilas');
         sugerencia = sugerenciaDesdeMapa(rows, 'santo domingo de los tsachilas', cantonNombre);
       }
@@ -153,12 +161,13 @@ export default function Dashboard() {
 
     cargarConFallback()
       .then(({ rows, sugerencia }) => {
+        if (reqId !== exploracionReqRef.current) return;
         setCatalogo(rows);
         if (sugerencia) {
           setExploracion(sugerencia);
           if (actualizarUrl) {
-            const provSlug = provToFile(provinciaNombre);
-            const cantonHash = cantonNombre ? `/canton-${provToFile(cantonNombre)}` : '/prefectura';
+            const provSlug = slugProvincia(provinciaNombre);
+            const cantonHash = cantonNombre ? `/canton-${slugProvincia(cantonNombre)}` : '/prefectura';
             window.history.pushState(
               { navLevel: 'planes', provincia: provinciaNombre, canton: cantonNombre },
               '',
@@ -170,9 +179,12 @@ export default function Dashboard() {
         }
       })
       .catch(() => {
+        if (reqId !== exploracionReqRef.current) return;
         setErrorCatalogo('No se pudo descargar el catálogo de esta provincia. Intenta nuevamente.');
       })
-      .finally(() => setCargandoCatalogo(false));
+      .finally(() => {
+        if (reqId === exploracionReqRef.current) setCargandoCatalogo(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -181,7 +193,7 @@ export default function Dashboard() {
       if (hash.startsWith('#provincia-')) {
         const resto = hash.replace('#provincia-', '');
         const [provSlug, sub] = resto.split('/');
-        const match = provinciasList.find((item) => item !== 'TODAS' && provToFile(item) === provSlug);
+        const match = provinciasList.find((item) => item !== 'TODAS' && slugProvincia(item) === provSlug);
         if (match) {
           setProvincia(match);
           setCanton('TODOS');
@@ -234,7 +246,7 @@ export default function Dashboard() {
     setProvincia(provName);
     setCanton('TODOS');
     setNavLevel('provincia');
-    window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${provToFile(provName)}`);
+    window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${slugProvincia(provName)}`);
   };
 
   const goHome = useCallback(() => {
@@ -257,7 +269,7 @@ export default function Dashboard() {
           if (exploracion) {
             setExploracion(null);
             if (provincia !== 'TODAS') {
-              window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${provToFile(provincia)}`);
+              window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${slugProvincia(provincia)}`);
             }
             return;
           }
@@ -298,7 +310,7 @@ export default function Dashboard() {
             onVolver={() => {
               setExploracion(null);
               if (provincia !== 'TODAS') {
-                window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${provToFile(provincia)}`);
+                window.history.pushState({ navLevel: 'provincia' }, '', `#provincia-${slugProvincia(provincia)}`);
               }
             }}
           />
@@ -503,7 +515,12 @@ export default function Dashboard() {
               }}
               onSwitchToLista={() => setVista('lista')}
               onMouseMove={(e, title, metrics, candidatosStats, subtitle) => {
-                setTooltipPos({ x: e.clientX + 15, y: e.clientY - 20 });
+                const maxX = typeof window !== 'undefined' ? Math.max(12, window.innerWidth - 316) : e.clientX + 15;
+                const maxY = typeof window !== 'undefined' ? Math.max(12, window.innerHeight - 260) : e.clientY - 20;
+                setTooltipPos({
+                  x: Math.min(e.clientX + 15, maxX),
+                  y: Math.max(12, Math.min(e.clientY - 20, maxY)),
+                });
                 setHoveredEntity({ title, subtitle, metrics, candidatosStats });
               }}
               onMouseLeave={() => setHoveredEntity(null)}

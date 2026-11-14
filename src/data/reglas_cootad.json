@@ -1,0 +1,199 @@
+{
+  "fuera": {
+    "viable": "No",
+    "tipo": "Corresponde al Estado central",
+    "articulo": "Constitución Art. 261",
+    "claves": [
+      "policia nacional",
+      "fuerzas armadas",
+      "comando policial",
+      "iva",
+      "impuesto a la renta",
+      "politica monetaria",
+      "banco central",
+      "hospital de especialidad",
+      "aduana",
+      "relaciones exteriores"
+    ]
+  },
+  "parcial": {
+    "viable": "Parcial",
+    "tipo": "Requiere coordinación o convenio",
+    "articulo": "COOTAD, coordinación interinstitucional",
+    "claves": [
+      "salud",
+      "educacion",
+      "seguridad ciudadana",
+      "videovigilancia",
+      "camara de vigilancia",
+      "turismo",
+      "cultura",
+      "deporte",
+      "ministerio",
+      "universidad"
+    ]
+  },
+  "por_dignidad": {
+    "Prefecto": {
+      "viable": "Sí",
+      "tipo": "Competencia provincial",
+      "articulo": "COOTAD Art. 42 / CRE Art. 263",
+      "claves": [
+        "vialidad rural",
+        "vial rural",
+        "camino vecinal",
+        "caminos vecinales",
+        "red vial provincial",
+        "mantenimiento vial",
+        "asfaltado rural",
+        "asfalto rural",
+        "lastrado",
+        "puente",
+        "puentes",
+        "carretera rural",
+        "conectividad rural",
+        "riego",
+        "drenaje",
+        "represa",
+        "canal de riego",
+        "canales de riego",
+        "cuenca hidrografica",
+        "microcuenca",
+        "cuenca",
+        "recurso hidrico",
+        "fuentes de agua",
+        "paramo",
+        "paramos",
+        "fomento productivo",
+        "agropecuar",
+        "productiv",
+        "agricultura",
+        "ganaderia",
+        "cadena de valor",
+        "soberania alimentaria",
+        "agroecol",
+        "semillas",
+        "asistencia tecnica",
+        "emprendimiento rural",
+        "gestion ambiental",
+        "medio ambiente",
+        "reforest",
+        "conservacion",
+        "area protegida",
+        "turismo rural",
+        "turismo comunitario",
+        "turismo provincial",
+        "desarrollo rural",
+        "infraestructura rural",
+        "ordenamiento territorial provincial"
+      ]
+    },
+    "Alcalde": {
+      "viable": "Sí",
+      "tipo": "Competencia municipal",
+      "articulo": "COOTAD Art. 55",
+      "claves": [
+        "agua potable",
+        "alcantarillado",
+        "saneamiento",
+        "desecho",
+        "residuo",
+        "transito",
+        "transporte publico",
+        "movilidad urbana",
+        "uso de suelo",
+        "ocupacion del suelo",
+        "catastro",
+        "mercado",
+        "camal",
+        "faenamiento",
+        "cementerio",
+        "paviment",
+        "asfalt",
+        "vialidad urbana",
+        "ordenamiento territorial",
+        "espacio publico"
+      ]
+    },
+    "Concejal": {
+      "viable": "Sí",
+      "tipo": "Atribución del concejo municipal",
+      "articulo": "COOTAD Art. 57",
+      "claves": [
+        "ordenanza",
+        "fiscaliz",
+        "concejo",
+        "legisl",
+        "reglamento",
+        "control politico"
+      ]
+    },
+    "Vocal Junta Parroquial": {
+      "viable": "Sí",
+      "tipo": "Competencia parroquial",
+      "articulo": "COOTAD Art. 65",
+      "claves": [
+        "parroquial",
+        "comunitari",
+        "camino vecinal",
+        "agua comunitaria",
+        "infraestructura comunitaria",
+        "junta parroquial",
+        "organizacion territorial"
+      ]
+    }
+  },
+  "ajeno": {
+    "Prefecto": {
+      "viable": "No",
+      "tipo": "Corresponde al municipio",
+      "articulo": "COOTAD Art. 55",
+      "claves": [
+        "agua potable domiciliaria",
+        "alcantarillado urbano",
+        "catastro urbano",
+        "transito cantonal",
+        "cementerio cantonal",
+        "mercado municipal"
+      ]
+    },
+    "Alcalde": {
+      "viable": "No",
+      "tipo": "Corresponde a la prefectura",
+      "articulo": "COOTAD Art. 42",
+      "claves": [
+        "vialidad rural provincial",
+        "riego provincial",
+        "sistema provincial de riego"
+      ]
+    },
+    "Concejal": {
+      "viable": "Parcial",
+      "tipo": "La ejecución corresponde a la alcaldía",
+      "articulo": "COOTAD Arts. 57 y 60",
+      "claves": [
+        "construir",
+        "asfaltar",
+        "alcantarillado",
+        "agua potable",
+        "pavimentar"
+      ]
+    }
+  },
+  "temas": [
+    { "tema": "Agua y saneamiento", "patron": "agua|alcantarill|saneamiento" },
+    { "tema": "Vialidad", "patron": "vial|camino|asfalt|paviment|puente|lastrado" },
+    { "tema": "Movilidad", "patron": "transito|transporte|movilidad" },
+    { "tema": "Mercados y faenamiento", "patron": "mercado|camal|faenamiento" },
+    { "tema": "Territorio y suelo", "patron": "suelo|catastro|ordenamiento" },
+    { "tema": "Riego y cuencas", "patron": "riego|drenaje|cuenca|represa" },
+    { "tema": "Producción", "patron": "product|agropec|fomento|agricultura|ganaderia" },
+    { "tema": "Ambiente", "patron": "ambiente|reforest|paramo|residuo|desecho|conservacion" },
+    { "tema": "Normativa", "patron": "ordenanza|legisl|reglamento" },
+    { "tema": "Fiscalización", "patron": "fiscal|control politico" },
+    { "tema": "Salud", "patron": "salud" },
+    { "tema": "Educación", "patron": "educacion" },
+    { "tema": "Seguridad", "patron": "seguridad|policia" },
+    { "tema": "Turismo", "patron": "turismo" }
+  ]
+}

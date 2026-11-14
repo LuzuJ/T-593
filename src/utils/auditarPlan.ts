@@ -1,5 +1,7 @@
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import reglasCootad from '../data/reglas_cootad.json';
 import { slugProvincia } from './catalogoPlanes';
+import { buildCnePlanDirectUrl, buildCnePlanProxyUrl, isValidPlanId } from './cnePlanUrl';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 GlobalWorkerOptions.workerSrc = workerUrl;
@@ -53,41 +55,8 @@ interface Regla {
   claves: string[];
 }
 
-const FUERA: Regla = {
-  viable: 'No',
-  tipo: 'Corresponde al Estado central',
-  articulo: 'Constitución Art. 261',
-  claves: [
-    'policia nacional',
-    'fuerzas armadas',
-    'comando policial',
-    'iva',
-    'impuesto a la renta',
-    'politica monetaria',
-    'banco central',
-    'hospital de especialidad',
-    'aduana',
-    'relaciones exteriores',
-  ],
-};
-
-const PARCIAL: Regla = {
-  viable: 'Parcial',
-  tipo: 'Requiere coordinación o convenio',
-  articulo: 'COOTAD, coordinación interinstitucional',
-  claves: [
-    'salud',
-    'educacion',
-    'seguridad ciudadana',
-    'videovigilancia',
-    'camara de vigilancia',
-    'turismo',
-    'cultura',
-    'deporte',
-    'ministerio',
-    'universidad',
-  ],
-};
+const FUERA: Regla = reglasCootad.fuera as Regla;
+const PARCIAL: Regla = reglasCootad.parcial as Regla;
 
 function resolverDignidad(dignidadRaw: string): string {
   const normDig = norm(dignidadRaw || '');
@@ -97,130 +66,13 @@ function resolverDignidad(dignidadRaw: string): string {
   return 'Alcalde';
 }
 
-const POR_DIGNIDAD: Record<string, Regla> = {
-  Prefecto: {
-    viable: 'Sí',
-    tipo: 'Competencia provincial',
-    articulo: 'COOTAD Art. 42 / CRE Art. 263',
-    claves: [
-      'vialidad rural',
-      'vial rural',
-      'camino vecinal',
-      'caminos vecinales',
-      'red vial provincial',
-      'mantenimiento vial',
-      'asfaltado rural',
-      'asfalto rural',
-      'lastrado',
-      'puente',
-      'puentes',
-      'carretera rural',
-      'conectividad rural',
-      'riego',
-      'drenaje',
-      'represa',
-      'canal de riego',
-      'canales de riego',
-      'cuenca hidrografica',
-      'microcuenca',
-      'cuenca',
-      'recurso hidrico',
-      'fuentes de agua',
-      'paramo',
-      'paramos',
-      'fomento productivo',
-      'agropecuar',
-      'productiv',
-      'agricultura',
-      'ganaderia',
-      'cadena de valor',
-      'soberania alimentaria',
-      'agroecol',
-      'semillas',
-      'asistencia tecnica',
-      'emprendimiento rural',
-      'gestion ambiental',
-      'medio ambiente',
-      'reforest',
-      'conservacion',
-      'area protegida',
-      'turismo rural',
-      'turismo comunitario',
-      'turismo provincial',
-      'desarrollo rural',
-      'infraestructura rural',
-      'ordenamiento territorial provincial',
-    ],
-  },
-  Alcalde: {
-    viable: 'Sí',
-    tipo: 'Competencia municipal',
-    articulo: 'COOTAD Art. 55',
-    claves: [
-      'agua potable',
-      'alcantarillado',
-      'saneamiento',
-      'desecho',
-      'residuo',
-      'transito',
-      'transporte publico',
-      'movilidad urbana',
-      'uso de suelo',
-      'ocupacion del suelo',
-      'catastro',
-      'mercado',
-      'camal',
-      'faenamiento',
-      'cementerio',
-      'paviment',
-      'asfalt',
-      'vialidad urbana',
-      'ordenamiento territorial',
-      'espacio publico',
-    ],
-  },
-  Concejal: {
-    viable: 'Sí',
-    tipo: 'Atribución del concejo municipal',
-    articulo: 'COOTAD Art. 57',
-    claves: ['ordenanza', 'fiscaliz', 'concejo', 'legisl', 'reglamento', 'control politico'],
-  },
-  'Vocal Junta Parroquial': {
-    viable: 'Sí',
-    tipo: 'Competencia parroquial',
-    articulo: 'COOTAD Art. 65',
-    claves: [
-      'parroquial',
-      'comunitari',
-      'camino vecinal',
-      'agua comunitaria',
-      'infraestructura comunitaria',
-      'junta parroquial',
-      'organizacion territorial',
-    ],
-  },
-};
+const POR_DIGNIDAD = reglasCootad.por_dignidad as Record<string, Regla>;
+const AJENO = reglasCootad.ajeno as Record<string, Regla>;
 
-const AJENO: Record<string, Regla> = {
-  Prefecto: {
-    viable: 'No',
-    tipo: 'Corresponde al municipio',
-    articulo: 'COOTAD Art. 55',
-    claves: ['agua potable domiciliaria', 'alcantarillado urbano', 'catastro urbano', 'transito cantonal', 'cementerio cantonal', 'mercado municipal'],
-  },
-  Alcalde: {
-    viable: 'No',
-    tipo: 'Corresponde a la prefectura',
-    articulo: 'COOTAD Art. 42',
-    claves: ['vialidad rural provincial', 'riego provincial', 'sistema provincial de riego'],
-  },
-  Concejal: {
-    viable: 'Parcial',
-    tipo: 'La ejecución corresponde a la alcaldía',
-    articulo: 'COOTAD Arts. 57 y 60',
-    claves: ['construir', 'asfaltar', 'alcantarillado', 'agua potable', 'pavimentar'],
-  },
-};
+const TEMA_REGLAS = reglasCootad.temas.map((item) => ({
+  tema: item.tema,
+  regex: new RegExp(item.patron),
+}));
 
 const VERBOS_ACCION =
   /\b(construir|implementar|desarrollar|fortalecer|garantizar|promover|mejorar|rehabilitar|mantener|crear|elaborar|ejecutar|gestionar|impulsar|ampliar|optimizar|regular|fiscalizar|coordinar|recuperar|dotar|modernizar|establecer|fomentar|reducir|incrementar|formular|actualizar|consolidar|capacitar|proteger|instalar|adecuar|brindar|generar)(emos|an|á|a|ar|er|ir)?\b/i;
@@ -258,20 +110,8 @@ const MENCIONA_COORDINACION = /\b(coordin\w*|convenio\w*|articul\w*|en conjunto)
 
 function temaDe(clave: string): string {
   const limpia = norm(clave);
-  if (/agua|alcantarill|saneamiento/.test(limpia)) return 'Agua y saneamiento';
-  if (/vial|camino|asfalt|paviment/.test(limpia)) return 'Vialidad';
-  if (/transito|transporte|movilidad/.test(limpia)) return 'Movilidad';
-  if (/mercado|camal|faenamiento/.test(limpia)) return 'Mercados y faenamiento';
-  if (/suelo|catastro|ordenamiento/.test(limpia)) return 'Territorio y suelo';
-  if (/riego|drenaje|cuenca/.test(limpia)) return 'Riego y cuencas';
-  if (/product|agropec|fomento/.test(limpia)) return 'Producción';
-  if (/ambiente|reforest|paramo|residuo|desecho/.test(limpia)) return 'Ambiente';
-  if (/ordenanza|legisl|reglamento/.test(limpia)) return 'Normativa';
-  if (/fiscal|control politico/.test(limpia)) return 'Fiscalización';
-  if (/salud/.test(limpia)) return 'Salud';
-  if (/educacion/.test(limpia)) return 'Educación';
-  if (/seguridad|policia/.test(limpia)) return 'Seguridad';
-  return 'Otra oferta';
+  const match = TEMA_REGLAS.find((item) => item.regex.test(limpia));
+  return match ? match.tema : 'Otra oferta';
 }
 
 function clasificarOferta(linea: string, dignidadRaw: string, pagina: number): PromesaAuditada | null {
@@ -408,11 +248,28 @@ function detectarTipoPagina(texto: string, pagina: number): TipoPagina {
   return 'otro';
 }
 
+const MIN_LONGITUD_FRASE = 25;
+const MAX_LONGITUD_FRASE = 360;
+const MAX_POR_TEMA = 3;
+const MAX_MUESTRA_TOTAL = 24;
+
+function tieneMateriaConocida(frase: string, dignidad: string): boolean {
+  const propia = POR_DIGNIDAD[dignidad] || POR_DIGNIDAD.Alcalde;
+  const ajena = AJENO[dignidad];
+  return Boolean(
+    contiene(frase, FUERA.claves, true) ||
+      contiene(frase, propia.claves) ||
+      (ajena && contiene(frase, ajena.claves)) ||
+      contiene(frase, PARCIAL.claves, true)
+  );
+}
+
 function extraerOfertas(paginas: PaginaAuditada[], dignidad: string): { promesas: PromesaAuditada[]; descartadas: number } {
   const vistas = new Set<string>();
   const promesas: PromesaAuditada[] = [];
   let descartadas = 0;
   let seccionActiva: TipoPagina = 'otro';
+  const dignidadResuelta = resolverDignidad(dignidad);
 
   for (const pagina of paginas) {
     if (pagina.tipo === 'propuestas' || pagina.tipo === 'diagnostico') seccionActiva = pagina.tipo;
@@ -427,39 +284,41 @@ function extraerOfertas(paginas: PaginaAuditada[], dignidad: string): { promesas
       const frases = linea
         .split(/(?<=[.!?;])\s+/)
         .map((frase) => frase.trim())
-        .filter((frase) => frase.length >= 45 && frase.length <= 320);
+        .filter((frase) => frase.length >= MIN_LONGITUD_FRASE && frase.length <= MAX_LONGITUD_FRASE);
       if (frases.length === 0) {
         descartadas += 1;
         continue;
       }
 
       for (const frase of frases) {
-      const esOferta =
-        VERBOS_ACCION.test(frase) &&
-        !pareceIndice(frase) &&
-        !pareceMetadato(frase) &&
-        !/\b(fuente:|se recomienda|recomendacion tecnica|rendicion de cuentas)\b/i.test(frase) &&
-        (seccionActiva === 'propuestas' || pagina.tipo === 'propuestas' || seccionActiva === 'otro' || /\b(proponemos|nos comprometemos|se ejecutara|se implementara|planteamos|garantizaremos|construiremos)\b/i.test(frase));
-      if (!esOferta) {
-        descartadas += 1;
-        continue;
-      }
+        const enSeccionPropuestas = seccionActiva === 'propuestas' || pagina.tipo === 'propuestas';
+        const tieneAccionOMateriaNominal =
+          VERBOS_ACCION.test(frase) || (enSeccionPropuestas && tieneMateriaConocida(frase, dignidadResuelta));
+        const esOferta =
+          tieneAccionOMateriaNominal &&
+          !pareceIndice(frase) &&
+          !pareceMetadato(frase) &&
+          !/\b(fuente:|se recomienda|recomendacion tecnica|rendicion de cuentas)\b/i.test(frase) &&
+          (enSeccionPropuestas || seccionActiva === 'otro' || /\b(proponemos|nos comprometemos|se ejecutara|se implementara|planteamos|garantizaremos|construiremos)\b/i.test(frase));
+        if (!esOferta) {
+          descartadas += 1;
+          continue;
+        }
 
-      const auditada = clasificarOferta(frase, dignidad, pagina.pagina);
-      if (!auditada) {
-        descartadas += 1;
-        continue;
-      }
-      const temas = temasDeFrase(frase, dignidad);
-      if (temas.length > 1) {
-        auditada.tema = 'Varios temas';
-        auditada.articulo = 'Frase con más de una materia';
-        auditada.justificacion = `La frase menciona ${temas.join(' y ')}. No se guarda bajo un solo tema.`;
-      }
-      const clave = norm(auditada.promesa).replace(/[^a-z0-9 ]/g, '').slice(0, 120);
-      if (vistas.has(clave)) continue;
-      vistas.add(clave);
-      promesas.push(auditada);
+        const auditada = clasificarOferta(frase, dignidad, pagina.pagina);
+        if (!auditada) {
+          descartadas += 1;
+          continue;
+        }
+        const temas = temasDeFrase(frase, dignidad);
+        if (temas.length > 1) {
+          auditada.tema = 'Varios temas';
+          auditada.justificacion = `${auditada.justificacion} Cruza más de una materia (${temas.join(' y ')}).`;
+        }
+        const clave = norm(auditada.promesa).replace(/[^a-z0-9 ]/g, '').slice(0, 120);
+        if (vistas.has(clave)) continue;
+        vistas.add(clave);
+        promesas.push(auditada);
       }
     }
   }
@@ -486,14 +345,17 @@ function muestraEquilibrada(promesas: PromesaAuditada[]): PromesaAuditada[] {
   const porTema = new Map<string, PromesaAuditada[]>();
   for (const promesa of promesas) {
     const grupo = porTema.get(promesa.tema) || [];
-    if (grupo.length < 3) grupo.push(promesa);
+    if (grupo.length < MAX_POR_TEMA) grupo.push(promesa);
     porTema.set(promesa.tema, grupo);
   }
+  const grupos = [...porTema.values()];
   const salida: PromesaAuditada[] = [];
-  for (const grupo of porTema.values()) {
-    for (const promesa of grupo) {
-      if (salida.length >= 12) return salida;
-      salida.push(promesa);
+  for (let ronda = 0; ronda < MAX_POR_TEMA; ronda += 1) {
+    for (const grupo of grupos) {
+      if (ronda < grupo.length) {
+        salida.push(grupo[ronda]);
+        if (salida.length >= MAX_MUESTRA_TOTAL) return salida;
+      }
     }
   }
   return salida;
@@ -507,7 +369,7 @@ function resumenDe(promesas: PromesaAuditada[], paginasConTexto: number, totalPa
     return 'El lector automático basado en reglas no aisló frases en el formato esperado dentro del texto extraíble. Esto no indica ausencia de propuestas en el plan.';
   }
   const temas = [...new Set(promesas.map((promesa) => promesa.tema))].slice(0, 4);
-  return `Muestra de hasta 12 frases sobre ${temas.join(', ')}. La misma regla se aplica a todas las listas. No es una calificación ni cubre todo el PDF.`;
+  return `Muestra equilibrada de hasta ${MAX_MUESTRA_TOTAL} frases sobre ${temas.join(', ')}. La misma regla se aplica a todas las listas. No es una calificación ni cubre todo el PDF.`;
 }
 
 export function auditarPaginas(paginas: PaginaAuditada[], dignidad: string, totalPaginas = paginas.length): AuditoriaPlan {
@@ -537,9 +399,9 @@ export function auditarPaginas(paginas: PaginaAuditada[], dignidad: string, tota
 
   const { promesas, descartadas } = extraerOfertas(paginas, dignidad);
   const conteos: ConteosAuditoria = {
-    dentroCompetencia: promesas.filter((item) => item.viable === 'Sí' && item.tema !== 'Varios temas').length,
-    requiereCoordinacion: promesas.filter((item) => item.viable === 'Parcial' && item.tema !== 'Varios temas').length,
-    otroNivel: promesas.filter((item) => item.viable === 'No' && item.tema !== 'Varios temas').length,
+    dentroCompetencia: promesas.filter((item) => item.viable === 'Sí').length,
+    requiereCoordinacion: promesas.filter((item) => item.viable === 'Parcial').length,
+    otroNivel: promesas.filter((item) => item.viable === 'No').length,
     totalOfertas: promesas.length,
     lineasDescartadas: descartadas,
   };
@@ -598,7 +460,7 @@ let precalculadasPromise: Promise<Record<string, AuditoriaPlan>> | null = null;
 
 const precalculadasProvCache = new Map<string, Promise<Record<string, AuditoriaPlan>>>();
 
-function cargarPrecalculadas(provincia?: string): Promise<Record<string, AuditoriaPlan>> {
+export function cargarPrecalculadas(provincia?: string): Promise<Record<string, AuditoriaPlan>> {
   if (!provincia) return Promise.resolve({});
   const slug = slugProvincia(provincia);
   const existente = precalculadasProvCache.get(slug);
@@ -611,6 +473,18 @@ function cargarPrecalculadas(provincia?: string): Promise<Record<string, Auditor
     .catch(() => ({}));
   precalculadasProvCache.set(slug, prom);
   return prom;
+}
+
+export function buscarPrecalculada(
+  precalculadas: Record<string, AuditoriaPlan>,
+  proceso: number,
+  codFormulario: number,
+  codPlan: number,
+  dignidad: string
+): AuditoriaPlan | undefined {
+  const clave = `${proceso}-${codFormulario}-${codPlan}-${dignidad}`;
+  const claveCorta = `${proceso}-${codFormulario}-${codPlan}`;
+  return precalculadas[clave] || precalculadas[claveCorta] || precalculadas[String(codFormulario)];
 }
 
 function conCupo<T>(tarea: () => Promise<T>): Promise<T> {
@@ -627,8 +501,35 @@ function conCupo<T>(tarea: () => Promise<T>): Promise<T> {
   });
 }
 
-function idSeguro(valor: number): boolean {
-  return Number.isInteger(valor) && valor > 0 && valor < 1_000_000;
+async function descargarPdfConFallback(
+  proceso: number,
+  codFormulario: number,
+  codPlan: number
+): Promise<ArrayBuffer> {
+  const fuentes = [
+    buildCnePlanProxyUrl(proceso, codFormulario, codPlan),
+    buildCnePlanDirectUrl(proceso, codFormulario, codPlan),
+  ].filter((url): url is string => Boolean(url));
+
+  let ultimoError = 'El CNE no entregó este plan.';
+  for (const url of fuentes) {
+    try {
+      const respuesta = await fetch(url);
+      if (!respuesta.ok) {
+        ultimoError = `HTTP ${respuesta.status} al obtener el plan.`;
+        continue;
+      }
+      const tipo = respuesta.headers.get('content-type') || '';
+      if (tipo.includes('text/html')) {
+        ultimoError = 'La respuesta no es el PDF del plan.';
+        continue;
+      }
+      return await respuesta.arrayBuffer();
+    } catch (error) {
+      ultimoError = error instanceof Error ? error.message : ultimoError;
+    }
+  }
+  throw new Error(ultimoError);
 }
 
 export async function auditarPlanCne(
@@ -638,7 +539,7 @@ export async function auditarPlanCne(
   proceso = 140,
   provincia?: string
 ): Promise<AuditoriaPlan> {
-  if (!idSeguro(proceso) || !idSeguro(codFormulario) || !idSeguro(codPlan)) {
+  if (!isValidPlanId(proceso) || !isValidPlanId(codFormulario) || !isValidPlanId(codPlan)) {
     return Promise.reject(new Error('El identificador del plan no es válido.'));
   }
   const clave = `${proceso}-${codFormulario}-${codPlan}-${dignidad}`;
@@ -661,11 +562,8 @@ export async function auditarPlanCne(
 
   // 2. Fallback dinámico bajo demanda
   const tarea = conCupo(async () => {
-    const respuesta = await fetch(`/cne-plan/${proceso}/${codFormulario}/${codPlan}`);
-    if (!respuesta.ok) throw new Error('El CNE no entregó este plan.');
-    const tipo = respuesta.headers.get('content-type') || '';
-    if (tipo.includes('text/html')) throw new Error('La respuesta no es el PDF del plan.');
-    return extraerYAuditarPdf(await respuesta.arrayBuffer(), dignidad);
+    const buffer = await descargarPdfConFallback(proceso, codFormulario, codPlan);
+    return extraerYAuditarPdf(buffer, dignidad);
   }).catch((error) => {
     cache.delete(clave);
     throw error;
